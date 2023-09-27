@@ -34,6 +34,8 @@ class Lexer(sly.Lexer):
     # expresiones regulares
     STRING = r'".*"'
 
+    reserved_words = {'fun', 'begin', 'end'}
+
     @_(r'[a-zA-Z_]+(\w|_)*')
     def ID(self, t):
         if t.value.upper() in self.tokens and t.value.upper() != 'ID':
