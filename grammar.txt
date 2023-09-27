@@ -1,0 +1,91 @@
+-----------------------------TOKENS----------------------------
+ID          ::= [a-zA-Z_]+(\w|_)*
+FLOAT       ::= (\d+\.\d+)(E-?\d+)?|[1-9]\d*E-?\d+'
+INT         ::= \d+
+STRING      ::= ".*"
+ASSIGNOP    ::= ":="
+---------------------------------------------------------------
+---------------GRAMATICA INDEPENDIENTE DEL CONTEXTO------------
+program     ::= funclist
+funclist    ::= funclist func
+            | func 
+func        ::= 'FUN' ID '(' args ')' funbody
+args        ::= arglist 
+            | 
+arglist     ::= arglist ',' arg 
+            | arg 
+
+arg         ::= ID ':' TYPE
+                
+funbody     ::= locals 'BEGIN' stmts 'END'
+locals      ::= locallist
+            | 
+locallist   ::= locallist  local
+            | local
+stmts       ::= stmts stmt
+            | stmt
+local       ::= ID ':' datatype';'
+
+datatype    ::= float
+            | integer
+        
+integer     ::= 'INTTYPE'
+            | 'INTTYPE' '[' INTNUM ']' 
+
+float       ::= 'FLOATTYPE'
+            | 'FLOATTYPE' '[' INTNUM ']' 
+
+stmt        ::= whilestmt
+            | ifstmt
+            | assignstmt
+            | printstmt
+            | writestmt
+            | readstmt
+            | returnstmt
+            | namestmt
+            | 'SKIP'
+            | 'BREAK'
+            | 'BEGIN' stmtlist 'END'
+whilestmt   ::= 'WHILE' relation 'DO' stmt
+ifstmt      ::= 'IF' relation 'THEN' stmt
+assignstmt  ::= location ASSIGNOP expr
+printstmt   ::= 'PRINT' '(' literal ')'
+writestmt   ::= 'WRITE' '(' expr ')'
+readstmt    ::= 'READ' '(' location ')'
+returnstmt  ::= 'RETURN' expr
+namestmt    ::= ID '(' exprlist ')'
+relation    ::= expr 'LT' expr
+            | expr 'LE' expr
+            | expr 'GT' expr
+            | expr 'GE' expr
+            | expr 'ET' expr
+            | expr 'DF' expr
+            | relation 'AND' relation
+            | relation  'OR' relation
+            | 'NOT' relation
+            | '(' relation ')'
+location    ::= ID
+            | ID '['INTNUM']'
+literal     ::= number
+            |STRING
+number      ::= INTNUM
+            | FLOATNUM
+expr        ::= term '+' expr
+            | term '-' expr
+
+factor      ::= factor '*' term
+            | factor '/' term
+            | '-' term
+            | '+' term
+            
+term        ::=  ID '(' exprlist ')'
+            | ID
+            | ID '[' expr ']'
+            | number
+            | '(' expr ')'
+            | 'INT' '(' expr ')'
+            | 'FLOAT' '(' expr ')'
+exprlist    ::= exprlist ',' expr
+            | expr
+stmtlist    ::= stmtlist ';' stmt
+            | stmt

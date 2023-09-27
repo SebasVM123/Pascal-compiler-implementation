@@ -1,0 +1,45 @@
+fun quicksort(l:int, r:int, a:int[8192])
+i:int;
+begin
+done := 0;
+while done == 0 do
+if i <= j then
+
+end;
+if i > j then
+done := 1
+end;
+if l < j then
+tmp := quicksort(l, j, a);
+if i < r then
+tmp := quicksort(i, r, a)
+end
+fun main()
+v:int[8192];
+i:int;
+n:int;
+begin
+print("Entre n: ");
+read(n);
+i := 0;
+while i < n do
+begin
+read(v[i]);
+i := i+1
+end;
+quicksort(0, n-1, v);
+i := 0;
+while i < n-1 do
+begin
+write(v[i]); print(" ");
+if 0 < v[i] - v[i+1] then
+begin
+print("Quicksort falló "); write(i); print("\n") ; return(0)
+end
+else
+i := i+1
+end;
+write(v[i]);
+print("Exito\n")
+end
+
