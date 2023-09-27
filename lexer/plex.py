@@ -18,10 +18,10 @@ class Lexer(sly.Lexer):
         AND, OR, NOT,
         
         # Literales
-        INTEGER, FLOAT, STRING, NEWLINE, ASSIGNOP,
+        ICONST, FCONST, STRING, ASSIGNOP,
         
         # Datatype
-        INTTYPE, FLOATTYPE,
+        INT, FLOAT,
 
         # Otros Simbolos
         ID,
@@ -34,11 +34,12 @@ class Lexer(sly.Lexer):
     # expresiones regulares
     STRING = r'".*"'
 
-    reserved_words = {'fun', 'begin', 'end'}
+    keywords = {'and', 'begin', 'break', 'do', 'else', 'end', 'float', 'fun', 'if', 'int', 'not', 'or', 'print',
+                'read', 'return', 'skip', 'then', 'while', 'write'}
 
     @_(r'[a-zA-Z_]+(\w|_)*')
     def ID(self, t):
-        if t.value.upper() in self.tokens and t.value.upper() != 'ID':
+        if t.value in self.keywords:
             t.type = t.value.upper()
         return t
 
@@ -71,26 +72,32 @@ class Lexer(sly.Lexer):
 
     ASSIGNOP = r':='
 
-    INTTYPE = r'int'
-    FLOATTYPE = r'float'
+    INT = r'int'
+    FLOAT = r'float'
 
     @_(r'\n+')
-    def NEWLINE(self, t):
-        self.lineno += t.value.count('\n')
+    def ignore_newline(self, t):
+        self.lineno += len(t.value)
     
-    @_(r'(\d+\.\d*|\d*\.\d+)(E-?\d+)?|[1-9]\d*E-?\d+')
-    def FLOAT(self, t):
+    @_(r'(\d+\.\d+)(E-?\d+)?|[1-9]\d*E-?\d+')
+    def FCONST(self, t):
         t.value = float(t.value)
         return t
 
     @_(r'\d+')
-    def INTEGER(self, t):
-        t.value = int(t.value)
-        return t
+    def ICONST(self, t):
+        if len(t.value) > 1 and t.value[0] == '0':
+            self.error(t, error_type=1)
+        else:
+            t.value = int(t.value)
+            return t
 
-    def error(self, t):
-        print(f"Illegal character '{t.value[0]}'")
-        self.index += 1
+    def error(self, t, error_type=0):
+        if error_type == 0:
+            print(f'\033[91mERROR: Illegal character "{t.value[0]}" in line: {t.lineno}\033[0m')
+        elif error_type == 1:
+            print(f'\033[91mERROR: Leading zeros not supported in integer {t.value}, line: {t.lineno}\033[0m')
+
 
 def main(argv):
     '''if len(argv) != 2:
@@ -99,7 +106,7 @@ def main(argv):
     
     lex = Lexer()
     #txt = open(argv[1]).read()
-    txt = open('test2.pl0').read()
+    txt = open('test1/badnumbers.pl0').read()
 
     for tok in lex.tokenize(txt):
         print(tok)
