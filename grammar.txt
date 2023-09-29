@@ -29,11 +29,11 @@ local       ::= ID ':' datatype';'
 datatype    ::= float
             | integer
         
-integer     ::= 'INTTYPE'
-            | 'INTTYPE' '[' INTNUM ']' 
+integer     ::= 'INT'
+            | 'INT' '[' INTNUM ']'
 
-float       ::= 'FLOATTYPE'
-            | 'FLOATTYPE' '[' INTNUM ']' 
+float       ::= 'FLOAT'
+            | 'FLOAT' '[' INTNUM ']'
 
 stmt        ::= whilestmt
             | ifstmt
