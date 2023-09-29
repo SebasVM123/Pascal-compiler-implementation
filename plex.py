@@ -153,7 +153,7 @@ def main(argv):
     tokens_table.field_names = ['TOKEN', 'LEXEMA', 'LINENO']
 =======
     #txt = open(argv[1]).read()
-    txt = open('test1/badnumbers.pl0').read()
+    txt = open('lexer/test1/badnumbers.pl0').read()
 >>>>>>> 42d7158b3cbed1f4f8aa0365dd9a79d9d5ef9983:lexer/plex.py
 
     for tok in lex.tokenize(txt):
