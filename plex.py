@@ -35,17 +35,24 @@ class Lexer(sly.Lexer):
     # ignora espacios en blanco
     ignore = ' \t\r'
 
+    @_(r'\n+')
+    def ignore_newline(self, t):
+        self.lineno += len(t.value)
+
     # expresiones regulares
-    STRING = r'".*"'
+    STRING = r'"[^"\n]*"'
 
     keywords = {'and', 'begin', 'break', 'do', 'else', 'end', 'float', 'fun', 'if', 'int', 'not', 'or', 'print',
                 'read', 'return', 'skip', 'then', 'while', 'write'}
 
-    @_(r'[a-zA-Z_]+(\w|_)*')
+    @_(r'\d?[a-zA-Z_]+(\w|_)*')
     def ID(self, t):
-        if t.value in self.keywords:
-            t.type = t.value.upper()
-        return t
+        if t.value[0] in '0123456789':
+            self.error(t, error_type=3)
+        else:
+            if t.value in self.keywords:
+                t.type = t.value.upper()
+            return t
 
     FUN = r'fun'
     BEGIN = r'begin'
@@ -89,10 +96,6 @@ class Lexer(sly.Lexer):
         self.lineno += t.value.count('\n')
         self.error(t, error_type=2)
 
-    @_(r'\n+')
-    def ignore_newline(self, t):
-        self.lineno += len(t.value)
-
     @_(r'(\d+\.\d+)(e(-|\+)?\d+)?|[0-9]\d*e(-|\+)?\d+')
     def FCONST(self, t):
         return t
@@ -113,6 +116,8 @@ class Lexer(sly.Lexer):
             print(f'\033[91mERROR: Leading zeros not supported in integer {t.value}, line: {t.lineno}\033[0m')
         elif error_type == 2:
             print(f'\033[91mERROR: Unclosed comment at line: {t.lineno}\033[0m')
+        elif error_type == 3:
+            print(f'\033[91mERROR: {t.value} is not a valid name, line {t.lineno}\033[0m')
 
 
 def main(argv):
