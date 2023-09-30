@@ -84,6 +84,11 @@ class Lexer(sly.Lexer):
         self.lineno += t.value.count('\n')
         return t
 
+    @_(r'\/\*([^*]|(\*+[^*/]))*$')
+    def BAD_COMMENT(self, t):
+        self.lineno += t.value.count('\n')
+        self.error(t, error_type=2)
+
     @_(r'\n+')
     def ignore_newline(self, t):
         self.lineno += len(t.value)
@@ -106,6 +111,8 @@ class Lexer(sly.Lexer):
             self.index += 1
         elif error_type == 1:
             print(f'\033[91mERROR: Leading zeros not supported in integer {t.value}, line: {t.lineno}\033[0m')
+        elif error_type == 2:
+            print(f'\033[91mERROR: Unclosed comment at line: {t.lineno}\033[0m')
 
 
 def main(argv):
