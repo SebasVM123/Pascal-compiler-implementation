@@ -20,11 +20,7 @@ class Lexer(sly.Lexer):
 
         # Literales
         ICONST, FCONST, STRING, ASSIGNOP,
-<<<<<<< HEAD:plex.py
 
-=======
-        
->>>>>>> 42d7158b3cbed1f4f8aa0365dd9a79d9d5ef9983:lexer/plex.py
         # Datatype
         INT, FLOAT,
 
@@ -83,7 +79,6 @@ class Lexer(sly.Lexer):
     INT = r'int'
     FLOAT = r'float'
 
-<<<<<<< HEAD:plex.py
     @_(r'\/\*([^*]|(\*+[^*/]))*\*+\/')
     def COMMENT(self, t):
         self.lineno += t.value.count('\n')
@@ -93,7 +88,7 @@ class Lexer(sly.Lexer):
     def ignore_newline(self, t):
         self.lineno += len(t.value)
 
-    @_(r'(\d+\.\d+)(e-?\d+)?|[0-9]\d*e-?\d+')
+    @_(r'(\d+\.\d+)(e(-|\+)?\d+)?|[0-9]\d*e(-|\+)?\d+')
     def FCONST(self, t):
         return t
 
@@ -112,31 +107,6 @@ class Lexer(sly.Lexer):
         elif error_type == 1:
             print(f'\033[91mERROR: Leading zeros not supported in integer {t.value}, line: {t.lineno}\033[0m')
 
-=======
-    @_(r'\n+')
-    def ignore_newline(self, t):
-        self.lineno += len(t.value)
-    
-    @_(r'(\d+\.\d+)(E-?\d+)?|[1-9]\d*E-?\d+')
-    def FCONST(self, t):
-        t.value = float(t.value)
-        return t
-
-    @_(r'\d+')
-    def ICONST(self, t):
-        if len(t.value) > 1 and t.value[0] == '0':
-            self.error(t, error_type=1)
-        else:
-            t.value = int(t.value)
-            return t
-
-    def error(self, t, error_type=0):
-        if error_type == 0:
-            print(f'\033[91mERROR: Illegal character "{t.value[0]}" in line: {t.lineno}\033[0m')
-        elif error_type == 1:
-            print(f'\033[91mERROR: Leading zeros not supported in integer {t.value}, line: {t.lineno}\033[0m')
-
->>>>>>> 42d7158b3cbed1f4f8aa0365dd9a79d9d5ef9983:lexer/plex.py
 
 def main(argv):
     if len(argv) != 2:
@@ -144,17 +114,11 @@ def main(argv):
         exit(1)
 
     lex = Lexer()
-<<<<<<< HEAD:plex.py
     txt = open('test1/' + argv[1]).read()
-    #txt = open('test1/badcomment.pl0').read()
 
     tokens_table = PrettyTable()
     tokens_table.align = 'l'
     tokens_table.field_names = ['TOKEN', 'LEXEMA', 'LINENO']
-=======
-    #txt = open(argv[1]).read()
-    txt = open('lexer/test1/badnumbers.pl0').read()
->>>>>>> 42d7158b3cbed1f4f8aa0365dd9a79d9d5ef9983:lexer/plex.py
 
     for tok in lex.tokenize(txt):
         tokens_table.add_row([tok.type, tok.value, tok.lineno])
