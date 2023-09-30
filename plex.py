@@ -92,7 +92,7 @@ class Lexer(sly.Lexer):
     def FCONST(self, t):
         return t
 
-    @_(r'\d+')
+    @_(r'(\+|-)?\d+')
     def ICONST(self, t):
         if len(t.value) > 1 and t.value[0] == '0':
             self.error(t, error_type=1)
