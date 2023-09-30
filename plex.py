@@ -45,7 +45,7 @@ class Lexer(sly.Lexer):
     keywords = {'and', 'begin', 'break', 'do', 'else', 'end', 'float', 'fun', 'if', 'int', 'not', 'or', 'print',
                 'read', 'return', 'skip', 'then', 'while', 'write'}
 
-    @_(r'\d?[a-zA-Z_]+(\w|_)*')
+    @_(r'\d*[a-zA-Z_]+(\w|_)*')
     def ID(self, t):
         if t.value[0] in '0123456789':
             self.error(t, error_type=3)
