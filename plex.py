@@ -43,7 +43,11 @@ class Lexer(sly.Lexer):
     # expresiones regulares
     @_(r'"([^"\n\\]*(\\.?[^"\n\\]*)*)"([ ]*("([^"\n\\]*(\\.?[^"\n\\]*)*)")*)*')
     def STRING(self, t):
+        print(t.value)
         t.value = t.value.replace('\\"', '&escquote&')
+
+        if t.value[-1] != '"':
+            return self.error(t, error_type=4)
 
         splited_string = t.value.split('"')[1::2]
 
@@ -73,7 +77,7 @@ class Lexer(sly.Lexer):
     keywords = {'and', 'begin', 'break', 'do', 'else', 'end', 'float', 'fun', 'if', 'int', 'not', 'or', 'print',
                 'read', 'return', 'skip', 'then', 'while', 'write'}
 
-    @_(r'\d*[a-zA-Z_]+(\w|_)*')
+    @_(r'[a-zA-Z_]+(\w|_)*')
     def ID(self, t):
         if t.value[0] in '0123456789':
             self.error(t, error_type=3)
@@ -124,14 +128,19 @@ class Lexer(sly.Lexer):
         self.lineno += t.value.count('\n')
         self.error(t, error_type=2)
 
-    @_(r'(\d+\.\d+)(e(-|\+)?\d+)?|[0-9]\d*e(-|\+)?\d+')
+    @_(r'(\d*\.\d+)(e(-|\+)?\d+)?|[0-9]\d*e(-|\+)?\d+')
     def FCONST(self, t):
-        return t
+        if t.value[0] == '.':
+            return self.error(t, error_type=6)
+        elif t.value[0] == '0' and t.value[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+            return self.error(t, error_type=1, extra_info='float')
+        else:
+            return t
 
-    @_(r'(\+|-)?\d+')
+    @_(r'\d+')
     def ICONST(self, t):
         if len(t.value) > 1 and t.value[0] == '0':
-            self.error(t, error_type=1)
+            self.error(t, error_type=1, extra_info='integer')
         else:
             t.value = int(t.value)
             return t
@@ -141,7 +150,7 @@ class Lexer(sly.Lexer):
             print(f'\033[91mERROR: Illegal character "{t.value[0]}" in line: {t.lineno}\033[0m')
             self.index += 1
         elif error_type == 1:
-            print(f'\033[91mERROR: Leading zeros not supported in integer {t.value}, line: {t.lineno}\033[0m')
+            print(f'\033[91mERROR: Leading zeros not supported in {extra_info} {t.value}, line: {t.lineno}\033[0m')
         elif error_type == 2:
             print(f'\033[91mERROR: Unclosed comment at line: {t.lineno}\033[0m')
         elif error_type == 3:
@@ -150,6 +159,8 @@ class Lexer(sly.Lexer):
             print(f'\033[91mERROR: Unclosed string at line {t.lineno}\033[0m')
         elif error_type == 5:
             print(f'\033[91mERROR: {extra_info} is not a valid escape character in line {t.lineno}\033[0m')
+        elif error_type == 6:
+            print(f'\033[91mERROR: {t.value} must have integer part in line {t.lineno}. Did you mean 0{t.value}?\033[0m')
 
 
 def main(argv):
