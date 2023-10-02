@@ -1,0 +1,123 @@
+------------------------------------------TOKENS------------------------------------------
+STRING      : "([^"\n\\]*(\\.?[^"\n\\]*)*)"([ ]*("([^"\n\\]*(\\.?[^"\n\\]*)*)")*)*
+FCONST      : (\d*\.\d+)(e(-|\+)?\d+)?|[0-9]\d*e(-|\+)?\d+
+ID          : \d*[a-zA-Z_]+(\w|_)*
+ICONST      : \d+
+
+AND         : and
+BEGIN       : begin
+BREAK       : break
+DO          : do
+ELSE        : else
+FLOAT       : float
+FUN         : fun
+IF          : if
+INT         : int
+NOT         : not
+OR          : or
+PRINT       : print
+READ        : read
+RETURN      : return
+SKIP        : skip
+THEN        : then
+WHILE       : while
+WRITE       : write
+
+LE          : <=
+LT          : <
+GE          : >=
+GT          : >
+ET          : ==
+DF          : !=
+
+AND         : 'and'
+OR          : 'or'
+NOT         : 'not'
+
+ASSIGNOP    : :=
+
+INT         : 'int'
+FLOAT       : 'float'
+------------------------------------------------------------------------------------------
+---------------------------GRAMATICA INDEPENDIENTE DEL CONTEXTO---------------------------
+program     :== funclist
+funclist    :== funclist func
+            | func
+func        :== FUN ID '(' args ')' funbody
+
+args        :== arglist
+            |
+arglist     :== arglist ',' arg
+            | arg
+arg         |== ID ':' datatype
+
+funbody     :== locals BEGIN stms END
+
+locals      :== localslist
+            |
+localslist  :== localslist local
+            | local
+local       :== ID ':' datatype
+
+datatype    :== integer
+            | float
+integer     :== INT
+            | INT '[' INTNUM ']'
+float       :== FLOAT
+            | FLOAT '[' INTNUM ']'
+
+stmt        ::= whilestmt
+            | ifstmt
+            | assignstmt
+            | printstmt
+            | writestmt
+            | readstmt
+            | returnstmt
+            | namestmt
+            | SKIP
+            | BREAK
+            | BEGIN stmtlist END
+
+whilestmt   ::= WHILE relation DO stmt
+ifstmt      ::= IF relation THEN stmt
+assignstmt  ::= location ASSIGNOP expr
+printstmt   ::= PRINT '(' literal ')'
+writestmt   ::= WRITE '(' expr ')'
+readstmt    ::= READ '(' location ')'
+returnstmt  ::= RETURN expr
+namestmt    ::= ID '(' exprlist ')'
+
+relation    :== logic_or
+logic_or    :== logic_or OR logic_and
+            | logic_and
+logic_and   :== logic_and AND logic_not
+            | logic_not
+logic_not   :== logic_not NOT equality
+            | equality
+equality    :== equality DF comparison
+            | equality ET comparison
+            | comparison
+comparison  :== comparison GT expr
+            | comparison GE expr
+            | comparison LT expr
+            | comparison LE expr
+            | expr
+expr        :== factor '+' expr
+            | factor '-' expr
+            | factor
+factor      :== term '*' factor
+            | term '/' factor
+            | term
+term        :== ID '(' exprlist ')'
+            | ID '[' expr ']'
+            | ID
+            | number
+            | '(' expr ')'
+            | INT '(' expr ')'
+            | FLOAT '(' expr ')'
+            | '-' term
+            | '+' term
+exprlist    :== exprlist ',' expr
+            | expr
+stmtlist    :== stmtlist ';' stmt
+            | stmt
