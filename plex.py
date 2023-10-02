@@ -77,13 +77,30 @@ class Lexer(sly.Lexer):
     keywords = {'and', 'begin', 'break', 'do', 'else', 'end', 'float', 'fun', 'if', 'int', 'not', 'or', 'print',
                 'read', 'return', 'skip', 'then', 'while', 'write'}
 
-    @_(r'[a-zA-Z_]+(\w|_)*')
+    @_(r'(\d*\.\d+)(e(-|\+)?\d+)?|[0-9]\d*e(-|\+)?\d+')
+    def FCONST(self, t):
+        if t.value[0] == '.':
+            return self.error(t, error_type=6)
+        elif t.value[0] == '0' and t.value[1] in '0123456789':
+            return self.error(t, error_type=1, extra_info='float')
+        else:
+            return t
+
+    @_(r'\d*[a-zA-Z_]+(\w|_)*')
     def ID(self, t):
         if t.value[0] in '0123456789':
             self.error(t, error_type=3)
         else:
             if t.value in self.keywords:
                 t.type = t.value.upper()
+            return t
+
+    @_(r'\d+')
+    def ICONST(self, t):
+        if len(t.value) > 1 and t.value[0] == '0':
+            self.error(t, error_type=1, extra_info='integer')
+        else:
+            t.value = int(t.value)
             return t
 
     FUN = r'fun'
@@ -127,23 +144,6 @@ class Lexer(sly.Lexer):
     def BAD_COMMENT(self, t):
         self.lineno += t.value.count('\n')
         self.error(t, error_type=2)
-
-    @_(r'(\d*\.\d+)(e(-|\+)?\d+)?|[0-9]\d*e(-|\+)?\d+')
-    def FCONST(self, t):
-        if t.value[0] == '.':
-            return self.error(t, error_type=6)
-        elif t.value[0] == '0' and t.value[1] in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
-            return self.error(t, error_type=1, extra_info='float')
-        else:
-            return t
-
-    @_(r'\d+')
-    def ICONST(self, t):
-        if len(t.value) > 1 and t.value[0] == '0':
-            self.error(t, error_type=1, extra_info='integer')
-        else:
-            t.value = int(t.value)
-            return t
 
     def error(self, t, error_type=0, extra_info=None):
         if error_type == 0:
