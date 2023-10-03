@@ -4,7 +4,6 @@ plex.py
 Analizador Lexico para el lenguaje pascal
 '''
 import sly
-import re
 from prettytable import PrettyTable
 
 class Lexer(sly.Lexer):
