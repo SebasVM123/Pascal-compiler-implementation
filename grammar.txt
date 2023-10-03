@@ -38,6 +38,8 @@ ASSIGNOP    : :=
 
 INT         : 'int'
 FLOAT       : 'float'
+
+COMMENT     : \/\*([^*]|(\*+[^*/]))*\*+\/
 ------------------------------------------------------------------------------------------
 ---------------------------GRAMATICA INDEPENDIENTE DEL CONTEXTO---------------------------
 program     :== funclist
@@ -92,7 +94,7 @@ logic_or    :== logic_or OR logic_and
             | logic_and
 logic_and   :== logic_and AND logic_not
             | logic_not
-logic_not   :== logic_not NOT equality
+logic_not   :== NOT logic_not
             | equality
 equality    :== equality DF comparison
             | equality ET comparison
@@ -112,7 +114,7 @@ term        :== ID '(' exprlist ')'
             | ID '[' expr ']'
             | ID
             | number
-            | '(' expr ')'
+            | '(' relation ')'
             | INT '(' expr ')'
             | FLOAT '(' expr ')'
             | '-' term
