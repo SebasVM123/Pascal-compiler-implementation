@@ -30,5 +30,5 @@ de los resultados en formato de tabla. Si desea instalar automaticamente las dep
 
 ## Autores
 * Alicia Valencia Acevedo
-* Sebastián Velásquez Múnera
+* Sebastián Velásquez Múnera 
 
