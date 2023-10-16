@@ -1,0 +1,405 @@
+Grammar:
+
+Rule 0     S' -> program
+Rule 1     program -> funclist
+Rule 2     funclist -> func
+Rule 3     funclist -> funclist func
+Rule 4     func -> FUN ID ( _1_args_repeat )
+Rule 5     _1_args_repeat -> _1_args_items
+Rule 6     _1_args_repeat -> <empty>
+Rule 7     _1_args_items -> _1_args_items _1_args_item
+Rule 8     _1_args_items -> _1_args_item
+Rule 9     _1_args_item -> args
+Rule 10    args -> <empty>
+Rule 11    args -> arg
+Rule 12    args -> args , arg
+Rule 13    arg -> ID : datatype
+Rule 14    datatype -> float
+Rule 15    datatype -> integer
+Rule 16    integer -> INT _2_225b22_ICONST_225d22_optional
+Rule 17    _2_225b22_ICONST_225d22_optional -> [ ICONST ]
+Rule 18    _2_225b22_ICONST_225d22_optional -> <empty>
+Rule 19    float -> FLOAT _3_225b22_ICONST_225d22_optional
+Rule 20    _3_225b22_ICONST_225d22_optional -> [ ICONST ]
+Rule 21    _3_225b22_ICONST_225d22_optional -> <empty>
+
+Unused terminals:
+
+    FCONST
+    ASSIGNOP
+    DF
+    ET
+    END
+    LE
+    NOT
+    GE
+    SKIP
+    RETURN
+    GT
+    WHILE
+    DO
+    AND
+    PRINT
+    THEN
+    WRITE
+    BREAK
+    READ
+    COMMENT
+    OR
+    LT
+    STRING
+    IF
+    BEGIN
+
+Terminals, with rules where they appear:
+
+(                    : 4
+)                    : 4
+,                    : 12
+:                    : 13
+AND                  : 
+ASSIGNOP             : 
+BEGIN                : 
+BREAK                : 
+COMMENT              : 
+DF                   : 
+DO                   : 
+END                  : 
+ET                   : 
+FCONST               : 
+FLOAT                : 19
+FUN                  : 4
+GE                   : 
+GT                   : 
+ICONST               : 17 20
+ID                   : 4 13
+IF                   : 
+INT                  : 16
+LE                   : 
+LT                   : 
+NOT                  : 
+OR                   : 
+PRINT                : 
+READ                 : 
+RETURN               : 
+SKIP                 : 
+STRING               : 
+THEN                 : 
+WHILE                : 
+WRITE                : 
+[                    : 17 20
+]                    : 17 20
+error                : 
+
+Nonterminals, with rules where they appear:
+
+_1_args_item         : 7 8
+_1_args_items        : 5 7
+_1_args_repeat       : 4
+_2_225b22_ICONST_225d22_optional : 16
+_3_225b22_ICONST_225d22_optional : 19
+arg                  : 11 12
+args                 : 9 12
+datatype             : 13
+float                : 14
+func                 : 2 3
+funclist             : 1 3
+integer              : 15
+program              : 0
+
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . funclist
+    (2) funclist -> . func
+    (3) funclist -> . funclist func
+    (4) func -> . FUN ID ( _1_args_repeat )
+    FUN             shift and go to state 4
+
+    program                        shift and go to state 1
+    funclist                       shift and go to state 2
+    func                           shift and go to state 3
+
+state 1
+
+    (0) S' -> program .
+
+
+state 2
+
+    (1) program -> funclist .
+    (3) funclist -> funclist . func
+    (4) func -> . FUN ID ( _1_args_repeat )
+    $end            reduce using rule 1 (program -> funclist .)
+    FUN             shift and go to state 4
+
+    func                           shift and go to state 5
+
+state 3
+
+    (2) funclist -> func .
+    FUN             reduce using rule 2 (funclist -> func .)
+    $end            reduce using rule 2 (funclist -> func .)
+
+
+state 4
+
+    (4) func -> FUN . ID ( _1_args_repeat )
+    ID              shift and go to state 6
+
+
+state 5
+
+    (3) funclist -> funclist func .
+    FUN             reduce using rule 3 (funclist -> funclist func .)
+    $end            reduce using rule 3 (funclist -> funclist func .)
+
+
+state 6
+
+    (4) func -> FUN ID . ( _1_args_repeat )
+    (               shift and go to state 7
+
+
+state 7
+
+    (4) func -> FUN ID ( . _1_args_repeat )
+    (5) _1_args_repeat -> . _1_args_items
+    (6) _1_args_repeat -> .
+    (7) _1_args_items -> . _1_args_items _1_args_item
+    (8) _1_args_items -> . _1_args_item
+    (9) _1_args_item -> . args
+    (10) args -> .
+    (11) args -> . arg
+    (12) args -> . args , arg
+    (13) arg -> . ID : datatype
+  ! reduce/reduce conflict for ) resolved using rule 10 (args -> .)
+  ! shift/reduce conflict for ID resolved as shift
+    ,               reduce using rule 10 (args -> .)
+    )               reduce using rule 10 (args -> .)
+    ID              shift and go to state 8
+
+    _1_args_repeat                 shift and go to state 9
+    _1_args_items                  shift and go to state 10
+    _1_args_item                   shift and go to state 11
+    args                           shift and go to state 12
+    arg                            shift and go to state 13
+
+state 8
+
+    (13) arg -> ID . : datatype
+    :               shift and go to state 14
+
+
+state 9
+
+    (4) func -> FUN ID ( _1_args_repeat . )
+    )               shift and go to state 15
+
+
+state 10
+
+    (5) _1_args_repeat -> _1_args_items .
+    (7) _1_args_items -> _1_args_items . _1_args_item
+    (9) _1_args_item -> . args
+    (10) args -> .
+    (11) args -> . arg
+    (12) args -> . args , arg
+    (13) arg -> . ID : datatype
+  ! reduce/reduce conflict for ) resolved using rule 10 (args -> .)
+  ! shift/reduce conflict for ID resolved as shift
+    ,               reduce using rule 10 (args -> .)
+    )               reduce using rule 10 (args -> .)
+    ID              shift and go to state 8
+
+    _1_args_item                   shift and go to state 16
+    args                           shift and go to state 12
+    arg                            shift and go to state 13
+
+state 11
+
+    (8) _1_args_items -> _1_args_item .
+    ID              reduce using rule 8 (_1_args_items -> _1_args_item .)
+    ,               reduce using rule 8 (_1_args_items -> _1_args_item .)
+    )               reduce using rule 8 (_1_args_items -> _1_args_item .)
+
+
+state 12
+
+    (9) _1_args_item -> args .
+    (12) args -> args . , arg
+  ! shift/reduce conflict for , resolved as shift
+    ID              reduce using rule 9 (_1_args_item -> args .)
+    )               reduce using rule 9 (_1_args_item -> args .)
+    ,               shift and go to state 17
+
+
+state 13
+
+    (11) args -> arg .
+    ,               reduce using rule 11 (args -> arg .)
+    ID              reduce using rule 11 (args -> arg .)
+    )               reduce using rule 11 (args -> arg .)
+
+
+state 14
+
+    (13) arg -> ID : . datatype
+    (14) datatype -> . float
+    (15) datatype -> . integer
+    (19) float -> . FLOAT _3_225b22_ICONST_225d22_optional
+    (16) integer -> . INT _2_225b22_ICONST_225d22_optional
+    FLOAT           shift and go to state 21
+    INT             shift and go to state 22
+
+    datatype                       shift and go to state 18
+    float                          shift and go to state 19
+    integer                        shift and go to state 20
+
+state 15
+
+    (4) func -> FUN ID ( _1_args_repeat ) .
+    FUN             reduce using rule 4 (func -> FUN ID ( _1_args_repeat ) .)
+    $end            reduce using rule 4 (func -> FUN ID ( _1_args_repeat ) .)
+
+
+state 16
+
+    (7) _1_args_items -> _1_args_items _1_args_item .
+    ID              reduce using rule 7 (_1_args_items -> _1_args_items _1_args_item .)
+    ,               reduce using rule 7 (_1_args_items -> _1_args_items _1_args_item .)
+    )               reduce using rule 7 (_1_args_items -> _1_args_items _1_args_item .)
+
+
+state 17
+
+    (12) args -> args , . arg
+    (13) arg -> . ID : datatype
+    ID              shift and go to state 8
+
+    arg                            shift and go to state 23
+
+state 18
+
+    (13) arg -> ID : datatype .
+    ,               reduce using rule 13 (arg -> ID : datatype .)
+    ID              reduce using rule 13 (arg -> ID : datatype .)
+    )               reduce using rule 13 (arg -> ID : datatype .)
+
+
+state 19
+
+    (14) datatype -> float .
+    ,               reduce using rule 14 (datatype -> float .)
+    ID              reduce using rule 14 (datatype -> float .)
+    )               reduce using rule 14 (datatype -> float .)
+
+
+state 20
+
+    (15) datatype -> integer .
+    ,               reduce using rule 15 (datatype -> integer .)
+    ID              reduce using rule 15 (datatype -> integer .)
+    )               reduce using rule 15 (datatype -> integer .)
+
+
+state 21
+
+    (19) float -> FLOAT . _3_225b22_ICONST_225d22_optional
+    (20) _3_225b22_ICONST_225d22_optional -> . [ ICONST ]
+    (21) _3_225b22_ICONST_225d22_optional -> .
+    [               shift and go to state 25
+    ,               reduce using rule 21 (_3_225b22_ICONST_225d22_optional -> .)
+    ID              reduce using rule 21 (_3_225b22_ICONST_225d22_optional -> .)
+    )               reduce using rule 21 (_3_225b22_ICONST_225d22_optional -> .)
+
+    _3_225b22_ICONST_225d22_optional shift and go to state 24
+
+state 22
+
+    (16) integer -> INT . _2_225b22_ICONST_225d22_optional
+    (17) _2_225b22_ICONST_225d22_optional -> . [ ICONST ]
+    (18) _2_225b22_ICONST_225d22_optional -> .
+    [               shift and go to state 27
+    ,               reduce using rule 18 (_2_225b22_ICONST_225d22_optional -> .)
+    ID              reduce using rule 18 (_2_225b22_ICONST_225d22_optional -> .)
+    )               reduce using rule 18 (_2_225b22_ICONST_225d22_optional -> .)
+
+    _2_225b22_ICONST_225d22_optional shift and go to state 26
+
+state 23
+
+    (12) args -> args , arg .
+    ,               reduce using rule 12 (args -> args , arg .)
+    ID              reduce using rule 12 (args -> args , arg .)
+    )               reduce using rule 12 (args -> args , arg .)
+
+
+state 24
+
+    (19) float -> FLOAT _3_225b22_ICONST_225d22_optional .
+    ,               reduce using rule 19 (float -> FLOAT _3_225b22_ICONST_225d22_optional .)
+    ID              reduce using rule 19 (float -> FLOAT _3_225b22_ICONST_225d22_optional .)
+    )               reduce using rule 19 (float -> FLOAT _3_225b22_ICONST_225d22_optional .)
+
+
+state 25
+
+    (20) _3_225b22_ICONST_225d22_optional -> [ . ICONST ]
+    ICONST          shift and go to state 28
+
+
+state 26
+
+    (16) integer -> INT _2_225b22_ICONST_225d22_optional .
+    ,               reduce using rule 16 (integer -> INT _2_225b22_ICONST_225d22_optional .)
+    ID              reduce using rule 16 (integer -> INT _2_225b22_ICONST_225d22_optional .)
+    )               reduce using rule 16 (integer -> INT _2_225b22_ICONST_225d22_optional .)
+
+
+state 27
+
+    (17) _2_225b22_ICONST_225d22_optional -> [ . ICONST ]
+    ICONST          shift and go to state 29
+
+
+state 28
+
+    (20) _3_225b22_ICONST_225d22_optional -> [ ICONST . ]
+    ]               shift and go to state 30
+
+
+state 29
+
+    (17) _2_225b22_ICONST_225d22_optional -> [ ICONST . ]
+    ]               shift and go to state 31
+
+
+state 30
+
+    (20) _3_225b22_ICONST_225d22_optional -> [ ICONST ] .
+    ,               reduce using rule 20 (_3_225b22_ICONST_225d22_optional -> [ ICONST ] .)
+    ID              reduce using rule 20 (_3_225b22_ICONST_225d22_optional -> [ ICONST ] .)
+    )               reduce using rule 20 (_3_225b22_ICONST_225d22_optional -> [ ICONST ] .)
+
+
+state 31
+
+    (17) _2_225b22_ICONST_225d22_optional -> [ ICONST ] .
+    ,               reduce using rule 17 (_2_225b22_ICONST_225d22_optional -> [ ICONST ] .)
+    ID              reduce using rule 17 (_2_225b22_ICONST_225d22_optional -> [ ICONST ] .)
+    )               reduce using rule 17 (_2_225b22_ICONST_225d22_optional -> [ ICONST ] .)
+
+
+Conflicts:
+
+shift/reduce conflict for ID in state 7 resolved as shift
+shift/reduce conflict for ID in state 10 resolved as shift
+shift/reduce conflict for , in state 12 resolved as shift
+reduce/reduce conflict in state 7 resolved using rule args -> <empty>
+rejected rule (_1_args_repeat -> <empty>) in state 7
+reduce/reduce conflict in state 10 resolved using rule args -> <empty>
+rejected rule (_1_args_repeat -> _1_args_items) in state 10
+Rule (_1_args_repeat -> <empty>) is never reduced
+Rule (_1_args_repeat -> _1_args_items) is never reduced

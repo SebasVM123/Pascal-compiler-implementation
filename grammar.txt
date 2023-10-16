@@ -64,9 +64,9 @@ local       :== ID ':' datatype
 datatype    :== integer
             | float
 integer     :== INT
-            | INT '[' INTNUM ']'
+            | INT '[' ICONST ']'
 float       :== FLOAT
-            | FLOAT '[' INTNUM ']'
+            | FLOAT '[' ICONST ']'
 
 stmt        ::= whilestmt
             | ifstmt
@@ -82,6 +82,7 @@ stmt        ::= whilestmt
 
 whilestmt   ::= WHILE relation DO stmt
 ifstmt      ::= IF relation THEN stmt
+            | IF relation THEN stmt ELSE stmt
 assignstmt  ::= location ASSIGNOP expr
 printstmt   ::= PRINT '(' literal ')'
 writestmt   ::= WRITE '(' expr ')'

@@ -1,7 +1,7 @@
 '''
 plex.py
 
-Analizador Lexico para el lenguaje pascal
+Analizador Lexico para el lenguaje PL0
 '''
 import sly
 from prettytable import PrettyTable
