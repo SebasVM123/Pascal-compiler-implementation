@@ -51,9 +51,9 @@ args        :== arglist
             |
 arglist     :== arglist ',' arg
             | arg
-arg         |== ID ':' datatype
+arg         | ID ':' datatype
 
-funbody     :== locals BEGIN stms END
+funbody     :== locals BEGIN stmtlist END
 
 locals      :== localslist
             |

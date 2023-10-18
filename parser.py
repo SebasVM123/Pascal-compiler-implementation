@@ -20,8 +20,24 @@ class Parser(sly.Parser):
     def funclist(self, p):
         pass
 
-    @_('FUN ID "(" { args } ")" ')
+    @_('FUN ID "(" { args } ")" funbody')
     def func(self, p):
+        pass
+
+    @_('locals BEGIN stmtlist END')
+    def funbody(self, p):
+        pass
+    
+    @_('{ localist }')
+    def locals(self, p):
+        pass
+    
+    @_('{ localist } local')
+    def localist(self, p):
+        pass
+    
+    @_('ID ":" datatype')
+    def local(self, p):
         pass
 
     @_('args "," arg', 'arg', '')
@@ -70,11 +86,11 @@ class Parser(sly.Parser):
     def relation(self, p):
         pass
     
-    @_('logic_or OR { logic_and }')
+    @_('{ logic_or } OR logic_and')
     def logic_or(self, p):
         pass
     
-    @_('logic_and AND { logic_not }')
+    @_('{ logic_and } AND logic_not')
     def logic_and(self, p):
         pass
     
