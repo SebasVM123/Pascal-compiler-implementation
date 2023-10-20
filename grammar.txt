@@ -89,8 +89,8 @@ relation    ::= expr LT expr
             | expr LE expr
             | expr GT expr
             | expr GE expr
-            | expr EQ expr
-            | expr NE expr
+            | expr ET expr
+            | expr DF expr
             | relop AND relop
             | relop OR relop
             | NOT relop 
