@@ -42,70 +42,35 @@ FLOAT       : 'float'
 COMMENT     : \/\*([^*]|(\*+[^*/]))*\*+\/
 ------------------------------------------------------------------------------------------
 ---------------------------GRAMATICA INDEPENDIENTE DEL CONTEXTO---------------------------
-program     :== funclist
-funclist    :== funclist func
+program     ::= funclist
+funclist    ::= funclist func
             | func
-func        :== FUN ID '(' args ')' funbody
-
-args        :== arglist
-            |
-arglist     :== arglist ',' arg
-            | arg
-arg         | ID ':' datatype
-
-funbody     :== locals BEGIN stmtlist END
-
-locals      :== localslist
-            |
-localslist  :== localslist local
+func        ::= FUN ID '(' [ parmlist ] ')' [ locallist ] BEGIN stmtlist END
+parmlist    ::= parmlist ',' parm
+            | parm
+parm        ::= ID ':' datatype
+datatype    ::= INT [ '[' expr ']' ]
+            | FLOAT [ '[' expr ']' ]
+locallist   ::= locallist ';' { local ';' }
             | local
-local       :== ID ':' datatype
-
-datatype    :== integer
-            | float
-integer     :== INT
-            | INT '[' ICONST ']'
-float       :== FLOAT
-            | FLOAT '[' ICONST ']'
-
-stmt        ::= whilestmt
-            | ifstmt
-            | assignstmt
-            | printstmt
-            | writestmt
-            | readstmt
-            | returnstmt
-            | namestmt
-            | SKIP
-            | BREAK
+local       ::= parm
+            | func
+stmtlist    ::= stmt { ';' stmt }
+stmt        ::= PRINT '(' literal ')'
+            | WRITE '(' expr ')'
+            | READ '(' location ')'
+            | WHILE relation DO stmt
+            | BREAK 
+            | IF relation then stmt **VERMANANA
             | BEGIN stmtlist END
-
-whilestmt   ::= WHILE relation DO stmt
-ifstmt      ::= IF relation THEN stmt
-            | IF relation THEN stmt ELSE stmt
-assignstmt  ::= location ASSIGNOP expr
-printstmt   ::= PRINT '(' literal ')'
-writestmt   ::= WRITE '(' expr ')'
-readstmt    ::= READ '(' location ')'
-returnstmt  ::= RETURN expr
-namestmt    ::= ID '(' exprlist ')'
-
-relation    :== logic_or
-logic_or    :== logic_or OR logic_and
-            | logic_and
-logic_and   :== logic_and AND logic_not
-            | logic_not
-logic_not   :== NOT logic_not
-            | equality
-equality    :== equality DF comparison
-            | equality ET comparison
-            | comparison
-comparison  :== comparison GT expr
-            | comparison GE expr
-            | comparison LT expr
-            | comparison LE expr
-            | expr
-expr        :== factor '+' expr
+            | location ASSIGNOP expr
+            | RETURN expr
+            | SKIP
+            | ID '(' exprlist ')'
+location    ::= ID [ '[' expr ']' ]
+exprlist    ::= expr { ',' expr}
+            |
+expr        ::= factor '+' expr
             | factor '-' expr
             | factor
 factor      :== term '*' factor
@@ -120,7 +85,12 @@ term        :== ID '(' exprlist ')'
             | FLOAT '(' expr ')'
             | '-' term
             | '+' term
-exprlist    :== exprlist ',' expr
-            | expr
-stmtlist    :== stmtlist ';' stmt
-            | stmt
+relation    ::= expr LT expr
+            | expr LE expr
+            | expr GT expr
+            | expr GE expr
+            | expr EQ expr
+            | expr NE expr
+            | relop AND relop
+            | relop OR relop
+            | NOT relop 
