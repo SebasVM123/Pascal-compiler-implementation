@@ -29,7 +29,7 @@ class Parser(sly.Parser):
     @_('FUN ID "(" [ parmlist ] ")" [ locallist ] BEGIN stmtlist END')
     def func(self, p):
         pass
-    @_('[ parmlist ] parm')
+    @_('[ parmlist "," ] parm')
     def parmlist(self, p):
         pass
     @_('ID ":" datatype')
@@ -104,8 +104,17 @@ class Parser(sly.Parser):
     def relation(self, p):
         pass
     
-txt = 'fun hola(a:int, b:float)'
+    
+def main(argv):
+    if len(argv) != 2:
+        print(f"Usage: python {argv[0]} filename")
+        exit(1)
 
-lex = Lexer()
-parser = Parser()
-parser.parse(lex.tokenize(txt))
+    lex = Lexer()
+    txt = open('test2/' + argv[1]).read()
+    parser = Parser()
+    parser.parse(lex.tokenize(txt))
+
+if __name__ == '__main__':
+    from sys import argv
+    main(argv)
