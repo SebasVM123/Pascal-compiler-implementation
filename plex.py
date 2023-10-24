@@ -10,7 +10,7 @@ class Lexer(sly.Lexer):
     tokens = {
         # Palabras Reservadas
         FUN, BEGIN, END, SKIP, BREAK, WHILE, DO,
-        IF, THEN, PRINT, WRITE, READ, RETURN,
+        IF, THEN, PRINT, WRITE, READ, RETURN, ELSE,
 
         # Operadores de Relacion
         LT, LE, GT, GE, ET, DF,

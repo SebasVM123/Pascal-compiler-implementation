@@ -57,7 +57,7 @@ class Parser(sly.Parser):
        'READ "(" location ")"',
        'WHILE relation DO stmt',
        'BREAK',
-       'IF relation THEN stmt',
+       'IF relation THEN stmt [ ELSE stmt ]',
        'BEGIN stmtlist END',
        'location ASSIGNOP expr',
        'RETURN expr',

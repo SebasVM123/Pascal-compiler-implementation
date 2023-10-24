@@ -61,7 +61,7 @@ stmt        ::= PRINT '(' literal ')'
             | READ '(' location ')'
             | WHILE relation DO stmt
             | BREAK 
-            | IF relation then stmt **VERMANANA
+            | IF relation then stmt [ ELSE stmt ]
             | BEGIN stmtlist END
             | location ASSIGNOP expr
             | RETURN expr
