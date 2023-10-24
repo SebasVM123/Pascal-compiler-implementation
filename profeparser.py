@@ -1,145 +1,126 @@
-'''
-parser.py
-
-Analizador Sintáctico para el lenguaje PL0
-'''
-import sly
-from plex import Lexer
-
 class Parser(sly.Parser):
-    debugfile = 'pl0.txt'
+    '''
+    '''
+    debugfile='pl0.txt'
 
     tokens = Lexer.tokens
 
-    # definición de reglas
-    @_('funclist')
+    precedence = (
+        ('left', OR),
+        ('left', AND),
+        ('left', EQ, NE),
+        ('left', LT, GT, LE, GE),
+        ('left', '+', '-'),
+        ('left', '*', '/'),
+        ('right', NOT, UNARY),
+    )
+
+    @_("funclist")
     def program(self, p):
-        pass
+        ...
 
-    @_('funclist func', 'func')
+    @_("function { function }")
     def funclist(self, p):
-        pass
+        ...
 
-    @_('FUN ID "(" { args } ")" funbody')
-    def func(self, p):
-        pass
+    @_("FUN ID parmlist varlist BEGIN stmtlist END")
+    def function(self, p):
+        ...
 
-    @_('locals BEGIN stmtlist END')
-    def funbody(self, p):
-        pass
-    
-    @_('{ localist }')
-    def locals(self, p):
-        pass
-    
-    @_('{ localist } local')
-    def localist(self, p):
-        pass
-    
-    @_('ID ":" datatype')
-    def local(self, p):
-        pass
+    @_("'(' [ parmlistitems ] ')'")
+    def parmlist(self, p):
+        ...
 
-    @_('args "," arg', 'arg', '')
-    def args(self, p):
-        pass
+    @_("parm { ',' parm }")
+    def parmlistitems(self, p):
+        ...
 
-    @_('ID ":" datatype')
-    def arg(self, p):
-        pass
+    @_("ID ':' typename")
+    def parm(self, p):
+        ...
 
-    @_('integer', 'float')
-    def datatype(self, p):
-        pass
+    @_("INT", "FLOAT")
+    def typename(self, p):
+        ...
 
-    @_('INT [ "[" ICONST "]" ]')
-    def integer(self, p):
-        pass
+    @_("INT '[' expr ']'", "FLOAT '[' expr ']'")
+    def typename(self, p):
+        ...
 
-    @_('FLOAT [ "[" ICONST "]" ]')
-    def float(self, p):
-        pass
-    
-    @_('{ stmtlist } ";" stmt')
+    @_("[ declist ]")
+    def varlist(self, p):
+        ...
+
+    @_("vardecl ';' { vardecl ';' } ")
+    def declist(self, p):
+        ...
+
+    @_("parm", "function")
+    def vardecl(self, p):
+        ...
+
+    @_("stmt { ';' stmt }")
     def stmtlist(self, p):
-        pass
-    
-    @_('WHILE relation DO stmt',
-       'IF relation THEN stmt',
-       'location ASSIGNOP expr',
-       'PRINT "(" STRING ")"',
-       'WRITE "(" expr ")"',
-       'READ "(" location ")"',
-       'RETURN expr',
-       'ID "(" exprlist ")"',
-       'SKIP',
-       'BREAK',
-       'BEGIN stmtlist END')
+        ...
+
+    @_("PRINT '(' STRING ')'",
+       "WRITE '(' expr ')'",
+       "READ '(' location ')'",
+       "WHILE relop DO stmt",
+       "BREAK",
+       "IF relop THEN stmt [ ELSE stmt ]",
+       "BEGIN stmtlist END",
+       "location ASSIGN expr",
+       "RETURN expr",
+       "SKIP",
+       "ID '(' exprlist ')'")
     def stmt(self, p):
-        pass
-    
-    @_('ID','ID "[" expr "]"')
+        ...
+
+    @_("ID")
     def location(self, p):
-        pass
-    
-    @_('logic_or')
-    def relation(self, p):
-        pass
-    
-    @_('{ logic_or } OR logic_and')
-    def logic_or(self, p):
-        pass
-    
-    @_('{ logic_and } AND logic_not')
-    def logic_and(self, p):
-        pass
-    
-    @_('NOT logic_not', 'equality')
-    def logic_not(self, p):
-        pass
-    
-    @_('equality DF comparison',
-       'equality ET comparison',
-       'comparison')
-    def equality(self, p):
-        pass
-    
-    @_('comparison GT expr',
-       'comparison GE expr',
-       'comparison LT expr',
-       'comparison LE expr',
-       'expr')
-    def comparison(self, p):
-        pass
-    
-    @_('factor "+" expr',
-       'factor "-" expr',
-       'factor')
-    def expr(self, p):
-        pass
-    
-    @_('term "*" factor',
-       'term "/" factor',
-       'term')
-    def factor(self, p):
-        pass
-    
-    @_('{ exprlist } "," expr')
+        ...
+
+    @_("ID '[' expr ']'")
+    def location(self, p):
+        ...
+
+    @_("[ exprlistitems ]")
     def exprlist(self, p):
-        pass
+        ...
+
+    @_("expr { ',' expr }")
+    def exprlistitems(self, p):
+        ...
+
+    @_("expr '+' expr",
+       "expr '-' expr",
+       "expr '*' expr",
+       "expr '/' expr",
+       "'-' expr %prec UNARY",
+       "'+' expr %prec UNARY",
+       "'(' expr ')'",
+       "INUMBER",
+       "FNUMBER",
+       "ID",
+       "ID '[' expr ']'",
+       "ID '(' exprlist ')'",
+       "INT '(' expr ')'",
+       "FLOAT '(' expr ')'")
+    def expr(self, p):
+        ...
     
-    @_('ID  "(" exprlist ")"',
-       'ID  "[" exprlist "]"',
-       'ID',
-       'INT',
-       'FLOAT',
-       '"(" relation ")"',
-       'INT "(" expr ")"',
-       'FLOAT "(" expr ")"',
-       '"-" term',
-       '"+" term')
-    def term(self, p):
-        pass
+    @_("expr LT expr",
+       "expr LE expr",
+       "expr GT expr",
+       "expr GE expr",
+       "expr EQ expr",
+       "expr NE expr",
+       "relop AND relop",
+       "relop OR relop",
+       "NOT relop")
+    def relop(self, p):
+        ...
     
 
 txt = 'fun hola(a:int, b:float)'
