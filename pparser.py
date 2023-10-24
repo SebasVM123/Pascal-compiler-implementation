@@ -52,12 +52,22 @@ class Parser(sly.Parser):
     @_('STRING','ICONST', 'FCONST')
     def literal(self, p):
         pass
+    @_('IF expr THEN instr_relacionada ELSE instr_relacionada', 'stmt')
+    def instr_relacionada(self, p):
+        pass
+    @_('IF expr THEN instr', 
+       'IF expr THEN instr_relacionada ELSE instr_abierta')
+    def instr_abierta(self, p):
+        pass
+    @_('instr_relacionada', 'instr_abierta')
+    def instr(self, p):
+        pass
     @_('PRINT "(" literal ")"',
        'WRITE "(" expr ")"',
        'READ "(" location ")"',
        'WHILE relation DO stmt',
        'BREAK',
-       'IF relation THEN stmt [ ELSE stmt ]',
+       'instr',
        'BEGIN stmtlist END',
        'location ASSIGNOP expr',
        'RETURN expr',
