@@ -19,6 +19,7 @@ class Parser(sly.Parser):
         ('right', NOT),
         )
     
+    
     # definición de reglas
     @_('funclist')
     def program(self, p):
@@ -89,7 +90,8 @@ class Parser(sly.Parser):
        'INT "(" expr ")"',
        'FLOAT "(" expr ")"',
        '"-" term',
-       '"+" term')
+       '"+" term',
+       '"(" expr ")"')
     def term(self, p):
         pass
     @_('expr LT expr',

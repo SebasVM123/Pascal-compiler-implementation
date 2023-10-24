@@ -25,10 +25,9 @@ class Lexer(sly.Lexer):
         INT, FLOAT,
 
         # Identificador
-        ID,
+        ID
 
-        # Comentarios
-        COMMENT
+       
     }
     literals = '+-*/=,;():[]"'
 
@@ -137,7 +136,7 @@ class Lexer(sly.Lexer):
     @_(r'\/\*([^*]|(\*+[^*/]))*\*+\/')
     def COMMENT(self, t):
         self.lineno += t.value.count('\n')
-        return t
+    
 
     @_(r'\/\*([^*]|(\*+[^*/]))*$')
     def BAD_COMMENT(self, t):

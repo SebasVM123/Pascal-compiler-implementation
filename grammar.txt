@@ -85,6 +85,7 @@ term        :== ID '(' exprlist ')'
             | FLOAT '(' expr ')'
             | '-' term
             | '+' term
+            | '(' expr ')'
 relation    ::= expr LT expr
             | expr LE expr
             | expr GT expr
