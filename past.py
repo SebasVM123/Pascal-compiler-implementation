@@ -55,16 +55,21 @@ class Unary(Expr):
 @dataclass
 class Casting(Expr):
     datatype: DataType
-    exprlist: Expr
+    exprlist: List[Expr]
 
 @dataclass
 class Call(Expr):
     id : str
     exprlist: List[Expr]
 
+@dataclass
 class Location(Expr):
     id : str
     dim : int
+
+'''@dataclass
+class Grouping(Expr):
+    exprlist: List[Expr]'''
 
 # Statements ----------------------------------
 @dataclass
@@ -135,7 +140,7 @@ class Func(Node):
 
 @dataclass
 class Program(Node):
-    funclist = List[Func]
+    funclist : List[Func]
 
 
 from rich.tree import Tree

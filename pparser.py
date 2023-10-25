@@ -63,45 +63,99 @@ class Parser(sly.Parser):
     def stmtlist(self, p):
         pass
 
-    @_('PRINT "(" literal ")"',
-       'WRITE "(" expr ")"',
-       'READ "(" location ")"',
-       'WHILE relation DO stmt',
-       'BREAK',
-       'IF relation THEN stmt',
-       'BEGIN stmtlist END',
-       'location ASSIGNOP expr',
-       'RETURN expr',
-       'SKIP',
-       'ID "(" exprlist ")"')
+    @_('PRINT "(" literal ")"')
     def stmt(self, p):
-        pass
+        ...
+
+    @_('WRITE "(" expr ")"')
+    def stmt(self, p):
+        ...
+
+    @_('READ "(" location ")"')
+    def stmt(self, p):
+        ...
+
+    @_('WHILE relation DO stmt')
+    def stmt(self, p):
+        ...
+
+    @_('BREAK')
+    def stmt(self, p):
+        ...
+
+    @_('IF relation THEN stmt')
+    def stmt(self, p):
+        ...
+
+    @_('BEGIN stmtlist END')
+    def stmt(self, p):
+        ...
+
+    @_('location ASSIGNOP expr')
+    def stmt(self, p):
+        return Assign(p.location, p.expr)
+
+    @_('RETURN expr')
+    def stmt(self, p):
+        ...
+
+    @_('SKIP')
+    def stmt(self, p):
+        ...
+
+    @_('ID "(" exprlist ")"')
+    def stmt(self, p):
+        ...
 
     @_('STRING', 'ICONST', 'FCONST')
     def literal(self, p):
-        pass
+        return p[0]
+
+    @_('ID')
+    def location(self, p):
+        return Location(p.ID, 0)
+
+    @_('ID "[" expr "]"')
+    def location(self, p):
+        return Location(p.ID, p.expr)
 
     @_('expr "+" expr',
         'expr "-" expr',
         'expr "*" expr',
         'expr "/" expr',
-        '"-" expr %prec UNARY',
-        '"+" expr %prec UNARY',
-        '"(" expr ")"',
-        'ICONST',
-        'FCONST',
-        'ID',
-        'ID "[" expr "]"',
-        'ID "(" [ exprlist ] ")"',
-        'INT "(" expr ")"',
-        'FLOAT "(" expr ")"',
     )
     def expr(self, p):
-        ...
+        return Binary(p[1], p.expr0, p.expr1)
 
-    @_('ID [ "[" expr "]" ]')
-    def location(self, p):
-        pass
+    @_('"-" expr %prec UNARY',
+        '"+" expr %prec UNARY',
+    )
+    def expr(self, p):
+        return Unary(p[0], p.expr)
+
+    @_('"(" expr ")"')
+    def expr(self, p):
+        return p.expr
+
+    @_('ICONST', 'FCONST')
+    def expr(self, p):
+        return p[0]
+
+    @_('ID')
+    def expr(self, p):
+        return Location(p.ID, 0)
+
+    @_('ID "[" expr "]"')
+    def expr(self, p):
+        return Location(p.ID, p.expr)
+
+    @_('ID "(" [ exprlist ] ")"')
+    def expr(self, p):
+        return Call(p.ID, p.exprlist)
+
+    @_('INT "(" expr ")"', 'FLOAT "(" expr ")"',)
+    def expr(self, p):
+        return Casting(p[0], p.expr)
 
     @_('expr LT expr',
         'expr LE expr',
@@ -117,9 +171,16 @@ class Parser(sly.Parser):
     def relation(self, p):
         ...
 
-    @_('expr { "," expr }')
+    @_('exprlist "," expr')
     def exprlist(self, p):
-        pass
+        return p.exprlist + [p.expr]
+
+    @_('expr')
+    def exprlist(self, p):
+        return [p.expr]
+
+
+
 
 
 lex = Lexer()
@@ -137,6 +198,6 @@ txt = '''
         
     end
 '''
-txt = open('test2/write1.pl0').read()
+txt = open('test2/fun2.pl0').read()
 parser = Parser()
 parser.parse(lex.tokenize(txt))
