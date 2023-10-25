@@ -5,6 +5,7 @@ Analizador Sintáctico para el lenguaje PL0
 '''
 import sly
 from plex import Lexer
+from past import *
 
 class Parser(sly.Parser):
     debugfile = 'pl0.txt'
@@ -24,7 +25,7 @@ class Parser(sly.Parser):
     # definición de reglas
     @_('funclist')
     def program(self, p):
-        pass
+        return Program(p.funclist)
 
     @_('[ funclist ] func')
     def funclist(self, p):
@@ -134,7 +135,7 @@ txt = '''
             end;
     begin
         
-    endd
+    end
 '''
 txt = open('test2/write1.pl0').read()
 parser = Parser()

@@ -23,15 +23,23 @@ class Stmt(Node):
 class Expr(Node):
     ...
 
-# Clases reales
 @dataclass
-class Ident(Expr):
-    id: str
+class DataType(Node):
+    ...
 
+# Clases reales
+class TypeInt(DataType):
+    value : int
+
+class TypeFloat(DataType):
+    value : float
+
+# Expressions ---------------------------------------
 @dataclass
-class Number(Expr):
-    value: str
-    type: str
+class Logical(Expr):
+    op: str
+    left: Expr
+    right: Expr
 
 @dataclass
 class Binary(Expr):
@@ -45,8 +53,27 @@ class Unary(Expr):
     fact: Expr
 
 @dataclass
+class Casting(Expr):
+    datatype: DataType
+    exprlist: Expr
+
+@dataclass
+class Call(Expr):
+    id : str
+    exprlist: List[Expr]
+
+class Location(Expr):
+    id : str
+    dim : int
+
+# Statements ----------------------------------
+@dataclass
+class BlockCode(Stmt):
+    stmtlist: List[Stmt]
+
+@dataclass
 class Assign(Stmt):
-    id: str
+    id: Location
     expr: Expr
 
 @dataclass
@@ -61,6 +88,7 @@ class IfStmt(Stmt):
 @dataclass
 class Skip(Stmt):
     ...
+
 @dataclass
 class Break(Stmt):
     ...
@@ -72,7 +100,7 @@ class WhileStmt(Stmt):
 
 @dataclass
 class Read(Stmt):
-    value: str
+    location: Location
 
 @dataclass
 class Write(Stmt):
@@ -83,28 +111,41 @@ class Print(Stmt):
     text = str
 
 @dataclass
+class Parm(Node):
+    id: str
+    datatype: DataType
+
+@dataclass
 class VarDecl(Local):
     id: str
-    datatype: str
+    datatype: DataType
 
 class FuncDecl(Local):
     name: str
-    parmlist: List(Parm)
+    parmlist: List[Parm]
     locallist: List[Local]
-    stmtlist: List(Stmt)
-
-@dataclass
-class Parm(Node):
-    id: str
-    datatype: str
+    stmtlist: List[Stmt]
 
 @dataclass
 class Func(Node):
     name: str
-    parmlist: List(Parm)
-    locallist: List(Local)
-    stmtlist: List(Stmt)
+    parmlist: List[Parm]
+    locallist: List[Local]
+    stmtlist: List[Stmt]
 
 @dataclass
 class Program(Node):
-    funclist = List(Func)
+    funclist = List[Func]
+
+
+from rich.tree import Tree
+from rich.console import Console
+
+class AST(Visitor):
+    @classmethod
+    def printer(cls, n:Node):
+        vis = cls()
+        return n.accept(vis)
+
+    def visit(self, n:Program):
+        print(1)
