@@ -25,9 +25,7 @@ class Lexer(sly.Lexer):
         INT, FLOAT,
 
         # Identificador
-        ID
-
-       
+        ID,
     }
     literals = '+-*/=,;():[]"'
 

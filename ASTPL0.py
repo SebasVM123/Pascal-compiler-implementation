@@ -13,9 +13,6 @@ class Node:
   def accept(self, v:Visitor, *args, **kwargs):
     return v.visit(self, *args, **kwargs)
 
-@dataclass 
-class Func(Node):
-  ...
 
 @dataclass
 class Stmt(Node):
@@ -25,78 +22,18 @@ class Stmt(Node):
 class Expr(Node):
   ...
 
-@dataclass 
-class Parm(Node):
-  ...
+# Clases Concretas
 
 @dataclass
-class Local(Node):
-  ...
-
-# Clases concretas
-@dataclass
-class Program(Func):
-  funclist : List[Func]
-  
-@dataclass 
-class FuncExpr(Func):
-  parmlist  : List[Parm]
-  locallist : List[Local]
-  stmtlist  : List[Stmt] 
+class Parm(Expr):
+  ID: str
+  datatype: Type
 
 @dataclass
-class StmtExpr(Stmt):
-  expr : Expr
+class Func(Stmt):
+  name: str
+  parmlist: List[Parm]
 
 @dataclass
-class Logical(Expr):
-  op    : str
-  left  : Expr
-  right : Expr
-
-@dataclass
-class Binary(Expr):
-  op    : str
-  left  : Expr
-  right : Expr
-  
-@dataclass 
-class Unary(Expr):
-  op: str
-  expr: Expr
-    
-@dataclass
-class Literal(Expr):
-  value : str 
-  
-@dataclass
-class Location(Expr):
-  id   : str
-  dim  : Expr
-  
-@dataclass
-class Call(Expr):
-  name   : str
-  exprlist  : List[Expr]
-  
-@dataclass
-class Casting(Expr):
-  typename   : str
-  expr  : Expr
-
-@dataclass
-class Assign(Stmt):
-  id   : str
-  expr : Expr
-
-@dataclass
-class IConst(Expr):
-  value : int
-  
-@dataclass
-class FConst(Expr):
-  value : float
-
-@dataclass
-class Ident(Expr):
-  id : str
+class Program(Stmt):
+  funclist: List[Func]
