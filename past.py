@@ -164,7 +164,6 @@ class AST(Visitor):
         console = Console()
         console.print(tree)
         
-
     def visit(self, n:Program):
         tree = Tree("Program")
         hijo = tree.add("funclist")
@@ -190,6 +189,15 @@ class AST(Visitor):
         tree.add(label=str(n.datatype))
         return tree
     
+    #Nodos DATATYPE
+    def visit(self, n: TypeInt):
+        tree = Tree(str(n.value))
+        return tree
+    def visit(self, n: TypeFloat):
+        tree = Tree(str(n.value))
+        return tree
+    
+    #Nodos de EXPRESSION
     def visit(self, n:Logical):
         tree = Tree("Logical " + str(n.op))
         hijo1=tree.add("expr_left")
@@ -197,13 +205,7 @@ class AST(Visitor):
         hijo2=tree.add("expr_right")
         hijo2.add(self.visit(n.right))
         return tree
-
-    def visit(self, n: TypeInt):
-        tree = Tree(str(n.value))
-        return tree
-    def visit(self, n: TypeFloat):
-        tree = Tree(str(n.value))
-        return tree
+    
     def visit(self, n: Binary):
         tree = Tree("Binary " + str(n.op))
         hijo1=tree.add("expr_left")
@@ -211,21 +213,47 @@ class AST(Visitor):
         hijo2=tree.add("expr_right")
         hijo2.add(self.visit(n.right))
         return tree
+    
     def visit(self, n: Unary):
         tree = Tree("Unary " + str(n.op))
         tree.add(self.visit(n.fact))
         return tree
+    
     def visit(self, n: Casting):
         tree = Tree("Casting")
         hijo1=tree.add("Exprlist")
         for expr in n.exprlist:
             hijo1.add(self.visit(expr))
         return tree
+    
     def visit(self, n: Call):
         tree = Tree("Call " + n.id)
         hijo1= tree.add("Exprlist")
         for expr in n.exprlist:
             hijo1.add(self.visit(expr))
+        return tree
+    
+    def visit(self, n: SimpleLocation):
+        tree = Tree(n.id)
+        return tree
+    
+    def visit(self, n: Location):
+        tree = Tree(n.id)
+        tree.add(str(n.dim))
+        return tree
+    
+    def visit(self, n: ArrayAccess):
+        tree = Tree("ArrayAccess " + n.id)
+        hijo1= tree.add("Expr")
+        hijo1.add(self.visit(n.index))
+        return tree
+    
+    #Node STMTS
+    def visit(self, n: BlockCode):
+        tree = Tree("BlockCode")
+        hijo1 = tree.add("Stmtlist")
+        for stmt in n.stmtlist:
+            hijo1.add(self.visit(stmt))
         return tree
     def visit(self, n: Assign):
         tree = Tree("assign " + str(n.id))
@@ -235,25 +263,6 @@ class AST(Visitor):
         else:
             hijo2.add(label=str(n.expr))
         return tree
-    def visit(self, n: SimpleLocation):
-        tree = Tree(n.id)
-        return tree
-    def visit(self, n: Location):
-        tree = Tree(n.id)
-        tree.add(str(n.dim))
-        return tree
-    def visit(self, n: ArrayAccess):
-        tree = Tree("ArrayAccess " + n.id)
-        hijo1= tree.add("Expr")
-        hijo1.add(self.visit(n.index))
-        return tree
-    def visit(self, n: BlockCode):
-        tree = Tree("BlockCode")
-        hijo1 = tree.add("Stmtlist")
-        for stmt in n.stmtlist:
-            hijo1.add(self.visit(stmt))
-        return tree
-        
     def visit(self, n: ReturnStmt):
         tree = Tree("Return")
         tree.add(self.visit(n.value))
@@ -290,6 +299,6 @@ class AST(Visitor):
         return tree
     def visit(self, n: ArrayType):
         tree = Tree("ArrayType " + n.name)
-        hijo1= tree.add("Expr")
+        hijo1= tree.add("Dim")
         hijo1.add(self.visit(n.expr))
         return tree
