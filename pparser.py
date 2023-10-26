@@ -4,6 +4,7 @@ parser.py
 Analizador Sintáctico para el lenguaje PL0
 '''
 import sly
+from rich import print
 from plex import Lexer
 from past import *
 
@@ -27,69 +28,94 @@ class Parser(sly.Parser):
     def program(self, p):
         return Program(p.funclist)
 
-    @_('[ funclist ] func')
+    @_('funclist func')
     def funclist(self, p):
-        pass
+        return p.funclist + [p.func]
+    
+    @_('func')
+    def funclist(self, p):
+        return [p.func]
 
     @_('FUN ID "(" [ parmlist ] ")" [ locallist ] BEGIN stmtlist END')
     def func(self, p):
-        pass
-
-    @_('[ parmlist "," ] parm')
+        return Func(p[1],p.parmlist,p.locallist,p.stmtlist)
+       
+    @_('parmlist "," parm')
     def parmlist(self, p):
-        pass
+        return p.parmlist + [p.parm]
+    
+    @_('parm')
+    def parmlist(self, p):
+        return [p.parm]
 
     @_('ID ":" datatype')
     def parm(self, p):
-        pass
+        return Parm(p[0],p[2])
 
-    @_('INT [ "[" expr "]" ]',
-       'FLOAT [ "[" expr "]" ]')
+    @_('INT "[" expr "]"',
+       'FLOAT "[" expr "]"')
+    def datatype(self, p): 
+        return ArrayType(p[0],p.expr)
+    
+    @_('INT')
     def datatype(self, p):
-        pass
+        return TypeInt(p[0])
+    
+    @_('FLOAT')
+    def datatype(self, p):
+        return TypeFloat(p[0])
 
-    @_('local ";"',
-       'local ";" locallist')
+    @_('local ";"')
     def locallist(self, p):
-        pass
+        return [p.local]
+    
+    @_('local ";" locallist')
+    def locallist(self, p):
+        return [p.local] + p.locallist
 
-    @_('parm',
-       'func')
+    @_('parm')
     def local(self, p):
-        pass
+        return p.parm
+    
+    @_('func')
+    def local(self, p):
+        return p.func
 
-    @_('stmt',
-       'stmt ";" stmtlist')
+    @_('stmt')
     def stmtlist(self, p):
-        pass
+        return [p.stmt]
+    
+    @_('stmt ";" stmtlist')
+    def stmtlist(self, p):
+        return [p.stmt] + p.stmtlist
 
     @_('PRINT "(" literal ")"')
     def stmt(self, p):
-        ...
+        return Print(p.literal)
 
     @_('WRITE "(" expr ")"')
     def stmt(self, p):
-        ...
+        return Write(p.expr)
 
     @_('READ "(" location ")"')
     def stmt(self, p):
-        ...
+        return Read(p.location)
 
     @_('WHILE relation DO stmt')
     def stmt(self, p):
-        ...
+        return WhileStmt(p[1],p[3])
 
     @_('BREAK')
     def stmt(self, p):
-        ...
+        return Break()
 
-    @_('IF relation THEN stmt')
+    @_('IF relation THEN stmt [ ELSE stmt ]')
     def stmt(self, p):
-        ...
+        return IfStmt(p[1],p[3])
 
     @_('BEGIN stmtlist END')
     def stmt(self, p):
-        ...
+        return BlockCode(p.stmtlist)
 
     @_('location ASSIGNOP expr')
     def stmt(self, p):
@@ -97,15 +123,15 @@ class Parser(sly.Parser):
 
     @_('RETURN expr')
     def stmt(self, p):
-        ...
+        return ReturnStmt(p[1])
 
     @_('SKIP')
     def stmt(self, p):
-        ...
+        return Skip()
 
     @_('ID "(" exprlist ")"')
     def stmt(self, p):
-        ...
+        return Call(p[0],p.exprlist)
 
     @_('STRING', 'ICONST', 'FCONST')
     def literal(self, p):
@@ -113,7 +139,7 @@ class Parser(sly.Parser):
 
     @_('ID')
     def location(self, p):
-        return Location(p.ID, 0)
+        return SimpleLocation(p.ID)
 
     @_('ID "[" expr "]"')
     def location(self, p):
@@ -137,26 +163,31 @@ class Parser(sly.Parser):
     def expr(self, p):
         return p.expr
 
-    @_('ICONST', 'FCONST')
+    @_('ICONST')
     def expr(self, p):
+        return p[0]
+    
+    @_('FCONST')
+    def expr(self,p):
         return p[0]
 
     @_('ID')
     def expr(self, p):
-        return Location(p.ID, 0)
+        return SimpleLocation(p.ID)
 
-    @_('ID "[" expr "]"')
+    @_('ID "[" expr "]"') 
     def expr(self, p):
-        return Location(p.ID, p.expr)
+        return ArrayAccess(p.ID, p.expr)
 
     @_('ID "(" [ exprlist ] ")"')
     def expr(self, p):
         return Call(p.ID, p.exprlist)
+    
 
     @_('INT "(" expr ")"', 'FLOAT "(" expr ")"',)
     def expr(self, p):
         return Casting(p[0], p.expr)
-
+        
     @_('expr LT expr',
         'expr LE expr',
         'expr GT expr',
@@ -164,12 +195,17 @@ class Parser(sly.Parser):
         'expr ET expr',
         'expr DF expr',
         'relation AND relation',
-        'relation OR relation',
-        'NOT relation',
-        '"(" relation ")"',
-    )
+        'relation OR relation')
+    def relation(sel, p):
+        return Logical(p[1],p[0],p[2])
+
+    @_('NOT relation')
     def relation(self, p):
-        ...
+        return Unary(p[0],p[1])
+        
+    @_('"(" relation ")"',)
+    def relation(sel, p):
+        return p.relation
 
     @_('exprlist "," expr')
     def exprlist(self, p):
@@ -178,26 +214,9 @@ class Parser(sly.Parser):
     @_('expr')
     def exprlist(self, p):
         return [p.expr]
-
-
-
-
-
-lex = Lexer()
-txt = '''
-    fun hola ()
-        z: int;
-        f: float;
-        fun bar(x:int, y:int)
-            a:int;
-            begin
-                y := 40;
-                x := 30
-            end;
-    begin
-        
-    end
-'''
-txt = open('test2/fun2.pl0').read()
+lex=Lexer()
+txt = open('test2/assign1.pl0').read()
 parser = Parser()
-parser.parse(lex.tokenize(txt))
+Nodo=parser.parse(lex.tokenize(txt))
+Arbol=AST()
+Arbol.printer(Nodo)
