@@ -176,12 +176,16 @@ class AST(Visitor):
         hijo = tree.add("parmlist")
         hijo2 = tree.add ("locallist")
         hijo3 = tree.add ("stmtlist")
-        for parm in n.parmlist:
-            hijo.add(self.visit(parm))
-        for local in n.locallist:
-            hijo2.add(self.visit(local))
-        for stmt in n.stmtlist:
-            hijo3.add(self.visit(stmt))
+
+        if isinstance(n.parmlist,list):
+            for parm in n.parmlist: 
+                hijo.add(self.visit(parm))
+        if isinstance(n.locallist,list):
+            for local in n.locallist:
+                hijo2.add(self.visit(local))
+        if isinstance(n.stmtlist,list):
+            for stmt in n.stmtlist:
+                hijo3.add(self.visit(stmt))
         return tree
     
     def visit(self, n: Parm):
@@ -229,8 +233,9 @@ class AST(Visitor):
     def visit(self, n: Call):
         tree = Tree("Call " + n.id)
         hijo1= tree.add("Exprlist")
-        for expr in n.exprlist:
-            hijo1.add(self.visit(expr))
+        if isinstance(n.exprlist,list):
+            for expr in n.exprlist:
+                hijo1.add(self.visit(expr))
         return tree
     
     def visit(self, n: SimpleLocation):
