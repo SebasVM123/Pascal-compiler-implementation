@@ -59,11 +59,11 @@ class Parser(sly.Parser):
     
     @_('INT')
     def datatype(self, p):
-        return TypeInt(p[0])
+        return SimpleType(p[0])
     
     @_('FLOAT')
     def datatype(self, p):
-        return TypeFloat(p[0])
+        return SimpleType(p[0])
 
     @_('local ";"')
     def locallist(self, p):
@@ -224,8 +224,6 @@ def main(argv):
     txt = open('test2/' + argv[1]).read()
     parser = Parser()
     Nodo=parser.parse(lex.tokenize(txt))
-    Arbol=AST()
-    Arbol.printer(Nodo)
     
 
 
