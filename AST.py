@@ -12,57 +12,60 @@ class AST(Visitor):
         console = Console()
         console.print(tree)
         
-    def visit(self, n:Program):
+    def visit(self, n: Program):
         tree = Tree("Program")
         hijo = tree.add("funclist")
+
         for func in n.funclist:
             hijo.add(func.accept(self))
         return tree
     
-    def visit(self,n: Func):
+    def visit(self, n: FunDefinition):
         tree = Tree("funclist" + "(" + n.name + ")")
-        hijo = tree.add("parmlist")
+        hijo1 = tree.add("parmlist")
         hijo2 = tree.add ("locallist")
         hijo3 = tree.add ("stmtlist")
 
-        if isinstance(n.parmlist,list):
-            for parm in n.parmlist: 
-                hijo.add(parm.accept(self))
-        if isinstance(n.locallist,list):
-            for local in n.locallist:
-                hijo2.add(local.accept(self))
-        if isinstance(n.stmtlist,list):
-            for stmt in n.stmtlist:
-                hijo3.add(stmt.accept(self))
+        if n.parmlist:
+            for parm in n.parmlist.parmlist:
+                hijo1.add(parm.accept(self))
+        if n.varlist:
+            for var in n.varlist.varlist:
+                hijo2.add(var.accept(self))
+        for stmt in n.stmtlist.stmtlist:
+            hijo3.add(stmt.accept(self))
+
         return tree
     
-    def visit(self, n: Parm):
-        tree = Tree("parm" + "(" + n.id + ")")
-        tree.add(label=str(n.datatype))
+    def visit(self, n: Parameter):
+        tree = Tree("Parameter" + "(" + n.name + ")")
+        tree.add(n.datatype.accept(self))
+        return tree
+
+    def visit(self, n: VarDefinition):
+        tree = Tree("VarDefinition" + "(" + n.name + ")")
+        tree.add(n.datatype.accept(self))
         return tree
     
     #Nodos DATATYPE
     def visit(self, n: SimpleType):
-        tree = Tree(str(n.value))
-        return tree
-    def visit(self, n: SimpleType):
-        tree = Tree(str(n.value))
+        tree = Tree(str(n.name))
         return tree
     
     #Nodos de EXPRESSION
-    def visit(self, n:Logical):
+    def visit(self, n: Logical):
         tree = Tree("Logical " + str(n.op))
-        hijo1=tree.add("expr_left")
+        hijo1 = tree.add("expr_left")
         hijo1.add(n.left.accept(self))
-        hijo2=tree.add("expr_right")
+        hijo2 = tree.add("expr_right")
         hijo2.add(n.right.accept(self))
         return tree
     
     def visit(self, n: Binary):
-        tree = Tree("Binary " + str(n.op))
-        hijo1=tree.add("expr_left")
+        tree = Tree("Binary (" + str(n.op) + ")")
+        hijo1 = tree.add("expr_left")
         hijo1.add(n.left.accept(self))
-        hijo2=tree.add("expr_right")
+        hijo2 = tree.add("expr_right")
         hijo2.add(n.right.accept(self))
         return tree
     
@@ -71,89 +74,90 @@ class AST(Visitor):
         tree.add(n.fact.accept(self))
         return tree
     
-    def visit(self, n: Casting):
-        tree = Tree("Casting")
-        hijo1=tree.add("Exprlist")
-        for expr in n.exprlist:
-            hijo1.add(expr.accept(self))
+    def visit(self, n: TypeCast):
+        tree = Tree("TypeCast")
+        tree.add(n.expr.accept(self))
         return tree
     
-    def visit(self, n: Call):
-        tree = Tree("Call " + n.id)
-        hijo1= tree.add("Exprlist")
-        if isinstance(n.exprlist,list):
-            for expr in n.exprlist:
+    def visit(self, n: FuncCall):
+        tree = Tree("Call " + n.name)
+        hijo1 = tree.add("Exprlist")
+        if isinstance(n.arglist, list):
+            for expr in n.arglist:
                 hijo1.add(expr.accept(self))
         return tree
     
     def visit(self, n: SimpleLocation):
-        tree = Tree(n.id)
+        tree = Tree(n.name)
         return tree
     
-    def visit(self, n: Location):
-        tree = Tree(n.id)
-        tree.add(str(n.dim))
-        return tree
-    
-    def visit(self, n: ArrayAccess):
-        tree = Tree("ArrayAccess " + n.id)
-        hijo1= tree.add("Expr")
-        hijo1.add(n.index.accept(self))
+    def visit(self, n: ArrayLocation):
+        tree = Tree(n.name)
+        tree.add(n.index.accept(self))
         return tree
     
     #Node STMTS
-    def visit(self, n: BlockCode):
-        tree = Tree("BlockCode")
-        hijo1 = tree.add("Stmtlist")
-        for stmt in n.stmtlist:
-            hijo1.add(stmt.accept(self))
-        return tree
     def visit(self, n: Assign):
-        tree = Tree("assign " + str(n.id))
+        tree = Tree("assign ")
+        hijo1 = tree.add("Name (" + n.location.name + ")")
         hijo2 = tree.add("Expr")
-        if n.expr == Expr:
-            hijo2.add(n.expr.accept(self))
-        else:
-            hijo2.add(label=str(n.expr))
+        hijo2.add(n.expr.accept(self))
         return tree
-    def visit(self, n: ReturnStmt):
+
+    def visit(self, n: Float):
+        tree = Tree('Float: ' + str(n.value))
+        return tree
+
+    def visit(self, n: Integer):
+        tree = Tree('Int: ' + str(n.value))
+        return tree
+
+    def visit(self, n: Return):
         tree = Tree("Return")
         tree.add(n.value.accept(self))
         return tree
+
     def visit(self, n: IfStmt):
         tree = Tree("IfStmt")
         hijo1=tree.add("relation")
         hijo2=tree.add("then")
         hijo1.add(n.relation.accept(self))
-        hijo2.add(n.then.accept(self))
+        hijo2.add(n.stmt.accept(self))
         return tree
-    def visit(self, n: Skip):
-        tree = Tree("Skip")
-        return tree
+
     def visit(self, n: Break):
         tree = Tree("Break")
         return tree
-    def visit(self, n: WhileStmt):
+
+    def visit(self, n: Skip):
+        tree = Tree("Skip")
+        return tree
+
+    def visit(self, n: While):
         tree = Tree("While")
         hijo1 =tree.add("Relation")
         hijo2 =tree.add("Stmt")
         hijo1.add(n.relation.accept(self))
         hijo2.add(n.stmt.accept(self))
         return tree
+
     def visit(self, n: Read):
         tree = Tree("Read")
         tree.add(n.location.accept(self))
         return tree
+
     def visit(self, n: Write):
-        tree = Tree("Write " + n.value)
+        tree = Tree("Write " + n.expr.accept(self))
         return tree
+
     def visit(self, n: Print):
-        tree = Tree("Print " + n.text)
+        tree = Tree("Print " + n.value)
         return tree
+
     def visit(self, n: ArrayType):
-        tree = Tree("ArrayType " + n.name)
-        hijo1= tree.add("Dim")
-        hijo1.add(n.expr.accept(self))
+        tree = Tree("ArrayType (" + n.name + ")")
+        hijo1 = tree.add("Dim")
+        hijo1.add(n.dim.accept(self))
         return tree
 
 def main(argv):
@@ -168,7 +172,6 @@ def main(argv):
     Arbol=AST()
     Arbol.printer(Nodo)
     
-
 
 if __name__ == '__main__':
     from sys import argv
