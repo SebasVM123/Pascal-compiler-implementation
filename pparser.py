@@ -38,7 +38,7 @@ class Parser(sly.Parser):
 
     @_('FUN ID "(" [ parmlist ] ")" [ locallist ] BEGIN stmtlist END')
     def func(self, p):
-        return Func(p[1],p.parmlist,p.locallist,p.stmtlist)
+        return FunDefinition(p.ID, p.parmlist, p.locallist, p.stmtlist)
        
     @_('parmlist "," parm')
     def parmlist(self, p):
@@ -50,18 +50,14 @@ class Parser(sly.Parser):
 
     @_('ID ":" datatype')
     def parm(self, p):
-        return Parm(p[0],p[2])
+        return Parameter(p.ID, p.datatype)
 
     @_('INT "[" expr "]"',
        'FLOAT "[" expr "]"')
     def datatype(self, p): 
-        return ArrayType(p[0],p.expr)
+        return ArrayType(p[0], p.expr)
     
-    @_('INT')
-    def datatype(self, p):
-        return SimpleType(p[0])
-    
-    @_('FLOAT')
+    @_('INT', 'FLOAT')
     def datatype(self, p):
         return SimpleType(p[0])
 
@@ -73,9 +69,13 @@ class Parser(sly.Parser):
     def locallist(self, p):
         return [p.local] + p.locallist
 
-    @_('parm')
+    @_('vardecl')
     def local(self, p):
-        return p.parm
+        return p.vardecl
+
+    @_('ID ":" datatype')
+    def vardecl(self, p):
+        return VarDefinition(p.ID, p.datatype)
     
     @_('func')
     def local(self, p):
@@ -87,7 +87,7 @@ class Parser(sly.Parser):
     
     @_('stmt ";" stmtlist')
     def stmtlist(self, p):
-        return [p.stmt] + p.stmtlist
+        return p.stmtlist + [p.stmt]
 
     @_('PRINT "(" literal ")"')
     def stmt(self, p):
@@ -103,39 +103,39 @@ class Parser(sly.Parser):
 
     @_('WHILE relation DO stmt')
     def stmt(self, p):
-        return WhileStmt(p[1],p[3])
+        return While(p.relation, p.stmt)
 
     @_('BREAK')
     def stmt(self, p):
         return Break()
 
-    @_('IF relation THEN stmt [ ELSE stmt ]')
+    @_('IF relation THEN stmt')
     def stmt(self, p):
-        return IfStmt(p[1],p[3])
+        return IfStmt(p.relation, p.stmt)
 
     @_('BEGIN stmtlist END')
     def stmt(self, p):
-        return BlockCode(p.stmtlist)
-
-    @_('location ASSIGNOP expr')
-    def stmt(self, p):
-        return Assign(p.location, p.expr)
-
-    @_('RETURN expr')
-    def stmt(self, p):
-        return ReturnStmt(p[1])
+        return StmtList(p.stmtlist)
 
     @_('SKIP')
     def stmt(self, p):
         return Skip()
 
+    @_('RETURN expr')
+    def stmt(self, p):
+        return Return(p.expr)
+
+    @_('location ASSIGNOP expr')
+    def stmt(self, p):
+        return Assign(p.location, p.expr)
+
     @_('ID "(" exprlist ")"')
     def stmt(self, p):
-        return Call(p[0],p.exprlist)
+        return FuncCall(p.ID, p.exprlist)
 
-    @_('STRING', 'ICONST', 'FCONST')
+    @_('STRING')
     def literal(self, p):
-        return p[0]
+        return p.STRING
 
     @_('ID')
     def location(self, p):
@@ -143,7 +143,7 @@ class Parser(sly.Parser):
 
     @_('ID "[" expr "]"')
     def location(self, p):
-        return Location(p.ID, p.expr)
+        return ArrayLocation(p.ID, p.expr)
 
     @_('expr "+" expr',
         'expr "-" expr',
@@ -165,11 +165,11 @@ class Parser(sly.Parser):
 
     @_('ICONST')
     def expr(self, p):
-        return p[0]
+        return Integer(p.ICONST)
     
     @_('FCONST')
     def expr(self,p):
-        return p[0]
+        return Float(p.FCONST)
 
     @_('ID')
     def expr(self, p):
@@ -177,16 +177,15 @@ class Parser(sly.Parser):
 
     @_('ID "[" expr "]"') 
     def expr(self, p):
-        return ArrayAccess(p.ID, p.expr)
+        return ArrayLocation(p.ID, p.expr)
 
     @_('ID "(" [ exprlist ] ")"')
     def expr(self, p):
-        return Call(p.ID, p.exprlist)
-    
+        return FuncCall(p.ID, p.exprlist)
 
     @_('INT "(" expr ")"', 'FLOAT "(" expr ")"',)
     def expr(self, p):
-        return Casting(p[0], p.expr)
+        return TypeCast(p[0], p.expr)
         
     @_('expr LT expr',
         'expr LE expr',
@@ -197,11 +196,11 @@ class Parser(sly.Parser):
         'relation AND relation',
         'relation OR relation')
     def relation(sel, p):
-        return Logical(p[1],p[0],p[2])
+        return Logical(p[1], p[0], p[2])
 
     @_('NOT relation')
     def relation(self, p):
-        return Unary(p[0],p[1])
+        return Unary(p[0], p[1])
         
     @_('"(" relation ")"',)
     def relation(sel, p):
@@ -224,7 +223,6 @@ def main(argv):
     txt = open('test2/' + argv[1]).read()
     parser = Parser()
     Nodo=parser.parse(lex.tokenize(txt))
-    
 
 
 if __name__ == '__main__':

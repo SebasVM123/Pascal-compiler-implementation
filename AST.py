@@ -3,12 +3,12 @@ from rich.console import Console
 from past import *
 from plex import Lexer
 from pparser import Parser
+
 class AST(Visitor):
-    @classmethod
     @classmethod
     def printer(cls, n:Node):
         vis = cls()
-        tree=n.accept(vis)
+        tree= n.accept(vis)
         console = Console()
         console.print(tree)
         
