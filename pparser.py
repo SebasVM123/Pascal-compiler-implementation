@@ -6,7 +6,7 @@ Analizador Sintáctico para el lenguaje PL0
 import sly
 from rich import print
 from plex import Lexer
-from past import *
+from model import *
 
 class Parser(sly.Parser):
     debugfile = 'pl0.txt'
@@ -87,7 +87,7 @@ class Parser(sly.Parser):
     
     @_('stmt ";" stmtlist')
     def stmtlist(self, p):
-        return p.stmtlist + [p.stmt]
+        return [p.stmt] + p.stmtlist
 
     @_('PRINT "(" literal ")"')
     def stmt(self, p):
@@ -213,6 +213,9 @@ class Parser(sly.Parser):
     @_('expr')
     def exprlist(self, p):
         return [p.expr]
+
+    def error(self, p):
+        print(p)
     
 def main(argv):
     if len(argv) != 2:
@@ -222,7 +225,9 @@ def main(argv):
     lex = Lexer()
     txt = open('test2/' + argv[1]).read()
     parser = Parser()
-    Nodo=parser.parse(lex.tokenize(txt))
+    Nodo = parser.parse(lex.tokenize(txt))
+    Arbol = AST()
+    Arbol.printer(Nodo)
 
 
 if __name__ == '__main__':

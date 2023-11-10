@@ -64,8 +64,6 @@ fun quicksort(l:int, r:int, a:int[8192])
               begin 
                  print("Quicksort failed "); write(i); print("\n") ; return(0)
               end
-              else
-                 i:=i+1
            end;
          write(v[i]);
          print("Success\n")

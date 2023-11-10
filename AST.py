@@ -1,6 +1,6 @@
 from rich.tree import Tree
 from rich.console import Console
-from past import *
+from model import *
 from plex import Lexer
 from pparser import Parser
 
@@ -168,8 +168,8 @@ def main(argv):
     lex = Lexer()
     txt = open('test2/' + argv[1]).read()
     parser = Parser()
-    Nodo=parser.parse(lex.tokenize(txt))
-    Arbol=AST()
+    Nodo = parser.parse(lex.tokenize(txt))
+    Arbol = AST()
     Arbol.printer(Nodo)
     
 
