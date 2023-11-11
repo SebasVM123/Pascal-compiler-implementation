@@ -43,12 +43,12 @@ class Literal(Expr):
 @dataclass
 class Integer(Literal):
     value: int
-    
-
+    dtype: DataType=field(default_factory = SimpleType('int'))
 @dataclass
 class Float(Literal):
     value: float
-
+    dtype: DataType=field(default_factory = SimpleType('float'))
+    
 @dataclass
 class Location(Expr):
     ...
@@ -56,6 +56,7 @@ class Location(Expr):
 @dataclass
 class SimpleLocation(Location):
     name: str
+    
 
 @dataclass
 class ArrayLocation(Location):
@@ -81,6 +82,7 @@ class Binary(Expr):
     op: str
     left: Expr
     right: Expr
+ 
 
 @dataclass
 class Logical(Expr):
@@ -114,7 +116,7 @@ class FunDefinition(Declaration):
     parmlist: Declaration
     varlist: Declaration
     stmtlist: Stmt
-
+    
     def __post_init__(self):
         if isinstance(self.parmlist, list):
             self.parmlist = ParmList(self.parmlist)
@@ -195,7 +197,6 @@ class AST(Visitor):
     def visit(self, n: Program):
         tree = Tree("Program")
         hijo = tree.add("funclist")
-
         for func in n.funclist:
             hijo.add(func.accept(self))
         return tree

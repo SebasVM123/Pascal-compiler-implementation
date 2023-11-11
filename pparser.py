@@ -165,11 +165,11 @@ class Parser(sly.Parser):
 
     @_('ICONST')
     def expr(self, p):
-        return Integer(p.ICONST)
+        return Integer(p[0],SimpleType('int'))
     
     @_('FCONST')
     def expr(self,p):
-        return Float(p.FCONST)
+        return Float(p[0],SimpleType('float'))
 
     @_('ID')
     def expr(self, p):
@@ -223,7 +223,7 @@ def main(argv):
         exit(1)
 
     lex = Lexer()
-    txt = open('test2/' + argv[1]).read()
+    txt = open('test3/' + argv[1]).read()
     parser = Parser()
     Nodo = parser.parse(lex.tokenize(txt))
     Arbol = AST()

@@ -21,7 +21,6 @@ optional arguments:
 '''
 from contextlib import redirect_stdout
 from rich       import print
-
 from plex       import Lexer
 from pparser    import Parser
 from context    import Context
