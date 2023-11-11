@@ -267,11 +267,11 @@ class AST(Visitor):
         return tree
 
     def visit(self, n: SimpleLocation):
-        tree = Tree(n.name)
+        tree = Tree("Simpleloc (" + n.name + ")")
         return tree
 
     def visit(self, n: ArrayLocation):
-        tree = Tree(n.name)
+        tree = Tree("ArrayLoc (" + n.name + ")" )
         tree.add(n.index.accept(self))
         return tree
 
@@ -322,7 +322,6 @@ class AST(Visitor):
         hijo2 = tree.add("Stmt")
         hijo1.add(n.relation.accept(self))
         if isinstance(n.stmt, StmtList):
-            print(n.stmt)
             for stmt in n.stmt.stmtlist:
                 hijo2.add(stmt.accept(self))
         else:
