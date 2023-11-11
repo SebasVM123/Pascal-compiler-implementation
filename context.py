@@ -7,7 +7,7 @@ Sirve como repositorio de información sobre el programa, incluido el código 
 #from interp  import Interpreter
 from model   import Node
 from plex    import Lexer
-from pparse  import Parser
+from pparser  import Parser
 
 
 class Context:

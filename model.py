@@ -43,6 +43,7 @@ class Literal(Expr):
 @dataclass
 class Integer(Literal):
     value: int
+    
 
 @dataclass
 class Float(Literal):

@@ -176,6 +176,8 @@ No siempre está claro cómo organizar mejor todo eso. Por lo tanto, espere an
 '''
 #checker.py
 from model import *
+from plex import Lexer
+from pparser import Parser
 
 # ---------------------------------------------------------------------
 #  Tabla de Simbolos
@@ -238,113 +240,127 @@ class Symtab:
 		elif self.parent:
 			return self.parent.get(name)
 		return None
-
 @dataclass
-class Literal(Expression):
+class Literal(Expr):
 	...
 
 @dataclass
 class Integer(Literal):
 	value : int
-	dtype : DataType = SimpleType('int')
+	dtype : DataType = field(default_factory=SimpleType('int'))
 
 @dataclass
 class Float(Literal):
 	value : float
-	dtype : DataType = SimpleType('float')
-
-
+	dtype : DataType = field(default_factory=SimpleType('float'))
 
 class Checker(Visitor):
 
 	def visit(self, n: Literal, env: Symtab):
 		# Devolver datatype
-
+		...
 	def visit(self, n: Location, env: Symtab):
 		# Buscar en Symtab y extraer datatype (No se encuentra?)
 		# Devuelvo el datatype
-
+		...
 	def visit(self, n: TypeCast, env: Symtab):
 		# Visitar la expresion asociada
 		# Devolver datatype asociado al nodo
-
+		...
 	def visit(self, n: Assign, env: Symtab):
 		# Visitar el hijo izquierdo (devuelve datatype)
 		# Visitar el hijo derecho (devuelve datatype)
 		# Comparar ambos tipo de datatype
-
+		...
 	def visit(self, n: FuncCall, env: Symtab):
 		# Buscar la funcion en Symtab (extraer: Tipo de retorno, el # de parametros)
 		# Visitar la lista de Argumentos
 		# Comparar el numero de argumentos con parametros
 		# Comparar cada uno de los tipos de los argumentos con los parametros
 		# Retornar el datatype de la funcion
-
+		...
 	def visit(self, n: Binary, env: Symtab):
 		# Visitar el hijo izquierdo (devuelve datatype)
 		# Visitar el hijo derecho (devuelve datatype)
 		# Comparar ambos tipo de datatype
-
+		...
 	def visit(self, n: Logical, env: Symtab):
 		# Visitar el hijo izquierdo (devuelve datatype)
 		# Visitar el hijo derecho (devuelve datatype)
 		# Comparar ambos tipo de datatype
-
+		...
 	def visit(self, n: Unary, env: Symtab):
 		# Visitar la expression asociada (devuelve datatype)
 		# Comparar datatype
-
-	def visit(self, n: FuncDefinition, env: Symtab):
+		...
+	def visit(self, n: FunDefinition, env: Symtab):
 		# Agregar el nombre de la funcion a Symtab
 		# Crear un nuevo contexto (Symtab)
 		# Visitar ParamList, VarList, StmtList
 		# Determinar el datatype de la funcion (revisando instrucciones return)
-
+		...
 	def visit(self, n: VarDefinition, env: Symtab):
 		# Agregar el nombre de la variable a Symtab
-
+		...
 	def visit(self, n: Parameter, env: Symtab):
 		# Agregar el nombre del parametro a Symtab
-
+		...
 	def visit(self, n: Print, env: Symtab):
 		...		
 
 	def visit(self, n: Write, env: Symtab):
 		# Buscar la Variable en Symtab
-
+		...
 	def visit(self, n: Read, env: Symtab):
 		# Buscar la Variable en Symtab
-
+		...
 	def visit(self, n: While, env: Symtab):
 		# Visitar la condicion del While (Comprobar tipo bool)
 		# Visitar las Stmts
-
+		...
 	def visit(self, n: Break, env: Symtab):
 		# Esta dentro de un While?
-
+		...
 	def visit(self, n: IfStmt, env: Symtab):
 		# Visitar la condicion del IfStmt (Comprobar tipo bool)
 		# Visitar las Stmts del then y else
-
+		...
 	def visit(self, n: Return, env: Symtab):
 		# Visitar la expresion asociada
 		# Actualizar el datatype de la funcion
-
+		...
 	def visit(self, n: Skip, env: Symtab):
 		...
 
 	def visit(self, n: Program, env: Symtab):
 		# Crear un nuevo contexto (Symtab global)
 		# Visitar cada una de las declaraciones asociadas
-
+		...
 	def visit(self, n: StmtList, env: Symtab):
 		# Visitar cada una de las instruciones asociadas
-
+		...
 	def visit(self, n: VarList, env: Symtab):
 		# Visitar cada una de las variables asociadas
-
+		...
 	def visit(self, n: ParmList, env: Symtab):
 		# Visitar cada una de los parametros asociados
-
+		...
 	def visit(self, n: ArgList, env: Symtab):
 		# Visitar cada una de los argumentos asociados
+		...
+  
+def main(argv):
+    if len(argv) != 2:
+        print(f"Usage: python {argv[0]} filename")
+        exit(1)
+
+    lex = Lexer()
+    txt = open('test3/' + argv[1]).read()
+    parser = Parser()
+    Nodo = parser.parse(lex.tokenize(txt))
+    Checker()
+
+
+if __name__ == '__main__':
+    from sys import argv
+    main(argv)

@@ -22,8 +22,8 @@ optional arguments:
 from contextlib import redirect_stdout
 from rich       import print
 
-from plex       import print_lexer
-from pparse     import gen_ast
+from plex       import Lexer
+from pparser    import Parser
 from context    import Context
 
 import argparse
@@ -89,10 +89,10 @@ if __name__ == '__main__':
     print(f'print lexer: {flex}')
     with open(flex, 'w', encoding='utf-8') as f:
       with redirect_stdout(f):
-        print_lexer(source)
+        Lexer(source)
 
   elif args.dot or args.png:
-    ast, dot = gen_ast(source)
+    ast, dot = Parser(source)
     base = fname.split('.')[0]
 
     if args.dot:
