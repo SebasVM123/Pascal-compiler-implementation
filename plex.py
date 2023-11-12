@@ -158,6 +158,18 @@ class Lexer(sly.Lexer):
         elif error_type == 6:
             print(f'\033[91mERROR: {t.value} must have integer part in line {t.lineno}. Did you mean 0{t.value}?\033[0m')
 
+def print_lexer(source):
+    with open(source, encoding='utf-8') as file:
+        lexer_contents = file.read()
+    print(lexer_contents)
+    '''tokens_table = PrettyTable()
+    tokens_table.align = 'l'
+    tokens_table.field_names = ['TOKEN', 'LEXEMA', 'LINENO']
+
+    for tok in source:
+        tokens_table.add_row([tok.type, tok.value, tok.lineno])'''
+
+   # print(tokens_table)
 
 def main(argv):
     if len(argv) != 2:
@@ -166,7 +178,6 @@ def main(argv):
 
     lex = Lexer()
     txt = open('test1/' + argv[1]).read()
-
     tokens_table = PrettyTable()
     tokens_table.align = 'l'
     tokens_table.field_names = ['TOKEN', 'LEXEMA', 'LINENO']
@@ -175,7 +186,6 @@ def main(argv):
         tokens_table.add_row([tok.type, tok.value, tok.lineno])
 
     print(tokens_table)
-
 
 if __name__ == '__main__':
     from sys import argv

@@ -1,4 +1,4 @@
-/* A bad way to sum numbers */
+/* A bad way to sum numbers no funciona por else*/
 
 fun sum(a : int[1000], n:int)
     s : int;

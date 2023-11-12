@@ -43,11 +43,12 @@ class Literal(Expr):
 @dataclass
 class Integer(Literal):
     value: int
-
+    dtype: DataType=field(default_factory = SimpleType('int'))
 @dataclass
 class Float(Literal):
     value: float
-
+    dtype: DataType=field(default_factory = SimpleType('float'))
+    
 @dataclass
 class Location(Expr):
     ...
@@ -55,6 +56,7 @@ class Location(Expr):
 @dataclass
 class SimpleLocation(Location):
     name: str
+    
 
 @dataclass
 class ArrayLocation(Location):
@@ -80,6 +82,7 @@ class Binary(Expr):
     op: str
     left: Expr
     right: Expr
+ 
 
 @dataclass
 class Logical(Expr):
@@ -113,7 +116,7 @@ class FunDefinition(Declaration):
     parmlist: Declaration
     varlist: Declaration
     stmtlist: Stmt
-
+    
     def __post_init__(self):
         if isinstance(self.parmlist, list):
             self.parmlist = ParmList(self.parmlist)
@@ -146,7 +149,8 @@ class Break(Stmt):
 @dataclass
 class IfStmt(Stmt):
     relation: Expr
-    stmt: Stmt
+    thenstmt: Stmt
+    elsestmt: Stmt
 
 @dataclass
 class Skip(Stmt):
@@ -194,7 +198,6 @@ class AST(Visitor):
     def visit(self, n: Program):
         tree = Tree("Program")
         hijo = tree.add("funclist")
-
         for func in n.funclist:
             hijo.add(func.accept(self))
         return tree
@@ -267,11 +270,11 @@ class AST(Visitor):
         return tree
 
     def visit(self, n: SimpleLocation):
-        tree = Tree(n.name)
+        tree = Tree("Simpleloc (" + n.name + ")")
         return tree
 
     def visit(self, n: ArrayLocation):
-        tree = Tree(n.name)
+        tree = Tree("ArrayLoc (" + n.name + ")" )
         tree.add(n.index.accept(self))
         return tree
 
@@ -300,12 +303,20 @@ class AST(Visitor):
         tree = Tree("IfStmt")
         hijo1 = tree.add("relation")
         hijo2 = tree.add("then")
+        hijo3 = tree.add("else")
         hijo1.add(n.relation.accept(self))
-        if isinstance(n.stmt, StmtList):
-            for stmt in n.stmt.stmtlist:
+        if isinstance(n.thenstmt, StmtList):
+            for stmt in n.thenstmt.stmtlist:
                 hijo2.add(stmt.accept(self))
         else:
-            hijo2.add(n.stmt.accept(self))
+            hijo2.add(n.thenstmt.accept(self))
+            
+        if isinstance(n.elsestmt, StmtList):
+            for stmt in n.elsestmt.stmtlist:
+                hijo3.add(stmt.accept(self))
+        elif n.elsestmt:
+            hijo3.add(n.elsestmt.accept(self))
+            
         return tree
 
     def visit(self, n: Break):
@@ -322,7 +333,6 @@ class AST(Visitor):
         hijo2 = tree.add("Stmt")
         hijo1.add(n.relation.accept(self))
         if isinstance(n.stmt, StmtList):
-            print(n.stmt)
             for stmt in n.stmt.stmtlist:
                 hijo2.add(stmt.accept(self))
         else:

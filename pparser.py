@@ -14,6 +14,8 @@ class Parser(sly.Parser):
     tokens = Lexer.tokens
 
     precedence = (
+        ('left', IF,THEN),
+        ('left', ELSE),
         ('left', OR),
         ('left', AND),
         ('left', ET, DF),
@@ -108,11 +110,19 @@ class Parser(sly.Parser):
     @_('BREAK')
     def stmt(self, p):
         return Break()
+    
+    @_('IF relation THEN stmt ELSE stmt %prec ELSE')
+    def instr_open(self, p):
+        return IfStmt(p.relation, p.stmt0, p.stmt1)
 
-    @_('IF relation THEN stmt')
+    @_('IF relation THEN stmt %prec THEN')
+    def instr_rel(self, p):
+        return IfStmt(p.relation, p.stmt, '')
+
+    @_('instr_rel', 'instr_open')
     def stmt(self, p):
-        return IfStmt(p.relation, p.stmt)
-
+        return p[0]
+        
     @_('BEGIN stmtlist END')
     def stmt(self, p):
         return StmtList(p.stmtlist)
@@ -165,11 +175,11 @@ class Parser(sly.Parser):
 
     @_('ICONST')
     def expr(self, p):
-        return Integer(p.ICONST)
+        return Integer(p[0],SimpleType('int'))
     
     @_('FCONST')
     def expr(self,p):
-        return Float(p.FCONST)
+        return Float(p[0],SimpleType('float'))
 
     @_('ID')
     def expr(self, p):
