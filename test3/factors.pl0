@@ -1,4 +1,4 @@
-?*No funciona no se porque*/
+/*No funciona no se porque*/
 fun mod(x:int, y:int)
 begin
   return x - (x/y) * y

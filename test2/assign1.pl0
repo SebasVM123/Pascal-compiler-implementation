@@ -2,10 +2,10 @@
 /* Tests various types of variable assignment */
 
 fun foo(x : int, y : float)
-    z : int[1000]
-    a : float;
+    z : int[1000];
+    a : float[200];
     begin
-         a := 5;
-         b := 3
+     a := 5;
+     b := 3
     end
 

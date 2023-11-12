@@ -14,6 +14,8 @@ class Parser(sly.Parser):
     tokens = Lexer.tokens
 
     precedence = (
+        ('left', IF,THEN),
+        ('left', ELSE),
         ('left', OR),
         ('left', AND),
         ('left', ET, DF),
@@ -108,11 +110,19 @@ class Parser(sly.Parser):
     @_('BREAK')
     def stmt(self, p):
         return Break()
+    
+    @_('IF relation THEN stmt ELSE stmt %prec ELSE')
+    def instr_open(self, p):
+        return IfStmt(p.relation, p.stmt0, p.stmt1)
 
-    @_('IF relation THEN stmt')
+    @_('IF relation THEN stmt %prec THEN')
+    def instr_rel(self, p):
+        return IfStmt(p.relation, p.stmt, '')
+
+    @_('instr_rel', 'instr_open')
     def stmt(self, p):
-        return IfStmt(p.relation, p.stmt)
-
+        return p[0]
+        
     @_('BEGIN stmtlist END')
     def stmt(self, p):
         return StmtList(p.stmtlist)
@@ -223,7 +233,7 @@ def main(argv):
         exit(1)
 
     lex = Lexer()
-    txt = open('test3/' + argv[1]).read()
+    txt = open('test2/' + argv[1]).read()
     parser = Parser()
     Nodo = parser.parse(lex.tokenize(txt))
     Arbol = AST()

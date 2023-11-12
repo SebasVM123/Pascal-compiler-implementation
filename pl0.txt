@@ -28,112 +28,113 @@ Rule 24    stmt -> location ASSIGNOP expr
 Rule 25    stmt -> RETURN expr
 Rule 26    stmt -> SKIP
 Rule 27    stmt -> BEGIN stmtlist END
-Rule 28    stmt -> IF relation THEN stmt
-Rule 29    stmt -> BREAK
-Rule 30    stmt -> WHILE relation DO stmt
-Rule 31    stmt -> READ ( location )
-Rule 32    stmt -> WRITE ( expr )
-Rule 33    stmt -> PRINT ( literal )
-Rule 34    literal -> STRING
-Rule 35    location -> ID [ expr ]
-Rule 36    location -> ID
-Rule 37    expr -> FLOAT ( expr )
-Rule 38    expr -> INT ( expr )
-Rule 39    expr -> ID ( _3_exprlist_optional )
-Rule 40    _3_exprlist_optional -> exprlist
-Rule 41    _3_exprlist_optional -> <empty>
-Rule 42    expr -> ID [ expr ]
-Rule 43    expr -> ID
-Rule 44    expr -> FCONST
-Rule 45    expr -> ICONST
-Rule 46    expr -> ( expr )
-Rule 47    expr -> + expr  [precedence=right, level=7]
-Rule 48    expr -> - expr  [precedence=right, level=7]
-Rule 49    expr -> expr / expr  [precedence=left, level=6]
-Rule 50    expr -> expr * expr  [precedence=left, level=6]
-Rule 51    expr -> expr - expr  [precedence=left, level=5]
-Rule 52    expr -> expr + expr  [precedence=left, level=5]
-Rule 53    relation -> ( relation )
-Rule 54    relation -> NOT relation  [precedence=right, level=7]
-Rule 55    relation -> relation OR relation  [precedence=left, level=1]
-Rule 56    relation -> relation AND relation  [precedence=left, level=2]
-Rule 57    relation -> expr DF expr  [precedence=left, level=3]
-Rule 58    relation -> expr ET expr  [precedence=left, level=3]
-Rule 59    relation -> expr GE expr  [precedence=left, level=4]
-Rule 60    relation -> expr GT expr  [precedence=left, level=4]
-Rule 61    relation -> expr LE expr  [precedence=left, level=4]
-Rule 62    relation -> expr LT expr  [precedence=left, level=4]
-Rule 63    exprlist -> expr
-Rule 64    exprlist -> exprlist , expr
-
-Unused terminals:
-
-    ELSE
+Rule 28    stmt -> instr_open
+Rule 29    stmt -> instr_rel
+Rule 30    stmt -> BREAK
+Rule 31    stmt -> WHILE relation DO stmt
+Rule 32    stmt -> READ ( location )
+Rule 33    stmt -> WRITE ( expr )
+Rule 34    stmt -> PRINT ( literal )
+Rule 35    instr_open -> IF relation THEN stmt ELSE stmt  [precedence=left, level=2]
+Rule 36    instr_rel -> IF relation THEN stmt  [precedence=left, level=1]
+Rule 37    literal -> STRING
+Rule 38    location -> ID [ expr ]
+Rule 39    location -> ID
+Rule 40    expr -> FLOAT ( expr )
+Rule 41    expr -> INT ( expr )
+Rule 42    expr -> ID ( _3_exprlist_optional )
+Rule 43    _3_exprlist_optional -> exprlist
+Rule 44    _3_exprlist_optional -> <empty>
+Rule 45    expr -> ID [ expr ]
+Rule 46    expr -> ID
+Rule 47    expr -> FCONST
+Rule 48    expr -> ICONST
+Rule 49    expr -> ( expr )
+Rule 50    expr -> + expr  [precedence=right, level=9]
+Rule 51    expr -> - expr  [precedence=right, level=9]
+Rule 52    expr -> expr / expr  [precedence=left, level=8]
+Rule 53    expr -> expr * expr  [precedence=left, level=8]
+Rule 54    expr -> expr - expr  [precedence=left, level=7]
+Rule 55    expr -> expr + expr  [precedence=left, level=7]
+Rule 56    relation -> ( relation )
+Rule 57    relation -> NOT relation  [precedence=right, level=9]
+Rule 58    relation -> relation OR relation  [precedence=left, level=3]
+Rule 59    relation -> relation AND relation  [precedence=left, level=4]
+Rule 60    relation -> expr DF expr  [precedence=left, level=5]
+Rule 61    relation -> expr ET expr  [precedence=left, level=5]
+Rule 62    relation -> expr GE expr  [precedence=left, level=6]
+Rule 63    relation -> expr GT expr  [precedence=left, level=6]
+Rule 64    relation -> expr LE expr  [precedence=left, level=6]
+Rule 65    relation -> expr LT expr  [precedence=left, level=6]
+Rule 66    exprlist -> expr
+Rule 67    exprlist -> exprlist , expr
 
 Terminals, with rules where they appear:
 
-(                    : 4 23 31 32 33 37 38 39 46 53
-)                    : 4 23 31 32 33 37 38 39 46 53
-*                    : 50
-+                    : 47 52
-,                    : 10 64
--                    : 48 51
-/                    : 49
+(                    : 4 23 32 33 34 40 41 42 49 56
+)                    : 4 23 32 33 34 40 41 42 49 56
+*                    : 53
++                    : 50 55
+,                    : 10 67
+-                    : 51 54
+/                    : 52
 :                    : 11 20
 ;                    : 16 17 21
-AND                  : 56
+AND                  : 59
 ASSIGNOP             : 24
 BEGIN                : 4 27
-BREAK                : 29
-DF                   : 57
-DO                   : 30
-ELSE                 : 
+BREAK                : 30
+DF                   : 60
+DO                   : 31
+ELSE                 : 35
 END                  : 4 27
-ET                   : 58
-FCONST               : 44
-FLOAT                : 12 14 37
+ET                   : 61
+FCONST               : 47
+FLOAT                : 12 14 40
 FUN                  : 4
-GE                   : 59
-GT                   : 60
-ICONST               : 45
-ID                   : 4 11 20 23 35 36 39 42 43
-IF                   : 28
-INT                  : 13 15 38
-LE                   : 61
-LT                   : 62
-NOT                  : 54
-OR                   : 55
-PRINT                : 33
-READ                 : 31
+GE                   : 62
+GT                   : 63
+ICONST               : 48
+ID                   : 4 11 20 23 38 39 42 45 46
+IF                   : 35 36
+INT                  : 13 15 41
+LE                   : 64
+LT                   : 65
+NOT                  : 57
+OR                   : 58
+PRINT                : 34
+READ                 : 32
 RETURN               : 25
 SKIP                 : 26
-STRING               : 34
-THEN                 : 28
-WHILE                : 30
-WRITE                : 32
-[                    : 14 15 35 42
-]                    : 14 15 35 42
+STRING               : 37
+THEN                 : 35 36
+WHILE                : 31
+WRITE                : 33
+[                    : 14 15 38 45
+]                    : 14 15 38 45
 error                : 
 
 Nonterminals, with rules where they appear:
 
 _1_parmlist_optional : 4
 _2_locallist_optional : 4
-_3_exprlist_optional : 39
+_3_exprlist_optional : 42
 datatype             : 11 20
-expr                 : 14 15 24 25 32 35 37 38 42 46 47 48 49 49 50 50 51 51 52 52 57 57 58 58 59 59 60 60 61 61 62 62 63 64
-exprlist             : 23 40 64
+expr                 : 14 15 24 25 33 38 40 41 45 49 50 51 52 52 53 53 54 54 55 55 60 60 61 61 62 62 63 63 64 64 65 65 66 67
+exprlist             : 23 43 67
 func                 : 2 3 18
 funclist             : 1 3
-literal              : 33
+instr_open           : 28
+instr_rel            : 29
+literal              : 34
 local                : 16 17
 locallist            : 7 16
-location             : 24 31
+location             : 24 32
 parm                 : 9 10
 parmlist             : 5 10
 program              : 0
-relation             : 28 30 53 54 55 55 56 56
-stmt                 : 21 22 28 30
+relation             : 31 35 36 56 57 58 58 59 59
+stmt                 : 21 22 31 35 35 36
 stmtlist             : 4 21 27
 vardecl              : 19
 
@@ -349,20 +350,20 @@ state 24
 state 25
 
     (14) datatype -> FLOAT [ . expr ]
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -377,20 +378,20 @@ state 25
 state 26
 
     (15) datatype -> INT [ . expr ]
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -424,28 +425,33 @@ state 28
     (25) stmt -> . RETURN expr
     (26) stmt -> . SKIP
     (27) stmt -> . BEGIN stmtlist END
-    (28) stmt -> . IF relation THEN stmt
-    (29) stmt -> . BREAK
-    (30) stmt -> . WHILE relation DO stmt
-    (31) stmt -> . READ ( location )
-    (32) stmt -> . WRITE ( expr )
-    (33) stmt -> . PRINT ( literal )
-    (35) location -> . ID [ expr ]
-    (36) location -> . ID
+    (28) stmt -> . instr_open
+    (29) stmt -> . instr_rel
+    (30) stmt -> . BREAK
+    (31) stmt -> . WHILE relation DO stmt
+    (32) stmt -> . READ ( location )
+    (33) stmt -> . WRITE ( expr )
+    (34) stmt -> . PRINT ( literal )
+    (38) location -> . ID [ expr ]
+    (39) location -> . ID
+    (35) instr_open -> . IF relation THEN stmt ELSE stmt
+    (36) instr_rel -> . IF relation THEN stmt
     ID              shift and go to state 41
     RETURN          shift and go to state 46
     SKIP            shift and go to state 47
     BEGIN           shift and go to state 42
-    IF              shift and go to state 48
-    BREAK           shift and go to state 49
-    WHILE           shift and go to state 50
-    READ            shift and go to state 51
-    WRITE           shift and go to state 52
-    PRINT           shift and go to state 53
+    BREAK           shift and go to state 50
+    WHILE           shift and go to state 51
+    READ            shift and go to state 52
+    WRITE           shift and go to state 53
+    PRINT           shift and go to state 54
+    IF              shift and go to state 55
 
     stmtlist                       shift and go to state 43
     stmt                           shift and go to state 44
     location                       shift and go to state 45
+    instr_open                     shift and go to state 48
+    instr_rel                      shift and go to state 49
 
 state 29
 
@@ -462,47 +468,47 @@ state 29
     ID              shift and go to state 18
 
     local                          shift and go to state 21
-    locallist                      shift and go to state 54
+    locallist                      shift and go to state 56
     func                           shift and go to state 22
     vardecl                        shift and go to state 23
 
 state 30
 
-    (37) expr -> FLOAT . ( expr )
-    (               shift and go to state 55
+    (40) expr -> FLOAT . ( expr )
+    (               shift and go to state 57
 
 
 state 31
 
     (14) datatype -> FLOAT [ expr . ]
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    ]               shift and go to state 56
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    ]               shift and go to state 58
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
 
 state 32
 
-    (46) expr -> ( . expr )
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (49) expr -> ( . expr )
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -512,107 +518,110 @@ state 32
     +               shift and go to state 37
     -               shift and go to state 38
 
-    expr                           shift and go to state 61
+    expr                           shift and go to state 63
 
 state 33
 
-    (38) expr -> INT . ( expr )
-    (               shift and go to state 62
+    (41) expr -> INT . ( expr )
+    (               shift and go to state 64
 
 
 state 34
 
-    (39) expr -> ID . ( _3_exprlist_optional )
-    (42) expr -> ID . [ expr ]
-    (43) expr -> ID .
-    (               shift and go to state 63
-    [               shift and go to state 64
-    ]               reduce using rule 43 (expr -> ID .)
-    /               reduce using rule 43 (expr -> ID .)
-    *               reduce using rule 43 (expr -> ID .)
-    -               reduce using rule 43 (expr -> ID .)
-    +               reduce using rule 43 (expr -> ID .)
-    )               reduce using rule 43 (expr -> ID .)
-    ;               reduce using rule 43 (expr -> ID .)
-    END             reduce using rule 43 (expr -> ID .)
-    DF              reduce using rule 43 (expr -> ID .)
-    ET              reduce using rule 43 (expr -> ID .)
-    GE              reduce using rule 43 (expr -> ID .)
-    GT              reduce using rule 43 (expr -> ID .)
-    LE              reduce using rule 43 (expr -> ID .)
-    LT              reduce using rule 43 (expr -> ID .)
-    ,               reduce using rule 43 (expr -> ID .)
-    THEN            reduce using rule 43 (expr -> ID .)
-    OR              reduce using rule 43 (expr -> ID .)
-    AND             reduce using rule 43 (expr -> ID .)
-    DO              reduce using rule 43 (expr -> ID .)
+    (42) expr -> ID . ( _3_exprlist_optional )
+    (45) expr -> ID . [ expr ]
+    (46) expr -> ID .
+    (               shift and go to state 65
+    [               shift and go to state 66
+    ]               reduce using rule 46 (expr -> ID .)
+    /               reduce using rule 46 (expr -> ID .)
+    *               reduce using rule 46 (expr -> ID .)
+    -               reduce using rule 46 (expr -> ID .)
+    +               reduce using rule 46 (expr -> ID .)
+    )               reduce using rule 46 (expr -> ID .)
+    ;               reduce using rule 46 (expr -> ID .)
+    END             reduce using rule 46 (expr -> ID .)
+    ELSE            reduce using rule 46 (expr -> ID .)
+    DF              reduce using rule 46 (expr -> ID .)
+    ET              reduce using rule 46 (expr -> ID .)
+    GE              reduce using rule 46 (expr -> ID .)
+    GT              reduce using rule 46 (expr -> ID .)
+    LE              reduce using rule 46 (expr -> ID .)
+    LT              reduce using rule 46 (expr -> ID .)
+    ,               reduce using rule 46 (expr -> ID .)
+    DO              reduce using rule 46 (expr -> ID .)
+    OR              reduce using rule 46 (expr -> ID .)
+    AND             reduce using rule 46 (expr -> ID .)
+    THEN            reduce using rule 46 (expr -> ID .)
 
 
 state 35
 
-    (44) expr -> FCONST .
-    ]               reduce using rule 44 (expr -> FCONST .)
-    /               reduce using rule 44 (expr -> FCONST .)
-    *               reduce using rule 44 (expr -> FCONST .)
-    -               reduce using rule 44 (expr -> FCONST .)
-    +               reduce using rule 44 (expr -> FCONST .)
-    )               reduce using rule 44 (expr -> FCONST .)
-    ;               reduce using rule 44 (expr -> FCONST .)
-    END             reduce using rule 44 (expr -> FCONST .)
-    DF              reduce using rule 44 (expr -> FCONST .)
-    ET              reduce using rule 44 (expr -> FCONST .)
-    GE              reduce using rule 44 (expr -> FCONST .)
-    GT              reduce using rule 44 (expr -> FCONST .)
-    LE              reduce using rule 44 (expr -> FCONST .)
-    LT              reduce using rule 44 (expr -> FCONST .)
-    ,               reduce using rule 44 (expr -> FCONST .)
-    THEN            reduce using rule 44 (expr -> FCONST .)
-    OR              reduce using rule 44 (expr -> FCONST .)
-    AND             reduce using rule 44 (expr -> FCONST .)
-    DO              reduce using rule 44 (expr -> FCONST .)
+    (47) expr -> FCONST .
+    ]               reduce using rule 47 (expr -> FCONST .)
+    /               reduce using rule 47 (expr -> FCONST .)
+    *               reduce using rule 47 (expr -> FCONST .)
+    -               reduce using rule 47 (expr -> FCONST .)
+    +               reduce using rule 47 (expr -> FCONST .)
+    )               reduce using rule 47 (expr -> FCONST .)
+    ;               reduce using rule 47 (expr -> FCONST .)
+    END             reduce using rule 47 (expr -> FCONST .)
+    ELSE            reduce using rule 47 (expr -> FCONST .)
+    DF              reduce using rule 47 (expr -> FCONST .)
+    ET              reduce using rule 47 (expr -> FCONST .)
+    GE              reduce using rule 47 (expr -> FCONST .)
+    GT              reduce using rule 47 (expr -> FCONST .)
+    LE              reduce using rule 47 (expr -> FCONST .)
+    LT              reduce using rule 47 (expr -> FCONST .)
+    ,               reduce using rule 47 (expr -> FCONST .)
+    DO              reduce using rule 47 (expr -> FCONST .)
+    OR              reduce using rule 47 (expr -> FCONST .)
+    AND             reduce using rule 47 (expr -> FCONST .)
+    THEN            reduce using rule 47 (expr -> FCONST .)
 
 
 state 36
 
-    (45) expr -> ICONST .
-    ]               reduce using rule 45 (expr -> ICONST .)
-    /               reduce using rule 45 (expr -> ICONST .)
-    *               reduce using rule 45 (expr -> ICONST .)
-    -               reduce using rule 45 (expr -> ICONST .)
-    +               reduce using rule 45 (expr -> ICONST .)
-    )               reduce using rule 45 (expr -> ICONST .)
-    ;               reduce using rule 45 (expr -> ICONST .)
-    END             reduce using rule 45 (expr -> ICONST .)
-    DF              reduce using rule 45 (expr -> ICONST .)
-    ET              reduce using rule 45 (expr -> ICONST .)
-    GE              reduce using rule 45 (expr -> ICONST .)
-    GT              reduce using rule 45 (expr -> ICONST .)
-    LE              reduce using rule 45 (expr -> ICONST .)
-    LT              reduce using rule 45 (expr -> ICONST .)
-    ,               reduce using rule 45 (expr -> ICONST .)
-    THEN            reduce using rule 45 (expr -> ICONST .)
-    OR              reduce using rule 45 (expr -> ICONST .)
-    AND             reduce using rule 45 (expr -> ICONST .)
-    DO              reduce using rule 45 (expr -> ICONST .)
+    (48) expr -> ICONST .
+    ]               reduce using rule 48 (expr -> ICONST .)
+    /               reduce using rule 48 (expr -> ICONST .)
+    *               reduce using rule 48 (expr -> ICONST .)
+    -               reduce using rule 48 (expr -> ICONST .)
+    +               reduce using rule 48 (expr -> ICONST .)
+    )               reduce using rule 48 (expr -> ICONST .)
+    ;               reduce using rule 48 (expr -> ICONST .)
+    END             reduce using rule 48 (expr -> ICONST .)
+    ELSE            reduce using rule 48 (expr -> ICONST .)
+    DF              reduce using rule 48 (expr -> ICONST .)
+    ET              reduce using rule 48 (expr -> ICONST .)
+    GE              reduce using rule 48 (expr -> ICONST .)
+    GT              reduce using rule 48 (expr -> ICONST .)
+    LE              reduce using rule 48 (expr -> ICONST .)
+    LT              reduce using rule 48 (expr -> ICONST .)
+    ,               reduce using rule 48 (expr -> ICONST .)
+    DO              reduce using rule 48 (expr -> ICONST .)
+    OR              reduce using rule 48 (expr -> ICONST .)
+    AND             reduce using rule 48 (expr -> ICONST .)
+    THEN            reduce using rule 48 (expr -> ICONST .)
 
 
 state 37
 
-    (47) expr -> + . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (50) expr -> + . expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -622,25 +631,25 @@ state 37
     +               shift and go to state 37
     -               shift and go to state 38
 
-    expr                           shift and go to state 65
+    expr                           shift and go to state 67
 
 state 38
 
-    (48) expr -> - . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (51) expr -> - . expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -650,20 +659,20 @@ state 38
     +               shift and go to state 37
     -               shift and go to state 38
 
-    expr                           shift and go to state 66
+    expr                           shift and go to state 68
 
 state 39
 
     (15) datatype -> INT [ expr . ]
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    ]               shift and go to state 67
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    ]               shift and go to state 69
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
 
 state 40
@@ -675,11 +684,11 @@ state 40
 state 41
 
     (23) stmt -> ID . ( exprlist )
-    (35) location -> ID . [ expr ]
-    (36) location -> ID .
-    (               shift and go to state 68
-    [               shift and go to state 69
-    ASSIGNOP        reduce using rule 36 (location -> ID .)
+    (38) location -> ID . [ expr ]
+    (39) location -> ID .
+    (               shift and go to state 70
+    [               shift and go to state 71
+    ASSIGNOP        reduce using rule 39 (location -> ID .)
 
 
 state 42
@@ -692,66 +701,71 @@ state 42
     (25) stmt -> . RETURN expr
     (26) stmt -> . SKIP
     (27) stmt -> . BEGIN stmtlist END
-    (28) stmt -> . IF relation THEN stmt
-    (29) stmt -> . BREAK
-    (30) stmt -> . WHILE relation DO stmt
-    (31) stmt -> . READ ( location )
-    (32) stmt -> . WRITE ( expr )
-    (33) stmt -> . PRINT ( literal )
-    (35) location -> . ID [ expr ]
-    (36) location -> . ID
+    (28) stmt -> . instr_open
+    (29) stmt -> . instr_rel
+    (30) stmt -> . BREAK
+    (31) stmt -> . WHILE relation DO stmt
+    (32) stmt -> . READ ( location )
+    (33) stmt -> . WRITE ( expr )
+    (34) stmt -> . PRINT ( literal )
+    (38) location -> . ID [ expr ]
+    (39) location -> . ID
+    (35) instr_open -> . IF relation THEN stmt ELSE stmt
+    (36) instr_rel -> . IF relation THEN stmt
     ID              shift and go to state 41
     RETURN          shift and go to state 46
     SKIP            shift and go to state 47
     BEGIN           shift and go to state 42
-    IF              shift and go to state 48
-    BREAK           shift and go to state 49
-    WHILE           shift and go to state 50
-    READ            shift and go to state 51
-    WRITE           shift and go to state 52
-    PRINT           shift and go to state 53
+    BREAK           shift and go to state 50
+    WHILE           shift and go to state 51
+    READ            shift and go to state 52
+    WRITE           shift and go to state 53
+    PRINT           shift and go to state 54
+    IF              shift and go to state 55
 
-    stmtlist                       shift and go to state 70
+    stmtlist                       shift and go to state 72
     stmt                           shift and go to state 44
     location                       shift and go to state 45
+    instr_open                     shift and go to state 48
+    instr_rel                      shift and go to state 49
 
 state 43
 
     (4) func -> FUN ID ( _1_parmlist_optional ) _2_locallist_optional BEGIN stmtlist . END
-    END             shift and go to state 71
+    END             shift and go to state 73
 
 
 state 44
 
     (21) stmtlist -> stmt . ; stmtlist
     (22) stmtlist -> stmt .
-    ;               shift and go to state 72
+    ;               shift and go to state 74
     END             reduce using rule 22 (stmtlist -> stmt .)
 
 
 state 45
 
     (24) stmt -> location . ASSIGNOP expr
-    ASSIGNOP        shift and go to state 73
+    ASSIGNOP        shift and go to state 75
 
 
 state 46
 
     (25) stmt -> RETURN . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -761,91 +775,69 @@ state 46
     +               shift and go to state 37
     -               shift and go to state 38
 
-    expr                           shift and go to state 74
+    expr                           shift and go to state 76
 
 state 47
 
     (26) stmt -> SKIP .
     ;               reduce using rule 26 (stmt -> SKIP .)
     END             reduce using rule 26 (stmt -> SKIP .)
+    ELSE            reduce using rule 26 (stmt -> SKIP .)
 
 
 state 48
 
-    (28) stmt -> IF . relation THEN stmt
-    (53) relation -> . ( relation )
-    (54) relation -> . NOT relation
-    (55) relation -> . relation OR relation
-    (56) relation -> . relation AND relation
-    (57) relation -> . expr DF expr
-    (58) relation -> . expr ET expr
-    (59) relation -> . expr GE expr
-    (60) relation -> . expr GT expr
-    (61) relation -> . expr LE expr
-    (62) relation -> . expr LT expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
-    (               shift and go to state 76
-    NOT             shift and go to state 77
-    FLOAT           shift and go to state 30
-    INT             shift and go to state 33
-    ID              shift and go to state 34
-    FCONST          shift and go to state 35
-    ICONST          shift and go to state 36
-    +               shift and go to state 37
-    -               shift and go to state 38
+    (28) stmt -> instr_open .
+    ;               reduce using rule 28 (stmt -> instr_open .)
+    END             reduce using rule 28 (stmt -> instr_open .)
+    ELSE            reduce using rule 28 (stmt -> instr_open .)
 
-    relation                       shift and go to state 75
-    expr                           shift and go to state 78
 
 state 49
 
-    (29) stmt -> BREAK .
-    ;               reduce using rule 29 (stmt -> BREAK .)
-    END             reduce using rule 29 (stmt -> BREAK .)
+    (29) stmt -> instr_rel .
+    ;               reduce using rule 29 (stmt -> instr_rel .)
+    END             reduce using rule 29 (stmt -> instr_rel .)
+    ELSE            reduce using rule 29 (stmt -> instr_rel .)
 
 
 state 50
 
-    (30) stmt -> WHILE . relation DO stmt
-    (53) relation -> . ( relation )
-    (54) relation -> . NOT relation
-    (55) relation -> . relation OR relation
-    (56) relation -> . relation AND relation
-    (57) relation -> . expr DF expr
-    (58) relation -> . expr ET expr
-    (59) relation -> . expr GE expr
-    (60) relation -> . expr GT expr
-    (61) relation -> . expr LE expr
-    (62) relation -> . expr LT expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
-    (               shift and go to state 76
-    NOT             shift and go to state 77
+    (30) stmt -> BREAK .
+    ;               reduce using rule 30 (stmt -> BREAK .)
+    END             reduce using rule 30 (stmt -> BREAK .)
+    ELSE            reduce using rule 30 (stmt -> BREAK .)
+
+
+state 51
+
+    (31) stmt -> WHILE . relation DO stmt
+    (56) relation -> . ( relation )
+    (57) relation -> . NOT relation
+    (58) relation -> . relation OR relation
+    (59) relation -> . relation AND relation
+    (60) relation -> . expr DF expr
+    (61) relation -> . expr ET expr
+    (62) relation -> . expr GE expr
+    (63) relation -> . expr GT expr
+    (64) relation -> . expr LE expr
+    (65) relation -> . expr LT expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
+    (               shift and go to state 78
+    NOT             shift and go to state 79
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -854,114 +846,91 @@ state 50
     +               shift and go to state 37
     -               shift and go to state 38
 
-    relation                       shift and go to state 79
-    expr                           shift and go to state 78
-
-state 51
-
-    (31) stmt -> READ . ( location )
-    (               shift and go to state 80
-
+    relation                       shift and go to state 77
+    expr                           shift and go to state 80
 
 state 52
 
-    (32) stmt -> WRITE . ( expr )
+    (32) stmt -> READ . ( location )
     (               shift and go to state 81
 
 
 state 53
 
-    (33) stmt -> PRINT . ( literal )
+    (33) stmt -> WRITE . ( expr )
     (               shift and go to state 82
 
 
 state 54
 
-    (16) locallist -> local ; locallist .
-    BEGIN           reduce using rule 16 (locallist -> local ; locallist .)
+    (34) stmt -> PRINT . ( literal )
+    (               shift and go to state 83
 
 
 state 55
 
-    (37) expr -> FLOAT ( . expr )
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (35) instr_open -> IF . relation THEN stmt ELSE stmt
+    (36) instr_rel -> IF . relation THEN stmt
+    (56) relation -> . ( relation )
+    (57) relation -> . NOT relation
+    (58) relation -> . relation OR relation
+    (59) relation -> . relation AND relation
+    (60) relation -> . expr DF expr
+    (61) relation -> . expr ET expr
+    (62) relation -> . expr GE expr
+    (63) relation -> . expr GT expr
+    (64) relation -> . expr LE expr
+    (65) relation -> . expr LT expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
+    (               shift and go to state 78
+    NOT             shift and go to state 79
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
     FCONST          shift and go to state 35
     ICONST          shift and go to state 36
-    (               shift and go to state 32
     +               shift and go to state 37
     -               shift and go to state 38
 
-    expr                           shift and go to state 83
+    relation                       shift and go to state 84
+    expr                           shift and go to state 80
 
 state 56
 
-    (14) datatype -> FLOAT [ expr ] .
-    ,               reduce using rule 14 (datatype -> FLOAT [ expr ] .)
-    )               reduce using rule 14 (datatype -> FLOAT [ expr ] .)
-    ;               reduce using rule 14 (datatype -> FLOAT [ expr ] .)
+    (16) locallist -> local ; locallist .
+    BEGIN           reduce using rule 16 (locallist -> local ; locallist .)
 
 
 state 57
 
-    (49) expr -> expr / . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
-    FLOAT           shift and go to state 30
-    INT             shift and go to state 33
-    ID              shift and go to state 34
-    FCONST          shift and go to state 35
-    ICONST          shift and go to state 36
-    (               shift and go to state 32
-    +               shift and go to state 37
-    -               shift and go to state 38
-
-    expr                           shift and go to state 84
-
-state 58
-
-    (50) expr -> expr * . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (40) expr -> FLOAT ( . expr )
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -973,23 +942,31 @@ state 58
 
     expr                           shift and go to state 85
 
+state 58
+
+    (14) datatype -> FLOAT [ expr ] .
+    ,               reduce using rule 14 (datatype -> FLOAT [ expr ] .)
+    )               reduce using rule 14 (datatype -> FLOAT [ expr ] .)
+    ;               reduce using rule 14 (datatype -> FLOAT [ expr ] .)
+
+
 state 59
 
-    (51) expr -> expr - . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (52) expr -> expr / . expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -1003,21 +980,21 @@ state 59
 
 state 60
 
-    (52) expr -> expr + . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (53) expr -> expr * . expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -1031,35 +1008,49 @@ state 60
 
 state 61
 
-    (46) expr -> ( expr . )
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    )               shift and go to state 88
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (54) expr -> expr - . expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
+    FLOAT           shift and go to state 30
+    INT             shift and go to state 33
+    ID              shift and go to state 34
+    FCONST          shift and go to state 35
+    ICONST          shift and go to state 36
+    (               shift and go to state 32
+    +               shift and go to state 37
+    -               shift and go to state 38
 
+    expr                           shift and go to state 88
 
 state 62
 
-    (38) expr -> INT ( . expr )
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (55) expr -> expr + . expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -1073,56 +1064,35 @@ state 62
 
 state 63
 
-    (39) expr -> ID ( . _3_exprlist_optional )
-    (40) _3_exprlist_optional -> . exprlist
-    (41) _3_exprlist_optional -> .
-    (63) exprlist -> . expr
-    (64) exprlist -> . exprlist , expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
-    )               reduce using rule 41 (_3_exprlist_optional -> .)
-    FLOAT           shift and go to state 30
-    INT             shift and go to state 33
-    ID              shift and go to state 34
-    FCONST          shift and go to state 35
-    ICONST          shift and go to state 36
-    (               shift and go to state 32
-    +               shift and go to state 37
-    -               shift and go to state 38
+    (49) expr -> ( expr . )
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    )               shift and go to state 90
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
-    _3_exprlist_optional           shift and go to state 90
-    exprlist                       shift and go to state 91
-    expr                           shift and go to state 92
 
 state 64
 
-    (42) expr -> ID [ . expr ]
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (41) expr -> INT ( . expr )
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -1132,91 +1102,30 @@ state 64
     +               shift and go to state 37
     -               shift and go to state 38
 
-    expr                           shift and go to state 93
+    expr                           shift and go to state 91
 
 state 65
 
-    (47) expr -> + expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    ]               reduce using rule 47 (expr -> + expr .)
-    /               reduce using rule 47 (expr -> + expr .)
-    *               reduce using rule 47 (expr -> + expr .)
-    -               reduce using rule 47 (expr -> + expr .)
-    +               reduce using rule 47 (expr -> + expr .)
-    )               reduce using rule 47 (expr -> + expr .)
-    ;               reduce using rule 47 (expr -> + expr .)
-    END             reduce using rule 47 (expr -> + expr .)
-    DF              reduce using rule 47 (expr -> + expr .)
-    ET              reduce using rule 47 (expr -> + expr .)
-    GE              reduce using rule 47 (expr -> + expr .)
-    GT              reduce using rule 47 (expr -> + expr .)
-    LE              reduce using rule 47 (expr -> + expr .)
-    LT              reduce using rule 47 (expr -> + expr .)
-    ,               reduce using rule 47 (expr -> + expr .)
-    THEN            reduce using rule 47 (expr -> + expr .)
-    OR              reduce using rule 47 (expr -> + expr .)
-    AND             reduce using rule 47 (expr -> + expr .)
-    DO              reduce using rule 47 (expr -> + expr .)
-
-
-state 66
-
-    (48) expr -> - expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    ]               reduce using rule 48 (expr -> - expr .)
-    /               reduce using rule 48 (expr -> - expr .)
-    *               reduce using rule 48 (expr -> - expr .)
-    -               reduce using rule 48 (expr -> - expr .)
-    +               reduce using rule 48 (expr -> - expr .)
-    )               reduce using rule 48 (expr -> - expr .)
-    ;               reduce using rule 48 (expr -> - expr .)
-    END             reduce using rule 48 (expr -> - expr .)
-    DF              reduce using rule 48 (expr -> - expr .)
-    ET              reduce using rule 48 (expr -> - expr .)
-    GE              reduce using rule 48 (expr -> - expr .)
-    GT              reduce using rule 48 (expr -> - expr .)
-    LE              reduce using rule 48 (expr -> - expr .)
-    LT              reduce using rule 48 (expr -> - expr .)
-    ,               reduce using rule 48 (expr -> - expr .)
-    THEN            reduce using rule 48 (expr -> - expr .)
-    OR              reduce using rule 48 (expr -> - expr .)
-    AND             reduce using rule 48 (expr -> - expr .)
-    DO              reduce using rule 48 (expr -> - expr .)
-
-
-state 67
-
-    (15) datatype -> INT [ expr ] .
-    ,               reduce using rule 15 (datatype -> INT [ expr ] .)
-    )               reduce using rule 15 (datatype -> INT [ expr ] .)
-    ;               reduce using rule 15 (datatype -> INT [ expr ] .)
-
-
-state 68
-
-    (23) stmt -> ID ( . exprlist )
-    (63) exprlist -> . expr
-    (64) exprlist -> . exprlist , expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (42) expr -> ID ( . _3_exprlist_optional )
+    (43) _3_exprlist_optional -> . exprlist
+    (44) _3_exprlist_optional -> .
+    (66) exprlist -> . expr
+    (67) exprlist -> . exprlist , expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
+    )               reduce using rule 44 (_3_exprlist_optional -> .)
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -1226,26 +1135,27 @@ state 68
     +               shift and go to state 37
     -               shift and go to state 38
 
-    exprlist                       shift and go to state 94
-    expr                           shift and go to state 92
+    _3_exprlist_optional           shift and go to state 92
+    exprlist                       shift and go to state 93
+    expr                           shift and go to state 94
 
-state 69
+state 66
 
-    (35) location -> ID [ . expr ]
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (45) expr -> ID [ . expr ]
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -1257,13 +1167,138 @@ state 69
 
     expr                           shift and go to state 95
 
+state 67
+
+    (50) expr -> + expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    ]               reduce using rule 50 (expr -> + expr .)
+    /               reduce using rule 50 (expr -> + expr .)
+    *               reduce using rule 50 (expr -> + expr .)
+    -               reduce using rule 50 (expr -> + expr .)
+    +               reduce using rule 50 (expr -> + expr .)
+    )               reduce using rule 50 (expr -> + expr .)
+    ;               reduce using rule 50 (expr -> + expr .)
+    END             reduce using rule 50 (expr -> + expr .)
+    ELSE            reduce using rule 50 (expr -> + expr .)
+    DF              reduce using rule 50 (expr -> + expr .)
+    ET              reduce using rule 50 (expr -> + expr .)
+    GE              reduce using rule 50 (expr -> + expr .)
+    GT              reduce using rule 50 (expr -> + expr .)
+    LE              reduce using rule 50 (expr -> + expr .)
+    LT              reduce using rule 50 (expr -> + expr .)
+    ,               reduce using rule 50 (expr -> + expr .)
+    DO              reduce using rule 50 (expr -> + expr .)
+    OR              reduce using rule 50 (expr -> + expr .)
+    AND             reduce using rule 50 (expr -> + expr .)
+    THEN            reduce using rule 50 (expr -> + expr .)
+
+
+state 68
+
+    (51) expr -> - expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    ]               reduce using rule 51 (expr -> - expr .)
+    /               reduce using rule 51 (expr -> - expr .)
+    *               reduce using rule 51 (expr -> - expr .)
+    -               reduce using rule 51 (expr -> - expr .)
+    +               reduce using rule 51 (expr -> - expr .)
+    )               reduce using rule 51 (expr -> - expr .)
+    ;               reduce using rule 51 (expr -> - expr .)
+    END             reduce using rule 51 (expr -> - expr .)
+    ELSE            reduce using rule 51 (expr -> - expr .)
+    DF              reduce using rule 51 (expr -> - expr .)
+    ET              reduce using rule 51 (expr -> - expr .)
+    GE              reduce using rule 51 (expr -> - expr .)
+    GT              reduce using rule 51 (expr -> - expr .)
+    LE              reduce using rule 51 (expr -> - expr .)
+    LT              reduce using rule 51 (expr -> - expr .)
+    ,               reduce using rule 51 (expr -> - expr .)
+    DO              reduce using rule 51 (expr -> - expr .)
+    OR              reduce using rule 51 (expr -> - expr .)
+    AND             reduce using rule 51 (expr -> - expr .)
+    THEN            reduce using rule 51 (expr -> - expr .)
+
+
+state 69
+
+    (15) datatype -> INT [ expr ] .
+    ,               reduce using rule 15 (datatype -> INT [ expr ] .)
+    )               reduce using rule 15 (datatype -> INT [ expr ] .)
+    ;               reduce using rule 15 (datatype -> INT [ expr ] .)
+
+
 state 70
 
-    (27) stmt -> BEGIN stmtlist . END
-    END             shift and go to state 96
+    (23) stmt -> ID ( . exprlist )
+    (66) exprlist -> . expr
+    (67) exprlist -> . exprlist , expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
+    FLOAT           shift and go to state 30
+    INT             shift and go to state 33
+    ID              shift and go to state 34
+    FCONST          shift and go to state 35
+    ICONST          shift and go to state 36
+    (               shift and go to state 32
+    +               shift and go to state 37
+    -               shift and go to state 38
 
+    exprlist                       shift and go to state 96
+    expr                           shift and go to state 94
 
 state 71
+
+    (38) location -> ID [ . expr ]
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
+    FLOAT           shift and go to state 30
+    INT             shift and go to state 33
+    ID              shift and go to state 34
+    FCONST          shift and go to state 35
+    ICONST          shift and go to state 36
+    (               shift and go to state 32
+    +               shift and go to state 37
+    -               shift and go to state 38
+
+    expr                           shift and go to state 97
+
+state 72
+
+    (27) stmt -> BEGIN stmtlist . END
+    END             shift and go to state 98
+
+
+state 73
 
     (4) func -> FUN ID ( _1_parmlist_optional ) _2_locallist_optional BEGIN stmtlist END .
     FUN             reduce using rule 4 (func -> FUN ID ( _1_parmlist_optional ) _2_locallist_optional BEGIN stmtlist END .)
@@ -1271,7 +1306,7 @@ state 71
     ;               reduce using rule 4 (func -> FUN ID ( _1_parmlist_optional ) _2_locallist_optional BEGIN stmtlist END .)
 
 
-state 72
+state 74
 
     (21) stmtlist -> stmt ; . stmtlist
     (21) stmtlist -> . stmt ; stmtlist
@@ -1281,46 +1316,51 @@ state 72
     (25) stmt -> . RETURN expr
     (26) stmt -> . SKIP
     (27) stmt -> . BEGIN stmtlist END
-    (28) stmt -> . IF relation THEN stmt
-    (29) stmt -> . BREAK
-    (30) stmt -> . WHILE relation DO stmt
-    (31) stmt -> . READ ( location )
-    (32) stmt -> . WRITE ( expr )
-    (33) stmt -> . PRINT ( literal )
-    (35) location -> . ID [ expr ]
-    (36) location -> . ID
+    (28) stmt -> . instr_open
+    (29) stmt -> . instr_rel
+    (30) stmt -> . BREAK
+    (31) stmt -> . WHILE relation DO stmt
+    (32) stmt -> . READ ( location )
+    (33) stmt -> . WRITE ( expr )
+    (34) stmt -> . PRINT ( literal )
+    (38) location -> . ID [ expr ]
+    (39) location -> . ID
+    (35) instr_open -> . IF relation THEN stmt ELSE stmt
+    (36) instr_rel -> . IF relation THEN stmt
     ID              shift and go to state 41
     RETURN          shift and go to state 46
     SKIP            shift and go to state 47
     BEGIN           shift and go to state 42
-    IF              shift and go to state 48
-    BREAK           shift and go to state 49
-    WHILE           shift and go to state 50
-    READ            shift and go to state 51
-    WRITE           shift and go to state 52
-    PRINT           shift and go to state 53
+    BREAK           shift and go to state 50
+    WHILE           shift and go to state 51
+    READ            shift and go to state 52
+    WRITE           shift and go to state 53
+    PRINT           shift and go to state 54
+    IF              shift and go to state 55
 
     stmt                           shift and go to state 44
-    stmtlist                       shift and go to state 97
+    stmtlist                       shift and go to state 99
     location                       shift and go to state 45
+    instr_open                     shift and go to state 48
+    instr_rel                      shift and go to state 49
 
-state 73
+state 75
 
     (24) stmt -> location ASSIGNOP . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -1330,103 +1370,64 @@ state 73
     +               shift and go to state 37
     -               shift and go to state 38
 
-    expr                           shift and go to state 98
-
-state 74
-
-    (25) stmt -> RETURN expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    ;               reduce using rule 25 (stmt -> RETURN expr .)
-    END             reduce using rule 25 (stmt -> RETURN expr .)
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
-
-
-state 75
-
-    (28) stmt -> IF relation . THEN stmt
-    (55) relation -> relation . OR relation
-    (56) relation -> relation . AND relation
-    THEN            shift and go to state 99
-    OR              shift and go to state 100
-    AND             shift and go to state 101
-
+    expr                           shift and go to state 100
 
 state 76
 
-    (53) relation -> ( . relation )
-    (46) expr -> ( . expr )
-    (53) relation -> . ( relation )
-    (54) relation -> . NOT relation
-    (55) relation -> . relation OR relation
-    (56) relation -> . relation AND relation
-    (57) relation -> . expr DF expr
-    (58) relation -> . expr ET expr
-    (59) relation -> . expr GE expr
-    (60) relation -> . expr GT expr
-    (61) relation -> . expr LE expr
-    (62) relation -> . expr LT expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
-    (               shift and go to state 76
-    NOT             shift and go to state 77
-    FLOAT           shift and go to state 30
-    INT             shift and go to state 33
-    ID              shift and go to state 34
-    FCONST          shift and go to state 35
-    ICONST          shift and go to state 36
-    +               shift and go to state 37
-    -               shift and go to state 38
+    (25) stmt -> RETURN expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    ;               reduce using rule 25 (stmt -> RETURN expr .)
+    END             reduce using rule 25 (stmt -> RETURN expr .)
+    ELSE            reduce using rule 25 (stmt -> RETURN expr .)
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
-    relation                       shift and go to state 102
-    expr                           shift and go to state 103
 
 state 77
 
-    (54) relation -> NOT . relation
-    (53) relation -> . ( relation )
-    (54) relation -> . NOT relation
-    (55) relation -> . relation OR relation
-    (56) relation -> . relation AND relation
-    (57) relation -> . expr DF expr
-    (58) relation -> . expr ET expr
-    (59) relation -> . expr GE expr
-    (60) relation -> . expr GT expr
-    (61) relation -> . expr LE expr
-    (62) relation -> . expr LT expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
-    (               shift and go to state 76
-    NOT             shift and go to state 77
+    (31) stmt -> WHILE relation . DO stmt
+    (58) relation -> relation . OR relation
+    (59) relation -> relation . AND relation
+    DO              shift and go to state 101
+    OR              shift and go to state 102
+    AND             shift and go to state 103
+
+
+state 78
+
+    (56) relation -> ( . relation )
+    (49) expr -> ( . expr )
+    (56) relation -> . ( relation )
+    (57) relation -> . NOT relation
+    (58) relation -> . relation OR relation
+    (59) relation -> . relation AND relation
+    (60) relation -> . expr DF expr
+    (61) relation -> . expr ET expr
+    (62) relation -> . expr GE expr
+    (63) relation -> . expr GT expr
+    (64) relation -> . expr LE expr
+    (65) relation -> . expr LT expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
+    (               shift and go to state 78
+    NOT             shift and go to state 79
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -1436,68 +1437,98 @@ state 77
     -               shift and go to state 38
 
     relation                       shift and go to state 104
-    expr                           shift and go to state 78
-
-state 78
-
-    (57) relation -> expr . DF expr
-    (58) relation -> expr . ET expr
-    (59) relation -> expr . GE expr
-    (60) relation -> expr . GT expr
-    (61) relation -> expr . LE expr
-    (62) relation -> expr . LT expr
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    DF              shift and go to state 105
-    ET              shift and go to state 106
-    GE              shift and go to state 107
-    GT              shift and go to state 108
-    LE              shift and go to state 109
-    LT              shift and go to state 110
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
-
+    expr                           shift and go to state 105
 
 state 79
 
-    (30) stmt -> WHILE relation . DO stmt
-    (55) relation -> relation . OR relation
-    (56) relation -> relation . AND relation
-    DO              shift and go to state 111
-    OR              shift and go to state 100
-    AND             shift and go to state 101
+    (57) relation -> NOT . relation
+    (56) relation -> . ( relation )
+    (57) relation -> . NOT relation
+    (58) relation -> . relation OR relation
+    (59) relation -> . relation AND relation
+    (60) relation -> . expr DF expr
+    (61) relation -> . expr ET expr
+    (62) relation -> . expr GE expr
+    (63) relation -> . expr GT expr
+    (64) relation -> . expr LE expr
+    (65) relation -> . expr LT expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
+    (               shift and go to state 78
+    NOT             shift and go to state 79
+    FLOAT           shift and go to state 30
+    INT             shift and go to state 33
+    ID              shift and go to state 34
+    FCONST          shift and go to state 35
+    ICONST          shift and go to state 36
+    +               shift and go to state 37
+    -               shift and go to state 38
 
+    relation                       shift and go to state 106
+    expr                           shift and go to state 80
 
 state 80
 
-    (31) stmt -> READ ( . location )
-    (35) location -> . ID [ expr ]
-    (36) location -> . ID
-    ID              shift and go to state 113
+    (60) relation -> expr . DF expr
+    (61) relation -> expr . ET expr
+    (62) relation -> expr . GE expr
+    (63) relation -> expr . GT expr
+    (64) relation -> expr . LE expr
+    (65) relation -> expr . LT expr
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    DF              shift and go to state 107
+    ET              shift and go to state 108
+    GE              shift and go to state 109
+    GT              shift and go to state 110
+    LE              shift and go to state 111
+    LT              shift and go to state 112
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
-    location                       shift and go to state 112
 
 state 81
 
-    (32) stmt -> WRITE ( . expr )
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (32) stmt -> READ ( . location )
+    (38) location -> . ID [ expr ]
+    (39) location -> . ID
+    ID              shift and go to state 114
+
+    location                       shift and go to state 113
+
+state 82
+
+    (33) stmt -> WRITE ( . expr )
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -1507,504 +1538,471 @@ state 81
     +               shift and go to state 37
     -               shift and go to state 38
 
-    expr                           shift and go to state 114
-
-state 82
-
-    (33) stmt -> PRINT ( . literal )
-    (34) literal -> . STRING
-    STRING          shift and go to state 116
-
-    literal                        shift and go to state 115
+    expr                           shift and go to state 115
 
 state 83
 
-    (37) expr -> FLOAT ( expr . )
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    )               shift and go to state 117
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (34) stmt -> PRINT ( . literal )
+    (37) literal -> . STRING
+    STRING          shift and go to state 117
 
+    literal                        shift and go to state 116
 
 state 84
 
-    (49) expr -> expr / expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    ]               reduce using rule 49 (expr -> expr / expr .)
-    /               reduce using rule 49 (expr -> expr / expr .)
-    *               reduce using rule 49 (expr -> expr / expr .)
-    -               reduce using rule 49 (expr -> expr / expr .)
-    +               reduce using rule 49 (expr -> expr / expr .)
-    )               reduce using rule 49 (expr -> expr / expr .)
-    ;               reduce using rule 49 (expr -> expr / expr .)
-    END             reduce using rule 49 (expr -> expr / expr .)
-    DF              reduce using rule 49 (expr -> expr / expr .)
-    ET              reduce using rule 49 (expr -> expr / expr .)
-    GE              reduce using rule 49 (expr -> expr / expr .)
-    GT              reduce using rule 49 (expr -> expr / expr .)
-    LE              reduce using rule 49 (expr -> expr / expr .)
-    LT              reduce using rule 49 (expr -> expr / expr .)
-    ,               reduce using rule 49 (expr -> expr / expr .)
-    THEN            reduce using rule 49 (expr -> expr / expr .)
-    OR              reduce using rule 49 (expr -> expr / expr .)
-    AND             reduce using rule 49 (expr -> expr / expr .)
-    DO              reduce using rule 49 (expr -> expr / expr .)
+    (35) instr_open -> IF relation . THEN stmt ELSE stmt
+    (36) instr_rel -> IF relation . THEN stmt
+    (58) relation -> relation . OR relation
+    (59) relation -> relation . AND relation
+    THEN            shift and go to state 118
+    OR              shift and go to state 102
+    AND             shift and go to state 103
 
 
 state 85
 
-    (50) expr -> expr * expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    ]               reduce using rule 50 (expr -> expr * expr .)
-    /               reduce using rule 50 (expr -> expr * expr .)
-    *               reduce using rule 50 (expr -> expr * expr .)
-    -               reduce using rule 50 (expr -> expr * expr .)
-    +               reduce using rule 50 (expr -> expr * expr .)
-    )               reduce using rule 50 (expr -> expr * expr .)
-    ;               reduce using rule 50 (expr -> expr * expr .)
-    END             reduce using rule 50 (expr -> expr * expr .)
-    DF              reduce using rule 50 (expr -> expr * expr .)
-    ET              reduce using rule 50 (expr -> expr * expr .)
-    GE              reduce using rule 50 (expr -> expr * expr .)
-    GT              reduce using rule 50 (expr -> expr * expr .)
-    LE              reduce using rule 50 (expr -> expr * expr .)
-    LT              reduce using rule 50 (expr -> expr * expr .)
-    ,               reduce using rule 50 (expr -> expr * expr .)
-    THEN            reduce using rule 50 (expr -> expr * expr .)
-    OR              reduce using rule 50 (expr -> expr * expr .)
-    AND             reduce using rule 50 (expr -> expr * expr .)
-    DO              reduce using rule 50 (expr -> expr * expr .)
+    (40) expr -> FLOAT ( expr . )
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    )               shift and go to state 119
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
 
 state 86
 
-    (51) expr -> expr - expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    ]               reduce using rule 51 (expr -> expr - expr .)
-    -               reduce using rule 51 (expr -> expr - expr .)
-    +               reduce using rule 51 (expr -> expr - expr .)
-    )               reduce using rule 51 (expr -> expr - expr .)
-    ;               reduce using rule 51 (expr -> expr - expr .)
-    END             reduce using rule 51 (expr -> expr - expr .)
-    DF              reduce using rule 51 (expr -> expr - expr .)
-    ET              reduce using rule 51 (expr -> expr - expr .)
-    GE              reduce using rule 51 (expr -> expr - expr .)
-    GT              reduce using rule 51 (expr -> expr - expr .)
-    LE              reduce using rule 51 (expr -> expr - expr .)
-    LT              reduce using rule 51 (expr -> expr - expr .)
-    ,               reduce using rule 51 (expr -> expr - expr .)
-    THEN            reduce using rule 51 (expr -> expr - expr .)
-    OR              reduce using rule 51 (expr -> expr - expr .)
-    AND             reduce using rule 51 (expr -> expr - expr .)
-    DO              reduce using rule 51 (expr -> expr - expr .)
-    /               shift and go to state 57
-    *               shift and go to state 58
+    (52) expr -> expr / expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    ]               reduce using rule 52 (expr -> expr / expr .)
+    /               reduce using rule 52 (expr -> expr / expr .)
+    *               reduce using rule 52 (expr -> expr / expr .)
+    -               reduce using rule 52 (expr -> expr / expr .)
+    +               reduce using rule 52 (expr -> expr / expr .)
+    )               reduce using rule 52 (expr -> expr / expr .)
+    ;               reduce using rule 52 (expr -> expr / expr .)
+    END             reduce using rule 52 (expr -> expr / expr .)
+    ELSE            reduce using rule 52 (expr -> expr / expr .)
+    DF              reduce using rule 52 (expr -> expr / expr .)
+    ET              reduce using rule 52 (expr -> expr / expr .)
+    GE              reduce using rule 52 (expr -> expr / expr .)
+    GT              reduce using rule 52 (expr -> expr / expr .)
+    LE              reduce using rule 52 (expr -> expr / expr .)
+    LT              reduce using rule 52 (expr -> expr / expr .)
+    ,               reduce using rule 52 (expr -> expr / expr .)
+    DO              reduce using rule 52 (expr -> expr / expr .)
+    OR              reduce using rule 52 (expr -> expr / expr .)
+    AND             reduce using rule 52 (expr -> expr / expr .)
+    THEN            reduce using rule 52 (expr -> expr / expr .)
 
 
 state 87
 
-    (52) expr -> expr + expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    ]               reduce using rule 52 (expr -> expr + expr .)
-    -               reduce using rule 52 (expr -> expr + expr .)
-    +               reduce using rule 52 (expr -> expr + expr .)
-    )               reduce using rule 52 (expr -> expr + expr .)
-    ;               reduce using rule 52 (expr -> expr + expr .)
-    END             reduce using rule 52 (expr -> expr + expr .)
-    DF              reduce using rule 52 (expr -> expr + expr .)
-    ET              reduce using rule 52 (expr -> expr + expr .)
-    GE              reduce using rule 52 (expr -> expr + expr .)
-    GT              reduce using rule 52 (expr -> expr + expr .)
-    LE              reduce using rule 52 (expr -> expr + expr .)
-    LT              reduce using rule 52 (expr -> expr + expr .)
-    ,               reduce using rule 52 (expr -> expr + expr .)
-    THEN            reduce using rule 52 (expr -> expr + expr .)
-    OR              reduce using rule 52 (expr -> expr + expr .)
-    AND             reduce using rule 52 (expr -> expr + expr .)
-    DO              reduce using rule 52 (expr -> expr + expr .)
-    /               shift and go to state 57
-    *               shift and go to state 58
+    (53) expr -> expr * expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    ]               reduce using rule 53 (expr -> expr * expr .)
+    /               reduce using rule 53 (expr -> expr * expr .)
+    *               reduce using rule 53 (expr -> expr * expr .)
+    -               reduce using rule 53 (expr -> expr * expr .)
+    +               reduce using rule 53 (expr -> expr * expr .)
+    )               reduce using rule 53 (expr -> expr * expr .)
+    ;               reduce using rule 53 (expr -> expr * expr .)
+    END             reduce using rule 53 (expr -> expr * expr .)
+    ELSE            reduce using rule 53 (expr -> expr * expr .)
+    DF              reduce using rule 53 (expr -> expr * expr .)
+    ET              reduce using rule 53 (expr -> expr * expr .)
+    GE              reduce using rule 53 (expr -> expr * expr .)
+    GT              reduce using rule 53 (expr -> expr * expr .)
+    LE              reduce using rule 53 (expr -> expr * expr .)
+    LT              reduce using rule 53 (expr -> expr * expr .)
+    ,               reduce using rule 53 (expr -> expr * expr .)
+    DO              reduce using rule 53 (expr -> expr * expr .)
+    OR              reduce using rule 53 (expr -> expr * expr .)
+    AND             reduce using rule 53 (expr -> expr * expr .)
+    THEN            reduce using rule 53 (expr -> expr * expr .)
 
 
 state 88
 
-    (46) expr -> ( expr ) .
-    ]               reduce using rule 46 (expr -> ( expr ) .)
-    /               reduce using rule 46 (expr -> ( expr ) .)
-    *               reduce using rule 46 (expr -> ( expr ) .)
-    -               reduce using rule 46 (expr -> ( expr ) .)
-    +               reduce using rule 46 (expr -> ( expr ) .)
-    )               reduce using rule 46 (expr -> ( expr ) .)
-    ;               reduce using rule 46 (expr -> ( expr ) .)
-    END             reduce using rule 46 (expr -> ( expr ) .)
-    DF              reduce using rule 46 (expr -> ( expr ) .)
-    ET              reduce using rule 46 (expr -> ( expr ) .)
-    GE              reduce using rule 46 (expr -> ( expr ) .)
-    GT              reduce using rule 46 (expr -> ( expr ) .)
-    LE              reduce using rule 46 (expr -> ( expr ) .)
-    LT              reduce using rule 46 (expr -> ( expr ) .)
-    ,               reduce using rule 46 (expr -> ( expr ) .)
-    THEN            reduce using rule 46 (expr -> ( expr ) .)
-    OR              reduce using rule 46 (expr -> ( expr ) .)
-    AND             reduce using rule 46 (expr -> ( expr ) .)
-    DO              reduce using rule 46 (expr -> ( expr ) .)
+    (54) expr -> expr - expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    ]               reduce using rule 54 (expr -> expr - expr .)
+    -               reduce using rule 54 (expr -> expr - expr .)
+    +               reduce using rule 54 (expr -> expr - expr .)
+    )               reduce using rule 54 (expr -> expr - expr .)
+    ;               reduce using rule 54 (expr -> expr - expr .)
+    END             reduce using rule 54 (expr -> expr - expr .)
+    ELSE            reduce using rule 54 (expr -> expr - expr .)
+    DF              reduce using rule 54 (expr -> expr - expr .)
+    ET              reduce using rule 54 (expr -> expr - expr .)
+    GE              reduce using rule 54 (expr -> expr - expr .)
+    GT              reduce using rule 54 (expr -> expr - expr .)
+    LE              reduce using rule 54 (expr -> expr - expr .)
+    LT              reduce using rule 54 (expr -> expr - expr .)
+    ,               reduce using rule 54 (expr -> expr - expr .)
+    DO              reduce using rule 54 (expr -> expr - expr .)
+    OR              reduce using rule 54 (expr -> expr - expr .)
+    AND             reduce using rule 54 (expr -> expr - expr .)
+    THEN            reduce using rule 54 (expr -> expr - expr .)
+    /               shift and go to state 59
+    *               shift and go to state 60
 
 
 state 89
 
-    (38) expr -> INT ( expr . )
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    )               shift and go to state 118
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (55) expr -> expr + expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    ]               reduce using rule 55 (expr -> expr + expr .)
+    -               reduce using rule 55 (expr -> expr + expr .)
+    +               reduce using rule 55 (expr -> expr + expr .)
+    )               reduce using rule 55 (expr -> expr + expr .)
+    ;               reduce using rule 55 (expr -> expr + expr .)
+    END             reduce using rule 55 (expr -> expr + expr .)
+    ELSE            reduce using rule 55 (expr -> expr + expr .)
+    DF              reduce using rule 55 (expr -> expr + expr .)
+    ET              reduce using rule 55 (expr -> expr + expr .)
+    GE              reduce using rule 55 (expr -> expr + expr .)
+    GT              reduce using rule 55 (expr -> expr + expr .)
+    LE              reduce using rule 55 (expr -> expr + expr .)
+    LT              reduce using rule 55 (expr -> expr + expr .)
+    ,               reduce using rule 55 (expr -> expr + expr .)
+    DO              reduce using rule 55 (expr -> expr + expr .)
+    OR              reduce using rule 55 (expr -> expr + expr .)
+    AND             reduce using rule 55 (expr -> expr + expr .)
+    THEN            reduce using rule 55 (expr -> expr + expr .)
+    /               shift and go to state 59
+    *               shift and go to state 60
 
 
 state 90
 
-    (39) expr -> ID ( _3_exprlist_optional . )
-    )               shift and go to state 119
+    (49) expr -> ( expr ) .
+    ]               reduce using rule 49 (expr -> ( expr ) .)
+    /               reduce using rule 49 (expr -> ( expr ) .)
+    *               reduce using rule 49 (expr -> ( expr ) .)
+    -               reduce using rule 49 (expr -> ( expr ) .)
+    +               reduce using rule 49 (expr -> ( expr ) .)
+    )               reduce using rule 49 (expr -> ( expr ) .)
+    ;               reduce using rule 49 (expr -> ( expr ) .)
+    END             reduce using rule 49 (expr -> ( expr ) .)
+    ELSE            reduce using rule 49 (expr -> ( expr ) .)
+    DF              reduce using rule 49 (expr -> ( expr ) .)
+    ET              reduce using rule 49 (expr -> ( expr ) .)
+    GE              reduce using rule 49 (expr -> ( expr ) .)
+    GT              reduce using rule 49 (expr -> ( expr ) .)
+    LE              reduce using rule 49 (expr -> ( expr ) .)
+    LT              reduce using rule 49 (expr -> ( expr ) .)
+    ,               reduce using rule 49 (expr -> ( expr ) .)
+    DO              reduce using rule 49 (expr -> ( expr ) .)
+    OR              reduce using rule 49 (expr -> ( expr ) .)
+    AND             reduce using rule 49 (expr -> ( expr ) .)
+    THEN            reduce using rule 49 (expr -> ( expr ) .)
 
 
 state 91
 
-    (40) _3_exprlist_optional -> exprlist .
-    (64) exprlist -> exprlist . , expr
-    )               reduce using rule 40 (_3_exprlist_optional -> exprlist .)
-    ,               shift and go to state 120
+    (41) expr -> INT ( expr . )
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    )               shift and go to state 120
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
 
 state 92
 
-    (63) exprlist -> expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    ,               reduce using rule 63 (exprlist -> expr .)
-    )               reduce using rule 63 (exprlist -> expr .)
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (42) expr -> ID ( _3_exprlist_optional . )
+    )               shift and go to state 121
 
 
 state 93
 
-    (42) expr -> ID [ expr . ]
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    ]               shift and go to state 121
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (43) _3_exprlist_optional -> exprlist .
+    (67) exprlist -> exprlist . , expr
+    )               reduce using rule 43 (_3_exprlist_optional -> exprlist .)
+    ,               shift and go to state 122
 
 
 state 94
 
-    (23) stmt -> ID ( exprlist . )
-    (64) exprlist -> exprlist . , expr
-    )               shift and go to state 122
-    ,               shift and go to state 120
+    (66) exprlist -> expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    ,               reduce using rule 66 (exprlist -> expr .)
+    )               reduce using rule 66 (exprlist -> expr .)
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
 
 state 95
 
-    (35) location -> ID [ expr . ]
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
+    (45) expr -> ID [ expr . ]
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
     ]               shift and go to state 123
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
 
 state 96
 
-    (27) stmt -> BEGIN stmtlist END .
-    ;               reduce using rule 27 (stmt -> BEGIN stmtlist END .)
-    END             reduce using rule 27 (stmt -> BEGIN stmtlist END .)
+    (23) stmt -> ID ( exprlist . )
+    (67) exprlist -> exprlist . , expr
+    )               shift and go to state 124
+    ,               shift and go to state 122
 
 
 state 97
+
+    (38) location -> ID [ expr . ]
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    ]               shift and go to state 125
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
+
+
+state 98
+
+    (27) stmt -> BEGIN stmtlist END .
+    ;               reduce using rule 27 (stmt -> BEGIN stmtlist END .)
+    END             reduce using rule 27 (stmt -> BEGIN stmtlist END .)
+    ELSE            reduce using rule 27 (stmt -> BEGIN stmtlist END .)
+
+
+state 99
 
     (21) stmtlist -> stmt ; stmtlist .
     END             reduce using rule 21 (stmtlist -> stmt ; stmtlist .)
 
 
-state 98
+state 100
 
     (24) stmt -> location ASSIGNOP expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
     ;               reduce using rule 24 (stmt -> location ASSIGNOP expr .)
     END             reduce using rule 24 (stmt -> location ASSIGNOP expr .)
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    ELSE            reduce using rule 24 (stmt -> location ASSIGNOP expr .)
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
 
-state 99
+state 101
 
-    (28) stmt -> IF relation THEN . stmt
+    (31) stmt -> WHILE relation DO . stmt
     (23) stmt -> . ID ( exprlist )
     (24) stmt -> . location ASSIGNOP expr
     (25) stmt -> . RETURN expr
     (26) stmt -> . SKIP
     (27) stmt -> . BEGIN stmtlist END
-    (28) stmt -> . IF relation THEN stmt
-    (29) stmt -> . BREAK
-    (30) stmt -> . WHILE relation DO stmt
-    (31) stmt -> . READ ( location )
-    (32) stmt -> . WRITE ( expr )
-    (33) stmt -> . PRINT ( literal )
-    (35) location -> . ID [ expr ]
-    (36) location -> . ID
+    (28) stmt -> . instr_open
+    (29) stmt -> . instr_rel
+    (30) stmt -> . BREAK
+    (31) stmt -> . WHILE relation DO stmt
+    (32) stmt -> . READ ( location )
+    (33) stmt -> . WRITE ( expr )
+    (34) stmt -> . PRINT ( literal )
+    (38) location -> . ID [ expr ]
+    (39) location -> . ID
+    (35) instr_open -> . IF relation THEN stmt ELSE stmt
+    (36) instr_rel -> . IF relation THEN stmt
     ID              shift and go to state 41
     RETURN          shift and go to state 46
     SKIP            shift and go to state 47
     BEGIN           shift and go to state 42
-    IF              shift and go to state 48
-    BREAK           shift and go to state 49
-    WHILE           shift and go to state 50
-    READ            shift and go to state 51
-    WRITE           shift and go to state 52
-    PRINT           shift and go to state 53
+    BREAK           shift and go to state 50
+    WHILE           shift and go to state 51
+    READ            shift and go to state 52
+    WRITE           shift and go to state 53
+    PRINT           shift and go to state 54
+    IF              shift and go to state 55
 
-    stmt                           shift and go to state 124
+    stmt                           shift and go to state 126
     location                       shift and go to state 45
-
-state 100
-
-    (55) relation -> relation OR . relation
-    (53) relation -> . ( relation )
-    (54) relation -> . NOT relation
-    (55) relation -> . relation OR relation
-    (56) relation -> . relation AND relation
-    (57) relation -> . expr DF expr
-    (58) relation -> . expr ET expr
-    (59) relation -> . expr GE expr
-    (60) relation -> . expr GT expr
-    (61) relation -> . expr LE expr
-    (62) relation -> . expr LT expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
-    (               shift and go to state 76
-    NOT             shift and go to state 77
-    FLOAT           shift and go to state 30
-    INT             shift and go to state 33
-    ID              shift and go to state 34
-    FCONST          shift and go to state 35
-    ICONST          shift and go to state 36
-    +               shift and go to state 37
-    -               shift and go to state 38
-
-    relation                       shift and go to state 125
-    expr                           shift and go to state 78
-
-state 101
-
-    (56) relation -> relation AND . relation
-    (53) relation -> . ( relation )
-    (54) relation -> . NOT relation
-    (55) relation -> . relation OR relation
-    (56) relation -> . relation AND relation
-    (57) relation -> . expr DF expr
-    (58) relation -> . expr ET expr
-    (59) relation -> . expr GE expr
-    (60) relation -> . expr GT expr
-    (61) relation -> . expr LE expr
-    (62) relation -> . expr LT expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
-    (               shift and go to state 76
-    NOT             shift and go to state 77
-    FLOAT           shift and go to state 30
-    INT             shift and go to state 33
-    ID              shift and go to state 34
-    FCONST          shift and go to state 35
-    ICONST          shift and go to state 36
-    +               shift and go to state 37
-    -               shift and go to state 38
-
-    relation                       shift and go to state 126
-    expr                           shift and go to state 78
+    instr_open                     shift and go to state 48
+    instr_rel                      shift and go to state 49
 
 state 102
 
-    (53) relation -> ( relation . )
-    (55) relation -> relation . OR relation
-    (56) relation -> relation . AND relation
-    )               shift and go to state 127
-    OR              shift and go to state 100
-    AND             shift and go to state 101
+    (58) relation -> relation OR . relation
+    (56) relation -> . ( relation )
+    (57) relation -> . NOT relation
+    (58) relation -> . relation OR relation
+    (59) relation -> . relation AND relation
+    (60) relation -> . expr DF expr
+    (61) relation -> . expr ET expr
+    (62) relation -> . expr GE expr
+    (63) relation -> . expr GT expr
+    (64) relation -> . expr LE expr
+    (65) relation -> . expr LT expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
+    (               shift and go to state 78
+    NOT             shift and go to state 79
+    FLOAT           shift and go to state 30
+    INT             shift and go to state 33
+    ID              shift and go to state 34
+    FCONST          shift and go to state 35
+    ICONST          shift and go to state 36
+    +               shift and go to state 37
+    -               shift and go to state 38
 
+    relation                       shift and go to state 127
+    expr                           shift and go to state 80
 
 state 103
 
-    (46) expr -> ( expr . )
-    (57) relation -> expr . DF expr
-    (58) relation -> expr . ET expr
-    (59) relation -> expr . GE expr
-    (60) relation -> expr . GT expr
-    (61) relation -> expr . LE expr
-    (62) relation -> expr . LT expr
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    )               shift and go to state 88
-    DF              shift and go to state 105
-    ET              shift and go to state 106
-    GE              shift and go to state 107
-    GT              shift and go to state 108
-    LE              shift and go to state 109
-    LT              shift and go to state 110
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (59) relation -> relation AND . relation
+    (56) relation -> . ( relation )
+    (57) relation -> . NOT relation
+    (58) relation -> . relation OR relation
+    (59) relation -> . relation AND relation
+    (60) relation -> . expr DF expr
+    (61) relation -> . expr ET expr
+    (62) relation -> . expr GE expr
+    (63) relation -> . expr GT expr
+    (64) relation -> . expr LE expr
+    (65) relation -> . expr LT expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
+    (               shift and go to state 78
+    NOT             shift and go to state 79
+    FLOAT           shift and go to state 30
+    INT             shift and go to state 33
+    ID              shift and go to state 34
+    FCONST          shift and go to state 35
+    ICONST          shift and go to state 36
+    +               shift and go to state 37
+    -               shift and go to state 38
 
+    relation                       shift and go to state 128
+    expr                           shift and go to state 80
 
 state 104
 
-    (54) relation -> NOT relation .
-    (55) relation -> relation . OR relation
-    (56) relation -> relation . AND relation
-    THEN            reduce using rule 54 (relation -> NOT relation .)
-    OR              reduce using rule 54 (relation -> NOT relation .)
-    AND             reduce using rule 54 (relation -> NOT relation .)
-    DO              reduce using rule 54 (relation -> NOT relation .)
-    )               reduce using rule 54 (relation -> NOT relation .)
+    (56) relation -> ( relation . )
+    (58) relation -> relation . OR relation
+    (59) relation -> relation . AND relation
+    )               shift and go to state 129
+    OR              shift and go to state 102
+    AND             shift and go to state 103
 
 
 state 105
 
-    (57) relation -> expr DF . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
-    FLOAT           shift and go to state 30
-    INT             shift and go to state 33
-    ID              shift and go to state 34
-    FCONST          shift and go to state 35
-    ICONST          shift and go to state 36
-    (               shift and go to state 32
-    +               shift and go to state 37
-    -               shift and go to state 38
+    (49) expr -> ( expr . )
+    (60) relation -> expr . DF expr
+    (61) relation -> expr . ET expr
+    (62) relation -> expr . GE expr
+    (63) relation -> expr . GT expr
+    (64) relation -> expr . LE expr
+    (65) relation -> expr . LT expr
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    )               shift and go to state 90
+    DF              shift and go to state 107
+    ET              shift and go to state 108
+    GE              shift and go to state 109
+    GT              shift and go to state 110
+    LE              shift and go to state 111
+    LT              shift and go to state 112
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
-    expr                           shift and go to state 128
 
 state 106
 
-    (58) relation -> expr ET . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
-    FLOAT           shift and go to state 30
-    INT             shift and go to state 33
-    ID              shift and go to state 34
-    FCONST          shift and go to state 35
-    ICONST          shift and go to state 36
-    (               shift and go to state 32
-    +               shift and go to state 37
-    -               shift and go to state 38
+    (57) relation -> NOT relation .
+    (58) relation -> relation . OR relation
+    (59) relation -> relation . AND relation
+    DO              reduce using rule 57 (relation -> NOT relation .)
+    OR              reduce using rule 57 (relation -> NOT relation .)
+    AND             reduce using rule 57 (relation -> NOT relation .)
+    THEN            reduce using rule 57 (relation -> NOT relation .)
+    )               reduce using rule 57 (relation -> NOT relation .)
 
-    expr                           shift and go to state 129
 
 state 107
 
-    (59) relation -> expr GE . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (60) relation -> expr DF . expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -2018,21 +2016,21 @@ state 107
 
 state 108
 
-    (60) relation -> expr GT . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (61) relation -> expr ET . expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -2046,21 +2044,21 @@ state 108
 
 state 109
 
-    (61) relation -> expr LE . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (62) relation -> expr GE . expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -2074,21 +2072,21 @@ state 109
 
 state 110
 
-    (62) relation -> expr LT . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (63) relation -> expr GT . expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -2102,163 +2100,21 @@ state 110
 
 state 111
 
-    (30) stmt -> WHILE relation DO . stmt
-    (23) stmt -> . ID ( exprlist )
-    (24) stmt -> . location ASSIGNOP expr
-    (25) stmt -> . RETURN expr
-    (26) stmt -> . SKIP
-    (27) stmt -> . BEGIN stmtlist END
-    (28) stmt -> . IF relation THEN stmt
-    (29) stmt -> . BREAK
-    (30) stmt -> . WHILE relation DO stmt
-    (31) stmt -> . READ ( location )
-    (32) stmt -> . WRITE ( expr )
-    (33) stmt -> . PRINT ( literal )
-    (35) location -> . ID [ expr ]
-    (36) location -> . ID
-    ID              shift and go to state 41
-    RETURN          shift and go to state 46
-    SKIP            shift and go to state 47
-    BEGIN           shift and go to state 42
-    IF              shift and go to state 48
-    BREAK           shift and go to state 49
-    WHILE           shift and go to state 50
-    READ            shift and go to state 51
-    WRITE           shift and go to state 52
-    PRINT           shift and go to state 53
-
-    stmt                           shift and go to state 134
-    location                       shift and go to state 45
-
-state 112
-
-    (31) stmt -> READ ( location . )
-    )               shift and go to state 135
-
-
-state 113
-
-    (35) location -> ID . [ expr ]
-    (36) location -> ID .
-    [               shift and go to state 69
-    )               reduce using rule 36 (location -> ID .)
-
-
-state 114
-
-    (32) stmt -> WRITE ( expr . )
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    )               shift and go to state 136
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
-
-
-state 115
-
-    (33) stmt -> PRINT ( literal . )
-    )               shift and go to state 137
-
-
-state 116
-
-    (34) literal -> STRING .
-    )               reduce using rule 34 (literal -> STRING .)
-
-
-state 117
-
-    (37) expr -> FLOAT ( expr ) .
-    ]               reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    /               reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    *               reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    -               reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    +               reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    )               reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    ;               reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    END             reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    DF              reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    ET              reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    GE              reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    GT              reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    LE              reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    LT              reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    ,               reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    THEN            reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    OR              reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    AND             reduce using rule 37 (expr -> FLOAT ( expr ) .)
-    DO              reduce using rule 37 (expr -> FLOAT ( expr ) .)
-
-
-state 118
-
-    (38) expr -> INT ( expr ) .
-    ]               reduce using rule 38 (expr -> INT ( expr ) .)
-    /               reduce using rule 38 (expr -> INT ( expr ) .)
-    *               reduce using rule 38 (expr -> INT ( expr ) .)
-    -               reduce using rule 38 (expr -> INT ( expr ) .)
-    +               reduce using rule 38 (expr -> INT ( expr ) .)
-    )               reduce using rule 38 (expr -> INT ( expr ) .)
-    ;               reduce using rule 38 (expr -> INT ( expr ) .)
-    END             reduce using rule 38 (expr -> INT ( expr ) .)
-    DF              reduce using rule 38 (expr -> INT ( expr ) .)
-    ET              reduce using rule 38 (expr -> INT ( expr ) .)
-    GE              reduce using rule 38 (expr -> INT ( expr ) .)
-    GT              reduce using rule 38 (expr -> INT ( expr ) .)
-    LE              reduce using rule 38 (expr -> INT ( expr ) .)
-    LT              reduce using rule 38 (expr -> INT ( expr ) .)
-    ,               reduce using rule 38 (expr -> INT ( expr ) .)
-    THEN            reduce using rule 38 (expr -> INT ( expr ) .)
-    OR              reduce using rule 38 (expr -> INT ( expr ) .)
-    AND             reduce using rule 38 (expr -> INT ( expr ) .)
-    DO              reduce using rule 38 (expr -> INT ( expr ) .)
-
-
-state 119
-
-    (39) expr -> ID ( _3_exprlist_optional ) .
-    ]               reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    /               reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    *               reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    -               reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    +               reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    )               reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    ;               reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    END             reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    DF              reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    ET              reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    GE              reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    GT              reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    LE              reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    LT              reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    ,               reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    THEN            reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    OR              reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    AND             reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-    DO              reduce using rule 39 (expr -> ID ( _3_exprlist_optional ) .)
-
-
-state 120
-
-    (64) exprlist -> exprlist , . expr
-    (37) expr -> . FLOAT ( expr )
-    (38) expr -> . INT ( expr )
-    (39) expr -> . ID ( _3_exprlist_optional )
-    (42) expr -> . ID [ expr ]
-    (43) expr -> . ID
-    (44) expr -> . FCONST
-    (45) expr -> . ICONST
-    (46) expr -> . ( expr )
-    (47) expr -> . + expr
-    (48) expr -> . - expr
-    (49) expr -> . expr / expr
-    (50) expr -> . expr * expr
-    (51) expr -> . expr - expr
-    (52) expr -> . expr + expr
+    (64) relation -> expr LE . expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
     FLOAT           shift and go to state 30
     INT             shift and go to state 33
     ID              shift and go to state 34
@@ -2268,233 +2124,491 @@ state 120
     +               shift and go to state 37
     -               shift and go to state 38
 
-    expr                           shift and go to state 138
+    expr                           shift and go to state 134
+
+state 112
+
+    (65) relation -> expr LT . expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
+    FLOAT           shift and go to state 30
+    INT             shift and go to state 33
+    ID              shift and go to state 34
+    FCONST          shift and go to state 35
+    ICONST          shift and go to state 36
+    (               shift and go to state 32
+    +               shift and go to state 37
+    -               shift and go to state 38
+
+    expr                           shift and go to state 135
+
+state 113
+
+    (32) stmt -> READ ( location . )
+    )               shift and go to state 136
+
+
+state 114
+
+    (38) location -> ID . [ expr ]
+    (39) location -> ID .
+    [               shift and go to state 71
+    )               reduce using rule 39 (location -> ID .)
+
+
+state 115
+
+    (33) stmt -> WRITE ( expr . )
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    )               shift and go to state 137
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
+
+
+state 116
+
+    (34) stmt -> PRINT ( literal . )
+    )               shift and go to state 138
+
+
+state 117
+
+    (37) literal -> STRING .
+    )               reduce using rule 37 (literal -> STRING .)
+
+
+state 118
+
+    (35) instr_open -> IF relation THEN . stmt ELSE stmt
+    (36) instr_rel -> IF relation THEN . stmt
+    (23) stmt -> . ID ( exprlist )
+    (24) stmt -> . location ASSIGNOP expr
+    (25) stmt -> . RETURN expr
+    (26) stmt -> . SKIP
+    (27) stmt -> . BEGIN stmtlist END
+    (28) stmt -> . instr_open
+    (29) stmt -> . instr_rel
+    (30) stmt -> . BREAK
+    (31) stmt -> . WHILE relation DO stmt
+    (32) stmt -> . READ ( location )
+    (33) stmt -> . WRITE ( expr )
+    (34) stmt -> . PRINT ( literal )
+    (38) location -> . ID [ expr ]
+    (39) location -> . ID
+    (35) instr_open -> . IF relation THEN stmt ELSE stmt
+    (36) instr_rel -> . IF relation THEN stmt
+    ID              shift and go to state 41
+    RETURN          shift and go to state 46
+    SKIP            shift and go to state 47
+    BEGIN           shift and go to state 42
+    BREAK           shift and go to state 50
+    WHILE           shift and go to state 51
+    READ            shift and go to state 52
+    WRITE           shift and go to state 53
+    PRINT           shift and go to state 54
+    IF              shift and go to state 55
+
+    stmt                           shift and go to state 139
+    location                       shift and go to state 45
+    instr_open                     shift and go to state 48
+    instr_rel                      shift and go to state 49
+
+state 119
+
+    (40) expr -> FLOAT ( expr ) .
+    ]               reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    /               reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    *               reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    -               reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    +               reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    )               reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    ;               reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    END             reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    ELSE            reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    DF              reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    ET              reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    GE              reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    GT              reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    LE              reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    LT              reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    ,               reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    DO              reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    OR              reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    AND             reduce using rule 40 (expr -> FLOAT ( expr ) .)
+    THEN            reduce using rule 40 (expr -> FLOAT ( expr ) .)
+
+
+state 120
+
+    (41) expr -> INT ( expr ) .
+    ]               reduce using rule 41 (expr -> INT ( expr ) .)
+    /               reduce using rule 41 (expr -> INT ( expr ) .)
+    *               reduce using rule 41 (expr -> INT ( expr ) .)
+    -               reduce using rule 41 (expr -> INT ( expr ) .)
+    +               reduce using rule 41 (expr -> INT ( expr ) .)
+    )               reduce using rule 41 (expr -> INT ( expr ) .)
+    ;               reduce using rule 41 (expr -> INT ( expr ) .)
+    END             reduce using rule 41 (expr -> INT ( expr ) .)
+    ELSE            reduce using rule 41 (expr -> INT ( expr ) .)
+    DF              reduce using rule 41 (expr -> INT ( expr ) .)
+    ET              reduce using rule 41 (expr -> INT ( expr ) .)
+    GE              reduce using rule 41 (expr -> INT ( expr ) .)
+    GT              reduce using rule 41 (expr -> INT ( expr ) .)
+    LE              reduce using rule 41 (expr -> INT ( expr ) .)
+    LT              reduce using rule 41 (expr -> INT ( expr ) .)
+    ,               reduce using rule 41 (expr -> INT ( expr ) .)
+    DO              reduce using rule 41 (expr -> INT ( expr ) .)
+    OR              reduce using rule 41 (expr -> INT ( expr ) .)
+    AND             reduce using rule 41 (expr -> INT ( expr ) .)
+    THEN            reduce using rule 41 (expr -> INT ( expr ) .)
+
 
 state 121
 
-    (42) expr -> ID [ expr ] .
-    ]               reduce using rule 42 (expr -> ID [ expr ] .)
-    /               reduce using rule 42 (expr -> ID [ expr ] .)
-    *               reduce using rule 42 (expr -> ID [ expr ] .)
-    -               reduce using rule 42 (expr -> ID [ expr ] .)
-    +               reduce using rule 42 (expr -> ID [ expr ] .)
-    )               reduce using rule 42 (expr -> ID [ expr ] .)
-    ;               reduce using rule 42 (expr -> ID [ expr ] .)
-    END             reduce using rule 42 (expr -> ID [ expr ] .)
-    DF              reduce using rule 42 (expr -> ID [ expr ] .)
-    ET              reduce using rule 42 (expr -> ID [ expr ] .)
-    GE              reduce using rule 42 (expr -> ID [ expr ] .)
-    GT              reduce using rule 42 (expr -> ID [ expr ] .)
-    LE              reduce using rule 42 (expr -> ID [ expr ] .)
-    LT              reduce using rule 42 (expr -> ID [ expr ] .)
-    ,               reduce using rule 42 (expr -> ID [ expr ] .)
-    THEN            reduce using rule 42 (expr -> ID [ expr ] .)
-    OR              reduce using rule 42 (expr -> ID [ expr ] .)
-    AND             reduce using rule 42 (expr -> ID [ expr ] .)
-    DO              reduce using rule 42 (expr -> ID [ expr ] .)
+    (42) expr -> ID ( _3_exprlist_optional ) .
+    ]               reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    /               reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    *               reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    -               reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    +               reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    )               reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    ;               reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    END             reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    ELSE            reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    DF              reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    ET              reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    GE              reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    GT              reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    LE              reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    LT              reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    ,               reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    DO              reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    OR              reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    AND             reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
+    THEN            reduce using rule 42 (expr -> ID ( _3_exprlist_optional ) .)
 
 
 state 122
 
-    (23) stmt -> ID ( exprlist ) .
-    ;               reduce using rule 23 (stmt -> ID ( exprlist ) .)
-    END             reduce using rule 23 (stmt -> ID ( exprlist ) .)
+    (67) exprlist -> exprlist , . expr
+    (40) expr -> . FLOAT ( expr )
+    (41) expr -> . INT ( expr )
+    (42) expr -> . ID ( _3_exprlist_optional )
+    (45) expr -> . ID [ expr ]
+    (46) expr -> . ID
+    (47) expr -> . FCONST
+    (48) expr -> . ICONST
+    (49) expr -> . ( expr )
+    (50) expr -> . + expr
+    (51) expr -> . - expr
+    (52) expr -> . expr / expr
+    (53) expr -> . expr * expr
+    (54) expr -> . expr - expr
+    (55) expr -> . expr + expr
+    FLOAT           shift and go to state 30
+    INT             shift and go to state 33
+    ID              shift and go to state 34
+    FCONST          shift and go to state 35
+    ICONST          shift and go to state 36
+    (               shift and go to state 32
+    +               shift and go to state 37
+    -               shift and go to state 38
 
+    expr                           shift and go to state 140
 
 state 123
 
-    (35) location -> ID [ expr ] .
-    ASSIGNOP        reduce using rule 35 (location -> ID [ expr ] .)
-    )               reduce using rule 35 (location -> ID [ expr ] .)
+    (45) expr -> ID [ expr ] .
+    ]               reduce using rule 45 (expr -> ID [ expr ] .)
+    /               reduce using rule 45 (expr -> ID [ expr ] .)
+    *               reduce using rule 45 (expr -> ID [ expr ] .)
+    -               reduce using rule 45 (expr -> ID [ expr ] .)
+    +               reduce using rule 45 (expr -> ID [ expr ] .)
+    )               reduce using rule 45 (expr -> ID [ expr ] .)
+    ;               reduce using rule 45 (expr -> ID [ expr ] .)
+    END             reduce using rule 45 (expr -> ID [ expr ] .)
+    ELSE            reduce using rule 45 (expr -> ID [ expr ] .)
+    DF              reduce using rule 45 (expr -> ID [ expr ] .)
+    ET              reduce using rule 45 (expr -> ID [ expr ] .)
+    GE              reduce using rule 45 (expr -> ID [ expr ] .)
+    GT              reduce using rule 45 (expr -> ID [ expr ] .)
+    LE              reduce using rule 45 (expr -> ID [ expr ] .)
+    LT              reduce using rule 45 (expr -> ID [ expr ] .)
+    ,               reduce using rule 45 (expr -> ID [ expr ] .)
+    DO              reduce using rule 45 (expr -> ID [ expr ] .)
+    OR              reduce using rule 45 (expr -> ID [ expr ] .)
+    AND             reduce using rule 45 (expr -> ID [ expr ] .)
+    THEN            reduce using rule 45 (expr -> ID [ expr ] .)
 
 
 state 124
 
-    (28) stmt -> IF relation THEN stmt .
-    ;               reduce using rule 28 (stmt -> IF relation THEN stmt .)
-    END             reduce using rule 28 (stmt -> IF relation THEN stmt .)
+    (23) stmt -> ID ( exprlist ) .
+    ;               reduce using rule 23 (stmt -> ID ( exprlist ) .)
+    END             reduce using rule 23 (stmt -> ID ( exprlist ) .)
+    ELSE            reduce using rule 23 (stmt -> ID ( exprlist ) .)
 
 
 state 125
 
-    (55) relation -> relation OR relation .
-    (55) relation -> relation . OR relation
-    (56) relation -> relation . AND relation
-    THEN            reduce using rule 55 (relation -> relation OR relation .)
-    OR              reduce using rule 55 (relation -> relation OR relation .)
-    DO              reduce using rule 55 (relation -> relation OR relation .)
-    )               reduce using rule 55 (relation -> relation OR relation .)
-    AND             shift and go to state 101
+    (38) location -> ID [ expr ] .
+    ASSIGNOP        reduce using rule 38 (location -> ID [ expr ] .)
+    )               reduce using rule 38 (location -> ID [ expr ] .)
 
 
 state 126
 
-    (56) relation -> relation AND relation .
-    (55) relation -> relation . OR relation
-    (56) relation -> relation . AND relation
-    THEN            reduce using rule 56 (relation -> relation AND relation .)
-    OR              reduce using rule 56 (relation -> relation AND relation .)
-    AND             reduce using rule 56 (relation -> relation AND relation .)
-    DO              reduce using rule 56 (relation -> relation AND relation .)
-    )               reduce using rule 56 (relation -> relation AND relation .)
+    (31) stmt -> WHILE relation DO stmt .
+    ;               reduce using rule 31 (stmt -> WHILE relation DO stmt .)
+    END             reduce using rule 31 (stmt -> WHILE relation DO stmt .)
+    ELSE            reduce using rule 31 (stmt -> WHILE relation DO stmt .)
 
 
 state 127
 
-    (53) relation -> ( relation ) .
-    THEN            reduce using rule 53 (relation -> ( relation ) .)
-    OR              reduce using rule 53 (relation -> ( relation ) .)
-    AND             reduce using rule 53 (relation -> ( relation ) .)
-    DO              reduce using rule 53 (relation -> ( relation ) .)
-    )               reduce using rule 53 (relation -> ( relation ) .)
+    (58) relation -> relation OR relation .
+    (58) relation -> relation . OR relation
+    (59) relation -> relation . AND relation
+    DO              reduce using rule 58 (relation -> relation OR relation .)
+    OR              reduce using rule 58 (relation -> relation OR relation .)
+    THEN            reduce using rule 58 (relation -> relation OR relation .)
+    )               reduce using rule 58 (relation -> relation OR relation .)
+    AND             shift and go to state 103
 
 
 state 128
 
-    (57) relation -> expr DF expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    THEN            reduce using rule 57 (relation -> expr DF expr .)
-    OR              reduce using rule 57 (relation -> expr DF expr .)
-    AND             reduce using rule 57 (relation -> expr DF expr .)
-    DO              reduce using rule 57 (relation -> expr DF expr .)
-    )               reduce using rule 57 (relation -> expr DF expr .)
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (59) relation -> relation AND relation .
+    (58) relation -> relation . OR relation
+    (59) relation -> relation . AND relation
+    DO              reduce using rule 59 (relation -> relation AND relation .)
+    OR              reduce using rule 59 (relation -> relation AND relation .)
+    AND             reduce using rule 59 (relation -> relation AND relation .)
+    THEN            reduce using rule 59 (relation -> relation AND relation .)
+    )               reduce using rule 59 (relation -> relation AND relation .)
 
 
 state 129
 
-    (58) relation -> expr ET expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    THEN            reduce using rule 58 (relation -> expr ET expr .)
-    OR              reduce using rule 58 (relation -> expr ET expr .)
-    AND             reduce using rule 58 (relation -> expr ET expr .)
-    DO              reduce using rule 58 (relation -> expr ET expr .)
-    )               reduce using rule 58 (relation -> expr ET expr .)
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (56) relation -> ( relation ) .
+    DO              reduce using rule 56 (relation -> ( relation ) .)
+    OR              reduce using rule 56 (relation -> ( relation ) .)
+    AND             reduce using rule 56 (relation -> ( relation ) .)
+    THEN            reduce using rule 56 (relation -> ( relation ) .)
+    )               reduce using rule 56 (relation -> ( relation ) .)
 
 
 state 130
 
-    (59) relation -> expr GE expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    THEN            reduce using rule 59 (relation -> expr GE expr .)
-    OR              reduce using rule 59 (relation -> expr GE expr .)
-    AND             reduce using rule 59 (relation -> expr GE expr .)
-    DO              reduce using rule 59 (relation -> expr GE expr .)
-    )               reduce using rule 59 (relation -> expr GE expr .)
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (60) relation -> expr DF expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    DO              reduce using rule 60 (relation -> expr DF expr .)
+    OR              reduce using rule 60 (relation -> expr DF expr .)
+    AND             reduce using rule 60 (relation -> expr DF expr .)
+    THEN            reduce using rule 60 (relation -> expr DF expr .)
+    )               reduce using rule 60 (relation -> expr DF expr .)
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
 
 state 131
 
-    (60) relation -> expr GT expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    THEN            reduce using rule 60 (relation -> expr GT expr .)
-    OR              reduce using rule 60 (relation -> expr GT expr .)
-    AND             reduce using rule 60 (relation -> expr GT expr .)
-    DO              reduce using rule 60 (relation -> expr GT expr .)
-    )               reduce using rule 60 (relation -> expr GT expr .)
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (61) relation -> expr ET expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    DO              reduce using rule 61 (relation -> expr ET expr .)
+    OR              reduce using rule 61 (relation -> expr ET expr .)
+    AND             reduce using rule 61 (relation -> expr ET expr .)
+    THEN            reduce using rule 61 (relation -> expr ET expr .)
+    )               reduce using rule 61 (relation -> expr ET expr .)
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
 
 state 132
 
-    (61) relation -> expr LE expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    THEN            reduce using rule 61 (relation -> expr LE expr .)
-    OR              reduce using rule 61 (relation -> expr LE expr .)
-    AND             reduce using rule 61 (relation -> expr LE expr .)
-    DO              reduce using rule 61 (relation -> expr LE expr .)
-    )               reduce using rule 61 (relation -> expr LE expr .)
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (62) relation -> expr GE expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    DO              reduce using rule 62 (relation -> expr GE expr .)
+    OR              reduce using rule 62 (relation -> expr GE expr .)
+    AND             reduce using rule 62 (relation -> expr GE expr .)
+    THEN            reduce using rule 62 (relation -> expr GE expr .)
+    )               reduce using rule 62 (relation -> expr GE expr .)
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
 
 state 133
 
-    (62) relation -> expr LT expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    THEN            reduce using rule 62 (relation -> expr LT expr .)
-    OR              reduce using rule 62 (relation -> expr LT expr .)
-    AND             reduce using rule 62 (relation -> expr LT expr .)
-    DO              reduce using rule 62 (relation -> expr LT expr .)
-    )               reduce using rule 62 (relation -> expr LT expr .)
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (63) relation -> expr GT expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    DO              reduce using rule 63 (relation -> expr GT expr .)
+    OR              reduce using rule 63 (relation -> expr GT expr .)
+    AND             reduce using rule 63 (relation -> expr GT expr .)
+    THEN            reduce using rule 63 (relation -> expr GT expr .)
+    )               reduce using rule 63 (relation -> expr GT expr .)
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
 
 state 134
 
-    (30) stmt -> WHILE relation DO stmt .
-    ;               reduce using rule 30 (stmt -> WHILE relation DO stmt .)
-    END             reduce using rule 30 (stmt -> WHILE relation DO stmt .)
+    (64) relation -> expr LE expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    DO              reduce using rule 64 (relation -> expr LE expr .)
+    OR              reduce using rule 64 (relation -> expr LE expr .)
+    AND             reduce using rule 64 (relation -> expr LE expr .)
+    THEN            reduce using rule 64 (relation -> expr LE expr .)
+    )               reduce using rule 64 (relation -> expr LE expr .)
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
 
 state 135
 
-    (31) stmt -> READ ( location ) .
-    ;               reduce using rule 31 (stmt -> READ ( location ) .)
-    END             reduce using rule 31 (stmt -> READ ( location ) .)
+    (65) relation -> expr LT expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    DO              reduce using rule 65 (relation -> expr LT expr .)
+    OR              reduce using rule 65 (relation -> expr LT expr .)
+    AND             reduce using rule 65 (relation -> expr LT expr .)
+    THEN            reduce using rule 65 (relation -> expr LT expr .)
+    )               reduce using rule 65 (relation -> expr LT expr .)
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
 
 
 state 136
 
-    (32) stmt -> WRITE ( expr ) .
-    ;               reduce using rule 32 (stmt -> WRITE ( expr ) .)
-    END             reduce using rule 32 (stmt -> WRITE ( expr ) .)
+    (32) stmt -> READ ( location ) .
+    ;               reduce using rule 32 (stmt -> READ ( location ) .)
+    END             reduce using rule 32 (stmt -> READ ( location ) .)
+    ELSE            reduce using rule 32 (stmt -> READ ( location ) .)
 
 
 state 137
 
-    (33) stmt -> PRINT ( literal ) .
-    ;               reduce using rule 33 (stmt -> PRINT ( literal ) .)
-    END             reduce using rule 33 (stmt -> PRINT ( literal ) .)
+    (33) stmt -> WRITE ( expr ) .
+    ;               reduce using rule 33 (stmt -> WRITE ( expr ) .)
+    END             reduce using rule 33 (stmt -> WRITE ( expr ) .)
+    ELSE            reduce using rule 33 (stmt -> WRITE ( expr ) .)
 
 
 state 138
 
-    (64) exprlist -> exprlist , expr .
-    (49) expr -> expr . / expr
-    (50) expr -> expr . * expr
-    (51) expr -> expr . - expr
-    (52) expr -> expr . + expr
-    ,               reduce using rule 64 (exprlist -> exprlist , expr .)
-    )               reduce using rule 64 (exprlist -> exprlist , expr .)
-    /               shift and go to state 57
-    *               shift and go to state 58
-    -               shift and go to state 59
-    +               shift and go to state 60
+    (34) stmt -> PRINT ( literal ) .
+    ;               reduce using rule 34 (stmt -> PRINT ( literal ) .)
+    END             reduce using rule 34 (stmt -> PRINT ( literal ) .)
+    ELSE            reduce using rule 34 (stmt -> PRINT ( literal ) .)
+
+
+state 139
+
+    (35) instr_open -> IF relation THEN stmt . ELSE stmt
+    (36) instr_rel -> IF relation THEN stmt .
+    ELSE            shift and go to state 141
+    ;               reduce using rule 36 (instr_rel -> IF relation THEN stmt .)
+    END             reduce using rule 36 (instr_rel -> IF relation THEN stmt .)
+
+
+state 140
+
+    (67) exprlist -> exprlist , expr .
+    (52) expr -> expr . / expr
+    (53) expr -> expr . * expr
+    (54) expr -> expr . - expr
+    (55) expr -> expr . + expr
+    ,               reduce using rule 67 (exprlist -> exprlist , expr .)
+    )               reduce using rule 67 (exprlist -> exprlist , expr .)
+    /               shift and go to state 59
+    *               shift and go to state 60
+    -               shift and go to state 61
+    +               shift and go to state 62
+
+
+state 141
+
+    (35) instr_open -> IF relation THEN stmt ELSE . stmt
+    (23) stmt -> . ID ( exprlist )
+    (24) stmt -> . location ASSIGNOP expr
+    (25) stmt -> . RETURN expr
+    (26) stmt -> . SKIP
+    (27) stmt -> . BEGIN stmtlist END
+    (28) stmt -> . instr_open
+    (29) stmt -> . instr_rel
+    (30) stmt -> . BREAK
+    (31) stmt -> . WHILE relation DO stmt
+    (32) stmt -> . READ ( location )
+    (33) stmt -> . WRITE ( expr )
+    (34) stmt -> . PRINT ( literal )
+    (38) location -> . ID [ expr ]
+    (39) location -> . ID
+    (35) instr_open -> . IF relation THEN stmt ELSE stmt
+    (36) instr_rel -> . IF relation THEN stmt
+    ID              shift and go to state 41
+    RETURN          shift and go to state 46
+    SKIP            shift and go to state 47
+    BEGIN           shift and go to state 42
+    BREAK           shift and go to state 50
+    WHILE           shift and go to state 51
+    READ            shift and go to state 52
+    WRITE           shift and go to state 53
+    PRINT           shift and go to state 54
+    IF              shift and go to state 55
+
+    stmt                           shift and go to state 142
+    location                       shift and go to state 45
+    instr_open                     shift and go to state 48
+    instr_rel                      shift and go to state 49
+
+state 142
+
+    (35) instr_open -> IF relation THEN stmt ELSE stmt .
+    ;               reduce using rule 35 (instr_open -> IF relation THEN stmt ELSE stmt .)
+    END             reduce using rule 35 (instr_open -> IF relation THEN stmt ELSE stmt .)
+    ELSE            reduce using rule 35 (instr_open -> IF relation THEN stmt ELSE stmt .)

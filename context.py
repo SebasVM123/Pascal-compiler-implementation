@@ -13,8 +13,8 @@ from pparser  import Parser
 class Context:
 
   def __init__(self):
-    self.lexer  = Lexer(self)
-    self.parser = Parser(self)
+    self.lexer  = Lexer()
+    self.parser = Parser()
     #self.interp = Interpreter(self)
     self.source = ''
     self.ast    = None
@@ -23,11 +23,12 @@ class Context:
   def parse(self, source):
     self.have_errors = False
     self.source = source
+    print(source)
     self.ast = self.parser.parse(self.lexer.tokenize(self.source))
 
-  def run(self):
+  '''def run(self):
     if not self.have_errors:
-      return self.interp.interpret(self.ast)
+      return self.interp.interpret(self.ast)'''
 
   def find_source(self, node):
     indices = self.parser.index_position(node)

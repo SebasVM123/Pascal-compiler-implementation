@@ -21,7 +21,7 @@ optional arguments:
 '''
 from contextlib import redirect_stdout
 from rich       import print
-from plex       import Lexer
+from plex       import print_lexer
 from pparser    import Parser
 from context    import Context
 
@@ -82,13 +82,14 @@ if __name__ == '__main__':
 
   with open(fname, encoding='utf-8') as file:
     source = file.read()
+    
 
   if args.lex:
     flex = fname.split('.')[0] + '.lex'
     print(f'print lexer: {flex}')
     with open(flex, 'w', encoding='utf-8') as f:
       with redirect_stdout(f):
-        Lexer(source)
+        print_lexer(source)
 
   elif args.dot or args.png:
     ast, dot = Parser(source)
@@ -111,13 +112,14 @@ if __name__ == '__main__':
   else:
 
     try:
-      while True:
+      ...
+      '''while True:
         source = input('pl0 $ ')
         context.parse(source)
         if not context.have_errors:
-          for stmt in context.ast.stmts:
+          for stmt in context.ast.funclist[0].stmtlist.stmtlist:
             context.ast = stmt
-            context.run()
+            #context.run()'''
 
     except EOFError:
       pass

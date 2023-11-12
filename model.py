@@ -149,7 +149,8 @@ class Break(Stmt):
 @dataclass
 class IfStmt(Stmt):
     relation: Expr
-    stmt: Stmt
+    thenstmt: Stmt
+    elsestmt: Stmt
 
 @dataclass
 class Skip(Stmt):
@@ -302,12 +303,20 @@ class AST(Visitor):
         tree = Tree("IfStmt")
         hijo1 = tree.add("relation")
         hijo2 = tree.add("then")
+        hijo3 = tree.add("else")
         hijo1.add(n.relation.accept(self))
-        if isinstance(n.stmt, StmtList):
-            for stmt in n.stmt.stmtlist:
+        if isinstance(n.thenstmt, StmtList):
+            for stmt in n.thenstmt.stmtlist:
                 hijo2.add(stmt.accept(self))
         else:
-            hijo2.add(n.stmt.accept(self))
+            hijo2.add(n.thenstmt.accept(self))
+            
+        if isinstance(n.elsestmt, StmtList):
+            for stmt in n.elsestmt.stmtlist:
+                hijo3.add(stmt.accept(self))
+        elif n.elsestmt:
+            hijo3.add(n.elsestmt.accept(self))
+            
         return tree
 
     def visit(self, n: Break):
