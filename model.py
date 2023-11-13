@@ -11,6 +11,7 @@ class Visitor(metaclass=multimeta):
 @dataclass
 class Node:
     def accept(self, v: Visitor, *args, **kwargs):
+        print(v)
         return v.visit(self, *args, **kwargs)
 
 @dataclass
@@ -43,11 +44,12 @@ class Literal(Expr):
 @dataclass
 class Integer(Literal):
     value: int
-    dtype: DataType=field(default_factory = SimpleType('int'))
+    dtype: DataType = SimpleType('int')
+
 @dataclass
 class Float(Literal):
     value: float
-    dtype: DataType=field(default_factory = SimpleType('float'))
+    dtype: DataType = SimpleType('float')
     
 @dataclass
 class Location(Expr):
@@ -56,7 +58,7 @@ class Location(Expr):
 @dataclass
 class SimpleLocation(Location):
     name: str
-    
+
 
 @dataclass
 class ArrayLocation(Location):
@@ -103,12 +105,12 @@ class Declaration(Stmt):
 @dataclass
 class VarDefinition(Declaration):
     name: str
-    datatype: DataType
+    dtype: DataType
 
 @dataclass
 class Parameter(Declaration):
     name: str
-    datatype: DataType
+    dtype: DataType
 
 @dataclass
 class FunDefinition(Declaration):
@@ -116,6 +118,7 @@ class FunDefinition(Declaration):
     parmlist: Declaration
     varlist: Declaration
     stmtlist: Stmt
+    dtype: DataType = field(init=False, default=None)
     
     def __post_init__(self):
         if isinstance(self.parmlist, list):
@@ -221,12 +224,12 @@ class AST(Visitor):
 
     def visit(self, n: Parameter):
         tree = Tree("Parameter" + "(" + n.name + ")")
-        tree.add(n.datatype.accept(self))
+        tree.add(n.dtype.accept(self))
         return tree
 
     def visit(self, n: VarDefinition):
         tree = Tree("VarDefinition" + "(" + n.name + ")")
-        tree.add(n.datatype.accept(self))
+        tree.add(n.dtype.accept(self))
         return tree
 
     # Nodos DATATYPE
