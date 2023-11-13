@@ -242,7 +242,10 @@ class Symtab:
         return None
     
     def current_func(self):
-        return list(self.parent.entries.keys())[0]
+        if self.parent:
+            return list(self.parent.entries.keys())[0]
+        else:
+            return None
     
 @dataclass
 class Integer(Literal):
@@ -265,7 +268,6 @@ class Checker(Visitor):
     def visit(self, n: Literal, env: Symtab):
         # Devolver datatype
         return n.dtype.name
-        
     def visit(self, n: Location, env: Symtab):
         # Buscar en Symtab y extraer datatype (No se encuentra?)
         # Devuelvo el datatype
@@ -273,6 +275,7 @@ class Checker(Visitor):
             return env.get(n.name).datatype.name
         else:
             print("Error location")
+    
     def visit(self, n: TypeCast, env: Symtab):
         # Visitar la expresion asociada
         # Devolver datatype asociado al nodo
@@ -288,7 +291,8 @@ class Checker(Visitor):
             return Left
         else:
             print("Error assign")
-        
+            return None
+    
     def visit(self, n: FuncCall, env: Symtab):
         # Buscar la funcion en Symtab (extraer: Tipo de retorno, el # de parametros)
         # Visitar la lista de Argumentos
@@ -315,6 +319,7 @@ class Checker(Visitor):
             return TLeft
         else:
             print("Error Binary")
+            
     def visit(self, n: Logical, env: Symtab):
         # Visitar el hijo izquierdo (devuelve datatype)
         # Visitar el hijo derecho (devuelve datatype)
@@ -324,18 +329,21 @@ class Checker(Visitor):
         if TLeft == TRight:
             return bool
         else:
-            print("error logical")
+            print("error logical",n.left,TRight)
+
     def visit(self, n: Unary, env: Symtab):
         # Visitar la expression asociada (devuelve datatype)
         # Comparar datatype
         datatype= self.visit(n.fact, env)
         return datatype
+        
     def visit(self, n: FunDefinition, env: Symtab):
         # Agregar el nombre de la funcion a Symtab
         # Crear un nuevo contexto (Symtab)
         # Visitar ParamList, VarList, StmtList
         # Determinar el datatype de la funcion (revisando instrucciones return)
         env.add(n.name,FunDefinition(name=n.name,parmlist=n.parmlist,varlist=n.varlist,stmtlist=n.stmtlist))
+        env.get(n.name).dtype: DataType = field(init=False)
         TFunc=Symtab(env)
         if n.parmlist:
             for parm in n.parmlist.parmlist:
@@ -345,7 +353,8 @@ class Checker(Visitor):
                 self.visit(var,TFunc)
         for stmt in n.stmtlist.stmtlist:
             self.visit(stmt,TFunc)
-        
+            if isinstance(stmt,Return):
+                env.get(n.name).dtype = self.visit(stmt,TFunc)
         
     def visit(self, n: VarDefinition, env: Symtab):
         # Agregar el nombre de la variable a Symtab
@@ -354,6 +363,8 @@ class Checker(Visitor):
     def visit(self, n: Parameter, env: Symtab):
         # Agregar el nombre del parametro a Symtab
         env.add(n.name,Parameter(name=n.name,datatype=n.datatype))
+     
+        
     def visit(self, n: Print, env: Symtab):
         ...		
 
@@ -362,13 +373,15 @@ class Checker(Visitor):
         if env.get(n.expr.name):
             pass
         else: 
-            print("error en write")
+            print("error en write")  
+        
     def visit(self, n: Read, env: Symtab):
         # Buscar la Variable en Symtab
         if env.get(n.location.name):
             ...
         else:
             print("Error en read")
+   
         
     def visit(self, n: While, env: Symtab):
         # Visitar la condicion del While (Comprobar tipo bool)
@@ -376,35 +389,42 @@ class Checker(Visitor):
         self.visit(n.relation,env)
         self.loop_stack.append("while")
         self.visit(n.stmt,env)
-        self.loop_stack.pop() 
-        
+        self.loop_stack.pop()
+    
     def visit(self, n: Break, env: Symtab):
         # Esta dentro de un While?
         if "while" in self.loop_stack:
             pass
         else:
             print("Error: Break fuera de un bucle while.")
+     
     def visit(self, n: IfStmt, env: Symtab):
         # Visitar la condicion del IfStmt (Comprobar tipo bool)
         # Visitar las Stmts del then y else
         if self.visit(n.relation,env) == bool:
-            pass
+            return bool
         else:
             print("Error no bool")
-        self.visit(n.stmt,env)
+        self.visit(n.thenstmt,env)
+        if n.elsestmt:
+            self.visit(n.elsestmt,env)
+    
     def visit(self, n: Return, env: Symtab):
         # Visitar la expresion asociada
         # Actualizar el datatype de la funcion
-        datatype=self.visit(n.value,env)
-        name=env.current_func()
+        # Obtener el tipo de la expresión asociada
+        datatype = self.visit(n.value, env)
+        # Actualizar el datatype de la función
+        name = env.current_func()
         env.get(name).dtype = datatype
+        return datatype  # Agregamos el retorno del tipo
         
     def visit(self, n: Skip, env: Symtab):
         ...
 
     def visit(self, n: Program, env: Symtab):
         # Crear un nuevo contexto (Symtab global)
-        # Visitar cada una de las declaraciones asociadas
+        # Visitar cada una de las declaraciones asociadas        
         EnvProgram=Symtab()
         for func in n.funclist:
             self.visit(func,EnvProgram)
@@ -436,7 +456,7 @@ def main(argv):
         exit(1)
 
     lex = Lexer()
-    txt = open('test3/' + argv[1]).read()
+    txt = open('test3/errors/' + argv[1]).read()
     parser = Parser()
     Nodo = parser.parse(lex.tokenize(txt))
     semantico=Checker()

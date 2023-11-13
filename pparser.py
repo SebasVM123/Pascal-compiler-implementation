@@ -13,6 +13,8 @@ class Parser(sly.Parser):
 
     tokens = Lexer.tokens
 
+    errors=0
+        
     precedence = (
         ('left', IF,THEN),
         ('left', ELSE),
@@ -226,6 +228,8 @@ class Parser(sly.Parser):
 
     def error(self, p):
         print(p)
+        self.errors+=1
+        
     
 def main(argv):
     if len(argv) != 2:
@@ -233,11 +237,12 @@ def main(argv):
         exit(1)
 
     lex = Lexer()
-    txt = open('test2/' + argv[1]).read()
+    txt = open('test3/errors/' + argv[1]).read()
     parser = Parser()
     Nodo = parser.parse(lex.tokenize(txt))
     Arbol = AST()
-    Arbol.printer(Nodo)
+    if parser.errors == 0:
+        Arbol.printer(Nodo)
 
 
 if __name__ == '__main__':

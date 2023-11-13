@@ -1,4 +1,3 @@
-/*No funciona por el else*/
 fun fact(n:int)
 begin
   if n == 1 then return 1
