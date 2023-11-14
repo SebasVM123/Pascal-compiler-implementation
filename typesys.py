@@ -23,6 +23,8 @@ _binary_ops = {
   ('*', 'int', 'int') : 'int',
   ('/', 'int', 'int') : 'int',
 
+  # Logical operations
+
   ('<', 'int', 'int') : 'bool',
   ('<=', 'int', 'int'): 'bool',
   ('>', 'int', 'int') : 'bool',

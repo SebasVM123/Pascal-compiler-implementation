@@ -7,17 +7,19 @@ from plex import Lexer
 from pparser import Parser
 from AST import AST
 from model import *
+from typesys import *
 
 
-def error(code: int, name: str = None):
+def error(code: int, name: str = None, type1: str = None, type2: str = None):
     console = Console()
     if code == 1:
-        console.print(f'[red]Error: variable "{name}" used but no defined.[/red]')
+        console.print(f'[red]Type Error: variable {name} used but no defined.[/red]')
     elif code == 2:
-        console.print(f'[red]Error: array variable "{name}" used without specifying an index.[/red]')
+        console.print(f'[red]Type Error: array variable {name} used without specifying an index.[/red]')
     elif code == 3:
-        console.print(f'[red]Error: variable "{name}" has no indices because it was not defined as an array.[/red]')
-
+        console.print(f'[red]Type Error: variable {name} has no indices because it was not defined as an array.[/red]')
+    elif code == 4:
+        console.print(f'[red]Type Error: expected {type1} in assignment of {name} but a {type2} was given.[/red]')
 
 # ---------------------------------------------------------------------
 #  Tabla de Simbolos
@@ -54,6 +56,7 @@ class Symtab:
                 super().__init__(f'In function "{env.context}": Variable "{name}" has already been defined before')
             elif isinstance(env.entries[name], FunDefinition):
                 super().__init__(f'In function "{env.context}": Function "{name}" has already been defined before')
+
 
     def __init__(self, context=None, parent=None):
         '''
@@ -176,27 +179,33 @@ class Checker(Visitor):
         ...
 
     def visit(self, n: Assign, env: Symtab):
-        # Visitar el location (devuelve datatype)
+        # Visitar el location (devuelve datatype) y marcar ese location como inicializado en VarDefinition
         # Visitar la expresión (devuelve datatype)
         # Comparar ambos tipo de datatype
         print(n, env.context, env.entries.keys())
         print('-' * 100)
 
-        location_dtype = n.location.accept(self, env)
+        if (location_dtype := n.location.accept(self, env)) is not None:
+            var_def = env.get(n.location.name)
+            var_def.init.append(n.location)
+
         expr_dtype = n.expr.accept(self, env)
-        print(location_dtype, expr_dtype)
+
+        if location_dtype != expr_dtype:
+            error(4, name=n.location.name, type1=location_dtype, type2=expr_dtype)
 
     # Expresiones ---------------------------------------------
     def visit(self, n: Integer, env: Symtab):
         # Devolver datatype
-        pass
+        return n.dtype.name
 
     def visit(self, n: Float, env: Symtab):
         # Devolver datatype
-        pass
+        return n.dtype.name
 
     def visit(self, n: SimpleLocation, env: Symtab):
         # Buscar en Symtab y extraer datatype (No se encuentra?)
+        # Comprobar que el tipo de variable (simple o array) concuerda con el tipo de variable definido
         # Devuelvo el datatype
         print(n, env.context, env.entries.keys())
         print('-' * 100)

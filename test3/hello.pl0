@@ -1,7 +1,7 @@
 fun main(x : int)
-    z : int[1000];
+    z : int[5];
 begin
-    z := 3;
-    z := z + x
+    z[1] := 5.3;
+    read(z[1])
 end
 
