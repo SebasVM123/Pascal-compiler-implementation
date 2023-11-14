@@ -1,11 +1,22 @@
 # checker.py
 import sys
 
+from rich.console import Console
+
 from plex import Lexer
 from pparser import Parser
 from AST import AST
-
 from model import *
+
+
+def error(code: int, name: str = None):
+    console = Console()
+    if code == 1:
+        console.print(f'[red]Error: variable "{name}" used but no defined.[/red]')
+    elif code == 2:
+        console.print(f'[red]Error: array variable "{name}" used without specifying an index.[/red]')
+    elif code == 3:
+        console.print(f'[red]Error: variable "{name}" has no indices because it was not defined as an array.[/red]')
 
 
 # ---------------------------------------------------------------------
@@ -138,9 +149,7 @@ class Checker(Visitor):
         print('-' * 100)
 
     def visit(self, n: Read, env: Symtab):
-        # Buscar la Variable en Symtab
-        if z := env.get(n.location.name):
-            print(z)
+        # Visitar la variable
         print(n, env.context, env.entries.keys())
         print('-' * 100)
 
@@ -167,11 +176,15 @@ class Checker(Visitor):
         ...
 
     def visit(self, n: Assign, env: Symtab):
-        # Visitar el hijo izquierdo (devuelve datatype)
-        # Visitar el hijo derecho (devuelve datatype)
+        # Visitar el location (devuelve datatype)
+        # Visitar la expresión (devuelve datatype)
         # Comparar ambos tipo de datatype
         print(n, env.context, env.entries.keys())
         print('-' * 100)
+
+        location_dtype = n.location.accept(self, env)
+        expr_dtype = n.expr.accept(self, env)
+        print(location_dtype, expr_dtype)
 
     # Expresiones ---------------------------------------------
     def visit(self, n: Integer, env: Symtab):
@@ -185,12 +198,34 @@ class Checker(Visitor):
     def visit(self, n: SimpleLocation, env: Symtab):
         # Buscar en Symtab y extraer datatype (No se encuentra?)
         # Devuelvo el datatype
-        pass
+        print(n, env.context, env.entries.keys())
+        print('-' * 100)
+        dtype = None
+        if var_def := env.get(n.name):
+            if isinstance(var_def.dtype, SimpleType):
+                dtype = var_def.dtype.name
+            else:
+                error(2, n.name)
+        else:
+            error(1, n.name)
+
+        return dtype
 
     def visit(self, n: ArrayLocation, env: Symtab):
         # Buscar en Symtab y extraer datatype (No se encuentra?)
         # Devuelvo el datatype
-        pass
+        print(n, env.context, env.entries.keys())
+        print('-' * 100)
+        dtype = None
+        if var_def := env.get(n.name):
+            if isinstance(var_def.dtype, ArrayType):
+                dtype = var_def.dtype.name
+            else:
+                error(3, n.name)
+        else:
+            error(1, n.name)
+
+        return dtype
 
     def visit(self, n: TypeCast, env: Symtab):
         # Visitar la expresion asociada

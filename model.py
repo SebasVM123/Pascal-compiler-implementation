@@ -106,6 +106,7 @@ class Declaration(Stmt):
 class VarDefinition(Declaration):
     name: str
     dtype: DataType
+    init : list = field(default_factory=list)
 
 @dataclass
 class Parameter(Declaration):
