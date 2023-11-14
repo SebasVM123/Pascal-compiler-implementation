@@ -7,6 +7,7 @@ import sly
 from rich import print
 from plex import Lexer
 from model import *
+from AST import AST
 
 class Parser(sly.Parser):
     debugfile = 'pl0.txt'
@@ -236,8 +237,7 @@ def main(argv):
     txt = open('test2/' + argv[1]).read()
     parser = Parser()
     Nodo = parser.parse(lex.tokenize(txt))
-    Arbol = AST()
-    Arbol.printer(Nodo)
+    AST.printer(Nodo)
 
 
 if __name__ == '__main__':

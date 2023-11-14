@@ -1,5 +1,7 @@
-fun main()
+fun main(x : int)
+    z : int[1000];
 begin
-  print("Hola Mundo\n")
+    z := 3;
+    z := z + x
 end
 
