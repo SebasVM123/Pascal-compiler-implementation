@@ -19,7 +19,10 @@ def error(code: int, name: str = None, type1: str = None, type2: str = None):
     elif code == 3:
         console.print(f'[red]Type Error: variable {name} has no indices because it was not defined as an array.[/red]')
     elif code == 4:
-        console.print(f'[red]Type Error: expected {type1} in assignment of {name} but a {type2} was given.[/red]')
+        #console.print(f'[red]Type Error: expected {type1} in assignment of {name} but {type2} was given.[/red]')
+        console.print(f'[red]Type Error: invalyd assignment of {type2} expression to a {type1} variable {name}[/red]')
+    elif code == 5:
+        console.print(f'[red]Type Error: unsupported operand type for {name}: "{type1}" and "{type2}"[/red]')
 
 # ---------------------------------------------------------------------
 #  Tabla de Simbolos
@@ -185,22 +188,27 @@ class Checker(Visitor):
         print(n, env.context, env.entries.keys())
         print('-' * 100)
 
+        # Solo evalua la expresion si la variable está definida y su tipo de variable concuerda
         if (location_dtype := n.location.accept(self, env)) is not None:
             var_def = env.get(n.location.name)
             var_def.init.append(n.location)
-
-        expr_dtype = n.expr.accept(self, env)
-
-        if location_dtype != expr_dtype:
-            error(4, name=n.location.name, type1=location_dtype, type2=expr_dtype)
+            print('location')
+            # Solo compara los tipos si la expresion no tiene errores de tipo
+            if (expr_dtype := n.expr.accept(self, env)) is not None:
+                if location_dtype != expr_dtype:
+                    error(4, name=n.location.name, type1=location_dtype, type2=expr_dtype)
 
     # Expresiones ---------------------------------------------
     def visit(self, n: Integer, env: Symtab):
         # Devolver datatype
+        print(n, env.context, env.entries.keys())
+        print('-' * 100)
         return n.dtype.name
 
     def visit(self, n: Float, env: Symtab):
         # Devolver datatype
+        print(n, env.context, env.entries.keys())
+        print('-' * 100)
         return n.dtype.name
 
     def visit(self, n: SimpleLocation, env: Symtab):
@@ -239,7 +247,11 @@ class Checker(Visitor):
     def visit(self, n: TypeCast, env: Symtab):
         # Visitar la expresion asociada
         # Devolver datatype asociado al nodo
-        pass
+        print(n, env.context, env.entries.keys())
+        print('-' * 100)
+        n.expr.accept(self, env)
+        dtype = n.name
+        return dtype
 
     def visit(self, n: FuncCall, env: Symtab):
         # Buscar la funcion en Symtab (extraer: Tipo de retorno, el # de parametros)
@@ -253,7 +265,20 @@ class Checker(Visitor):
         # Visitar el hijo izquierdo (devuelve datatype)
         # Visitar el hijo derecho (devuelve datatype)
         # Comparar ambos tipo de datatype
-        pass
+        print(n, env.context, env.entries.keys())
+        print('-' * 100)
+        left_dtype = n.left.accept(self, env)
+        right_dtype = n.right.accept(self, env)
+        #print('Binary', left_dtype, right_dtype, n)
+        # Compara los tipos de datos si la parte izquierda y derecha no tienen errores
+        dtype = check_binary_op(n.op, left_dtype, right_dtype)
+        if left_dtype is not None and right_dtype is not None:
+            # Si los tipos de datos son distintos lanza un error
+            if dtype is None:
+                error(5, name=n.op, type1=left_dtype, type2=right_dtype)
+
+        return dtype
+
 
     def visit(self, n: Logical, env: Symtab):
         # Visitar el hijo izquierdo (devuelve datatype)

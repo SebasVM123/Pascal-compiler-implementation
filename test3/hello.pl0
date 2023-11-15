@@ -1,7 +1,6 @@
-fun main(x : int)
-    z : int[5];
+fun main(x : float)
+    z : float;
 begin
-    z[1] := 5.3;
-    read(z[1])
+    z := 5 + 5 * 3
 end
 
