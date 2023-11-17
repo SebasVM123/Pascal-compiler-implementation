@@ -22,7 +22,9 @@ def error(code: int, name: str = None, type1: str = None, type2: str = None):
         #console.print(f'[red]Type Error: expected {type1} in assignment of {name} but {type2} was given.[/red]')
         console.print(f'[red]Type Error: invalyd assignment of {type2} expression to a {type1} variable {name}[/red]')
     elif code == 5:
-        console.print(f'[red]Type Error: unsupported operand type for {name}: "{type1}" and "{type2}"[/red]')
+        console.print(f'[red]Type Error: unsupported operand type for "{name}": "{type1}" and "{type2}"[/red]')
+
+    print('-' * 100)
 
 # ---------------------------------------------------------------------
 #  Tabla de Simbolos
@@ -124,14 +126,9 @@ class Checker(Visitor):
 
         local_env = Symtab(context=n.name, parent=env)
 
-        if n.parmlist:
-            for parm in n.parmlist.parmlist:
-                parm.accept(self, local_env)
-        if n.varlist:
-            for var in n.varlist.varlist:
-                var.accept(self, local_env)
-        for stmt in n.stmtlist.stmtlist:
-            stmt.accept(self, local_env)
+        n.parmlist.accept(self, local_env)
+        n.varlist.accept(self, local_env)
+        n.stmtlist.accept(self, local_env)
 
     def visit(self, n: Parameter, env: Symtab):
         # Agregar el nombre del parametro a Symtab
@@ -171,7 +168,10 @@ class Checker(Visitor):
     def visit(self, n: IfStmt, env: Symtab):
         # Visitar la condicion del IfStmt (Comprobar tipo bool)
         # Visitar las Stmts del then y else
-        pass
+        print(n, env.context, env.entries.keys())
+        print('-' * 100)
+
+        n.relation.accept(self, env)
 
     def visit(self, n: Return, env: Symtab):
         # Visitar la expresion asociada
@@ -192,7 +192,6 @@ class Checker(Visitor):
         if (location_dtype := n.location.accept(self, env)) is not None:
             var_def = env.get(n.location.name)
             var_def.init.append(n.location)
-            print('location')
             # Solo compara los tipos si la expresion no tiene errores de tipo
             if (expr_dtype := n.expr.accept(self, env)) is not None:
                 if location_dtype != expr_dtype:
@@ -269,7 +268,6 @@ class Checker(Visitor):
         print('-' * 100)
         left_dtype = n.left.accept(self, env)
         right_dtype = n.right.accept(self, env)
-        #print('Binary', left_dtype, right_dtype, n)
         # Compara los tipos de datos si la parte izquierda y derecha no tienen errores
         dtype = check_binary_op(n.op, left_dtype, right_dtype)
         if left_dtype is not None and right_dtype is not None:
@@ -279,35 +277,55 @@ class Checker(Visitor):
 
         return dtype
 
-
     def visit(self, n: Logical, env: Symtab):
         # Visitar el hijo izquierdo (devuelve datatype)
         # Visitar el hijo derecho (devuelve datatype)
         # Comparar ambos tipo de datatype
-        pass
+        print(n, env.context, env.entries.keys())
+        print('-' * 100)
+        left_dtype = n.left.accept(self, env)
+        right_dtype = n.right.accept(self, env)
+        dtype = check_binary_op(n.op, left_dtype, right_dtype)
+
+        # Compara los tipos de datos si la parte izquierda y derecha no tienen errores
+        if left_dtype is not None and right_dtype is not None:
+            # Si los tipos de datos son distintos lanza un error
+            if dtype is None:
+                error(5, name=n.op, type1=left_dtype, type2=right_dtype)
+
+        return dtype
 
     def visit(self, n: Unary, env: Symtab):
         # Visitar la expression asociada (devuelve datatype)
         # Comparar datatype
-        pass
+        print(n, env.context, env.entries.keys())
+        print('-' * 100)
+
+        fact_dtype = n.fact.accept(self, env)
+        dtype = check_unary_op(n.op, fact_dtype)
+
+        return dtype
 
     # Contenedores -----------------------------------------------
+    def visit(self, n: ParmList, env: Symtab):
+        # Visitar cada una de los parametros asociados
+        for parm in n.parmlist:
+            parm.accept(self, env)
 
     def visit(self, n: VarList, env: Symtab):
         # Visitar cada una de las variables asociadas
-        pass
-
-    def visit(self, n: ParmList, env: Symtab):
-        # Visitar cada una de los parametros asociados
-        pass
-
-    def visit(self, n: ArgList, env: Symtab):
-        # Visitar cada una de los argumentos asociados
-        pass
+        for var in n.varlist:
+            var.accept(self, env)
 
     def visit(self, n: StmtList, env: Symtab):
         # Visitar cada una de las instruciones asociadas
-        pass
+        for stmt in n.stmtlist:
+            stmt.accept(self, env)
+
+    def visit(self, n: ArgList, env: Symtab):
+        # Visitar cada una de los argumentos asociados
+        for arg in n.arglist:
+            arg.accept(self, env)
 
 
 def main(argv):
