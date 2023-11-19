@@ -13,16 +13,17 @@ from typesys import *
 def error(code: int, name: str = None, type1: str = None, type2: str = None):
     console = Console()
     if code == 1:
-        console.print(f'[red]Type Error: variable {name} used but no defined.[/red]')
+        console.print(f'[red]Name Error: variable {name} used but no defined.[/red]')
     elif code == 2:
-        console.print(f'[red]Type Error: array variable {name} used without specifying an index.[/red]')
+        console.print(f'[red]Attribute Error: array variable {name} used without specifying an index.[/red]')
     elif code == 3:
-        console.print(f'[red]Type Error: variable {name} has no indices because it was not defined as an array.[/red]')
+        console.print(f'[red]Attribute Error: variable {name} has no indices because it was not defined as an array.[/red]')
     elif code == 4:
-        #console.print(f'[red]Type Error: expected {type1} in assignment of {name} but {type2} was given.[/red]')
         console.print(f'[red]Type Error: invalyd assignment of {type2} expression to a {type1} variable {name}[/red]')
     elif code == 5:
         console.print(f'[red]Type Error: unsupported operand type for "{name}": "{type1}" and "{type2}"[/red]')
+    elif code == 6:
+        console.print(f'[red]Error: Break Statement must be within a While Statement"[/red]')
 
     print('-' * 100)
 
@@ -56,11 +57,11 @@ class Symtab:
             sys.tracebacklimit = 0
 
             if isinstance(env.entries[name], Parameter):
-                super().__init__(f'In function "{env.context}": Parameter "{name}" has already been defined before')
+                super().__init__(f'In function "{env.context.name}": Parameter "{name}" has already been defined before')
             elif isinstance(env.entries[name], VarDefinition):
-                super().__init__(f'In function "{env.context}": Variable "{name}" has already been defined before')
+                super().__init__(f'In function "{env.context.name}": Variable "{name}" has already been defined before')
             elif isinstance(env.entries[name], FunDefinition):
-                super().__init__(f'In function "{env.context}": Function "{name}" has already been defined before')
+                super().__init__(f'In function "{env.context.name}": Function "{name}" has already been defined before')
 
 
     def __init__(self, context=None, parent=None):
@@ -110,7 +111,7 @@ class Checker(Visitor):
     def visit(self, n: Program):
         # Crear un nuevo contexto (Symtab global)
         # Visitar cada una de las declaraciones asociadas
-        global_env = Symtab(context='Program')
+        global_env = Symtab()
         for func in n.funclist:
             func.accept(self, global_env)
 
@@ -121,77 +122,111 @@ class Checker(Visitor):
         # Determinar el datatype de la funcion (revisando instrucciones return)
         env.add(n.name, n)
 
-        print(n, env.context, env.entries.keys())
+        print(n, 'Program', env.entries.keys())
         print('-' * 100)
 
-        local_env = Symtab(context=n.name, parent=env)
+        local_env = Symtab(context=n, parent=env)
 
-        n.parmlist.accept(self, local_env)
-        n.varlist.accept(self, local_env)
+        if n.parmlist:
+            n.parmlist.accept(self, local_env)
+        if n.varlist:
+            n.varlist.accept(self, local_env)
         n.stmtlist.accept(self, local_env)
 
     def visit(self, n: Parameter, env: Symtab):
         # Agregar el nombre del parametro a Symtab
         env.add(n.name, n)
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
 
     def visit(self, n: VarDefinition, env: Symtab):
         # Agregar el nombre de la variable a Symtab
         env.add(n.name, n)
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
 
     # Declaraciones ------------------------------------------------------
     def visit(self, n: Print, env: Symtab):
+        print(n, env.context.name, env.entries.keys())
+        print('-' * 100)
         ...
 
     def visit(self, n: Write, env: Symtab):
         # Buscar la Variable en Symtab
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
+
+        n.expr.accept(self, env) # Dentro de Write solo van variables?
 
     def visit(self, n: Read, env: Symtab):
         # Visitar la variable
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
+
+        n.location.accept(self, env)
 
     def visit(self, n: While, env: Symtab):
         # Visitar la condicion del While (Comprobar tipo bool)
         # Visitar las Stmts
-        pass
-
-    def visit(self, n: Break, env: Symtab):
-        # Esta dentro de un While?
-        pass
-
-    def visit(self, n: IfStmt, env: Symtab):
-        # Visitar la condicion del IfStmt (Comprobar tipo bool)
-        # Visitar las Stmts del then y else
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
 
         n.relation.accept(self, env)
+        in_while = True
+        if isinstance(n.stmt, StmtList):
+            for stmt in n.stmt.stmtlist:
+                if isinstance(stmt, Break):
+                    stmt.accept(self, env, in_while)
+                else:
+                    stmt.accept(self, env)
+        elif isinstance(n.stmt, Break):
+            n.stmt.accept(self, env, in_while)
+        else:
+            n.stmt.accept(self, env)
+
+    def visit(self, n: Break, env: Symtab, in_while: bool = False):
+        # Esta dentro de un While?
+        print(n, env.context.name, env.entries.keys())
+        print('-' * 100)
+        if not in_while:
+            error(6)
+    def visit(self, n: IfStmt, env: Symtab):
+        # Visitar la condicion del IfStmt (Comprobar tipo bool)
+        # Visitar las Stmts del then y else
+        print(n, env.context.name, env.entries.keys())
+        print('-' * 100)
+
+        n.relation.accept(self, env)
+        n.thenstmt.accept(self, env)
 
     def visit(self, n: Return, env: Symtab):
         # Visitar la expresion asociada
         # Actualizar el datatype de la funcion
-        pass
+        print(n, env.context.name, env.entries.keys())
+        print('-' * 100)
+
+        dtype = n.value.accept(self, env)
+        if dtype is not None:
+            env.context.dtype = dtype
 
     def visit(self, n: Skip, env: Symtab):
+        print(n, env.context.name, env.entries.keys())
+        print('-' * 100)
         ...
 
     def visit(self, n: Assign, env: Symtab):
         # Visitar el location (devuelve datatype) y marcar ese location como inicializado en VarDefinition
         # Visitar la expresión (devuelve datatype)
         # Comparar ambos tipo de datatype
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
 
         # Solo evalua la expresion si la variable está definida y su tipo de variable concuerda
         if (location_dtype := n.location.accept(self, env)) is not None:
             var_def = env.get(n.location.name)
-            var_def.init.append(n.location)
+            #if isinstance(var_def.dtype, SimpleType):
+                #var_def.init = True
+
             # Solo compara los tipos si la expresion no tiene errores de tipo
             if (expr_dtype := n.expr.accept(self, env)) is not None:
                 if location_dtype != expr_dtype:
@@ -200,13 +235,13 @@ class Checker(Visitor):
     # Expresiones ---------------------------------------------
     def visit(self, n: Integer, env: Symtab):
         # Devolver datatype
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
         return n.dtype.name
 
     def visit(self, n: Float, env: Symtab):
         # Devolver datatype
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
         return n.dtype.name
 
@@ -214,7 +249,7 @@ class Checker(Visitor):
         # Buscar en Symtab y extraer datatype (No se encuentra?)
         # Comprobar que el tipo de variable (simple o array) concuerda con el tipo de variable definido
         # Devuelvo el datatype
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
         dtype = None
         if var_def := env.get(n.name):
@@ -230,7 +265,7 @@ class Checker(Visitor):
     def visit(self, n: ArrayLocation, env: Symtab):
         # Buscar en Symtab y extraer datatype (No se encuentra?)
         # Devuelvo el datatype
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
         dtype = None
         if var_def := env.get(n.name):
@@ -246,7 +281,7 @@ class Checker(Visitor):
     def visit(self, n: TypeCast, env: Symtab):
         # Visitar la expresion asociada
         # Devolver datatype asociado al nodo
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
         n.expr.accept(self, env)
         dtype = n.name
@@ -264,7 +299,7 @@ class Checker(Visitor):
         # Visitar el hijo izquierdo (devuelve datatype)
         # Visitar el hijo derecho (devuelve datatype)
         # Comparar ambos tipo de datatype
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
         left_dtype = n.left.accept(self, env)
         right_dtype = n.right.accept(self, env)
@@ -281,7 +316,7 @@ class Checker(Visitor):
         # Visitar el hijo izquierdo (devuelve datatype)
         # Visitar el hijo derecho (devuelve datatype)
         # Comparar ambos tipo de datatype
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
         left_dtype = n.left.accept(self, env)
         right_dtype = n.right.accept(self, env)
@@ -298,7 +333,7 @@ class Checker(Visitor):
     def visit(self, n: Unary, env: Symtab):
         # Visitar la expression asociada (devuelve datatype)
         # Comparar datatype
-        print(n, env.context, env.entries.keys())
+        print(n, env.context.name, env.entries.keys())
         print('-' * 100)
 
         fact_dtype = n.fact.accept(self, env)
