@@ -88,16 +88,17 @@ class Symtab:
             raise Symtab.SymbolDefinedError(self, name)
         self.entries[name] = value
 
-    def get(self, name):
+    def get_var(self, name):
         '''
         Recupera el símbolo con el nombre dado de la tabla de
         símbolos, recorriendo hacia arriba a traves de las tablas
         de símbolos principales si no se encuentra en la actual.
         '''
         if name in self.entries:
-            return self.entries[name]
+            if not isinstance(self.entries[name], FunDefinition):
+                return self.entries[name]
         elif self.parent:
-            return self.parent.get(name)
+            return self.parent.get_var(name)
         return None
 
 
@@ -136,40 +137,40 @@ class Checker(Visitor):
     def visit(self, n: Parameter, env: Symtab):
         # Agregar el nombre del parametro a Symtab
         env.add(n.name, n)
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
 
     def visit(self, n: VarDefinition, env: Symtab):
         # Agregar el nombre de la variable a Symtab
         env.add(n.name, n)
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
 
     # Declaraciones ------------------------------------------------------
     def visit(self, n: Print, env: Symtab):
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
         ...
 
     def visit(self, n: Write, env: Symtab):
         # Buscar la Variable en Symtab
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
 
         n.expr.accept(self, env) # Dentro de Write solo van variables?
 
     def visit(self, n: Read, env: Symtab):
         # Visitar la variable
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
 
         n.location.accept(self, env)
 
     def visit(self, n: While, env: Symtab):
         # Visitar la condicion del While (Comprobar tipo bool)
         # Visitar las Stmts
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
 
         n.relation.accept(self, env)
         in_while = True
@@ -186,15 +187,15 @@ class Checker(Visitor):
 
     def visit(self, n: Break, env: Symtab, in_while: bool = False):
         # Esta dentro de un While?
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
         if not in_while:
             error(6)
     def visit(self, n: IfStmt, env: Symtab):
         # Visitar la condicion del IfStmt (Comprobar tipo bool)
         # Visitar las Stmts del then y else
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
 
         n.relation.accept(self, env)
         n.thenstmt.accept(self, env)
@@ -202,28 +203,28 @@ class Checker(Visitor):
     def visit(self, n: Return, env: Symtab):
         # Visitar la expresion asociada
         # Actualizar el datatype de la funcion
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
 
         dtype = n.value.accept(self, env)
         if dtype is not None:
             env.context.dtype = dtype
 
     def visit(self, n: Skip, env: Symtab):
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
         ...
 
     def visit(self, n: Assign, env: Symtab):
         # Visitar el location (devuelve datatype) y marcar ese location como inicializado en VarDefinition
         # Visitar la expresión (devuelve datatype)
         # Comparar ambos tipo de datatype
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
 
         # Solo evalua la expresion si la variable está definida y su tipo de variable concuerda
         if (location_dtype := n.location.accept(self, env)) is not None:
-            var_def = env.get(n.location.name)
+            var_def = env.get_var(n.location.name)
             #if isinstance(var_def.dtype, SimpleType):
                 #var_def.init = True
 
@@ -235,24 +236,27 @@ class Checker(Visitor):
     # Expresiones ---------------------------------------------
     def visit(self, n: Integer, env: Symtab):
         # Devolver datatype
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
+
         return n.dtype.name
 
     def visit(self, n: Float, env: Symtab):
         # Devolver datatype
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
+
         return n.dtype.name
 
     def visit(self, n: SimpleLocation, env: Symtab):
         # Buscar en Symtab y extraer datatype (No se encuentra?)
         # Comprobar que el tipo de variable (simple o array) concuerda con el tipo de variable definido
         # Devuelvo el datatype
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
+
         dtype = None
-        if var_def := env.get(n.name):
+        if var_def := env.get_var(n.name):
             if isinstance(var_def.dtype, SimpleType):
                 dtype = var_def.dtype.name
             else:
@@ -265,10 +269,11 @@ class Checker(Visitor):
     def visit(self, n: ArrayLocation, env: Symtab):
         # Buscar en Symtab y extraer datatype (No se encuentra?)
         # Devuelvo el datatype
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
+
         dtype = None
-        if var_def := env.get(n.name):
+        if var_def := env.get_var(n.name):
             if isinstance(var_def.dtype, ArrayType):
                 dtype = var_def.dtype.name
             else:
@@ -281,8 +286,9 @@ class Checker(Visitor):
     def visit(self, n: TypeCast, env: Symtab):
         # Visitar la expresion asociada
         # Devolver datatype asociado al nodo
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
+
         n.expr.accept(self, env)
         dtype = n.name
         return dtype
@@ -299,8 +305,8 @@ class Checker(Visitor):
         # Visitar el hijo izquierdo (devuelve datatype)
         # Visitar el hijo derecho (devuelve datatype)
         # Comparar ambos tipo de datatype
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
         left_dtype = n.left.accept(self, env)
         right_dtype = n.right.accept(self, env)
         # Compara los tipos de datos si la parte izquierda y derecha no tienen errores
@@ -316,8 +322,8 @@ class Checker(Visitor):
         # Visitar el hijo izquierdo (devuelve datatype)
         # Visitar el hijo derecho (devuelve datatype)
         # Comparar ambos tipo de datatype
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
+        
+
         left_dtype = n.left.accept(self, env)
         right_dtype = n.right.accept(self, env)
         dtype = check_binary_op(n.op, left_dtype, right_dtype)
@@ -333,8 +339,6 @@ class Checker(Visitor):
     def visit(self, n: Unary, env: Symtab):
         # Visitar la expression asociada (devuelve datatype)
         # Comparar datatype
-        print(n, env.context.name, env.entries.keys())
-        print('-' * 100)
 
         fact_dtype = n.fact.accept(self, env)
         dtype = check_unary_op(n.op, fact_dtype)

@@ -1,9 +1,1 @@
-fun main()
-    z : int;
-begin
-    while 5 < 3 do
-    begin
-        z := 10
-    end;
-    break
-end
+
