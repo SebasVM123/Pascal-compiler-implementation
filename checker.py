@@ -10,20 +10,30 @@ from model import *
 from typesys import *
 
 
-def error(code: int, name: str = None, type1: str = None, type2: str = None):
+def error(code: int, name: str = None, value1: str = None, value2: str = None):
     console = Console()
     if code == 1:
         console.print(f'[red]Name Error: variable {name} used but no defined.[/red]')
     elif code == 2:
         console.print(f'[red]Attribute Error: array variable {name} used without specifying an index.[/red]')
     elif code == 3:
-        console.print(f'[red]Attribute Error: variable {name} has no indices because it was not defined as an array.[/red]')
+        console.print(f'[red]Attribute Error: variable {name} has no indices because it was not defined as an array.'
+                      f'[/red]')
     elif code == 4:
-        console.print(f'[red]Type Error: invalyd assignment of {type2} expression to a {type1} variable {name}[/red]')
+        console.print(f'[red]Type Error: invalyd assignment of {value2} expression to a {value1} variable {name}[/red]')
     elif code == 5:
-        console.print(f'[red]Type Error: unsupported operand type for "{name}": "{type1}" and "{type2}"[/red]')
+        console.print(f'[red]Type Error: unsupported operand type for "{name}": "{value1}" and "{value2}"[/red]')
     elif code == 6:
-        console.print(f'[red]Error: Break Statement must be within a While Statement"[/red]')
+        console.print(f'[red]Error: Break Statement must be within a While Statement[/red]')
+    elif code == 7:
+        console.print(f'[red]Name Error: function {name} called but no defined.[/red]')
+    elif code == 8:
+        console.print(f'[red]Type Error: in call of {name}: expected {value1} arguments but {value2} were given.[/red]')
+    elif code == 9:
+        console.print(f'[red]Type Error: type of argument passed in call of {name} does not match with the type '
+                      f'expected.[/red]')
+    elif code == 10:
+        console.print(f'[red]Name Error: main function not found[/red]')
 
     print('-' * 100)
 
@@ -57,11 +67,11 @@ class Symtab:
             sys.tracebacklimit = 0
 
             if isinstance(env.entries[name], Parameter):
-                super().__init__(f'In function "{env.context.name}": Parameter "{name}" has already been defined before')
+                super().__init__(f'In function {env.context.name}: Parameter {name} has already been defined before')
             elif isinstance(env.entries[name], VarDefinition):
-                super().__init__(f'In function "{env.context.name}": Variable "{name}" has already been defined before')
+                super().__init__(f'In function {env.context.name}: Variable {name} has already been defined before')
             elif isinstance(env.entries[name], FunDefinition):
-                super().__init__(f'In function "{env.context.name}": Function "{name}" has already been defined before')
+                super().__init__(f'In function {env.context.name}: Function {name} has already been defined before')
 
 
     def __init__(self, context=None, parent=None):
@@ -101,6 +111,19 @@ class Symtab:
             return self.parent.get_var(name)
         return None
 
+    def get_fun(self, name):
+        '''
+        Recupera el símbolo con el nombre dado de la tabla de
+        símbolos, recorriendo hacia arriba a traves de las tablas
+        de símbolos principales si no se encuentra en la actual.
+        '''
+        if name in self.entries:
+            if isinstance(self.entries[name], FunDefinition):
+                return self.entries[name]
+        elif self.parent:
+            return self.parent.get_fun(name)
+        return None
+
 
 class Checker(Visitor):
 
@@ -115,6 +138,9 @@ class Checker(Visitor):
         global_env = Symtab()
         for func in n.funclist:
             func.accept(self, global_env)
+
+        if 'main' not in global_env.entries:
+            error(10)
 
     def visit(self, n: FunDefinition, env: Symtab):
         # Agregar el nombre de la funcion a Symtab
@@ -137,40 +163,28 @@ class Checker(Visitor):
     def visit(self, n: Parameter, env: Symtab):
         # Agregar el nombre del parametro a Symtab
         env.add(n.name, n)
-        
-
 
     def visit(self, n: VarDefinition, env: Symtab):
         # Agregar el nombre de la variable a Symtab
         env.add(n.name, n)
-        
-
 
     # Declaraciones ------------------------------------------------------
     def visit(self, n: Print, env: Symtab):
-        
-
         ...
 
     def visit(self, n: Write, env: Symtab):
         # Buscar la Variable en Symtab
-        
-
 
         n.expr.accept(self, env) # Dentro de Write solo van variables?
 
     def visit(self, n: Read, env: Symtab):
         # Visitar la variable
-        
-
 
         n.location.accept(self, env)
 
     def visit(self, n: While, env: Symtab):
         # Visitar la condicion del While (Comprobar tipo bool)
         # Visitar las Stmts
-        
-
 
         n.relation.accept(self, env)
         in_while = True
@@ -187,15 +201,12 @@ class Checker(Visitor):
 
     def visit(self, n: Break, env: Symtab, in_while: bool = False):
         # Esta dentro de un While?
-        
 
         if not in_while:
             error(6)
     def visit(self, n: IfStmt, env: Symtab):
         # Visitar la condicion del IfStmt (Comprobar tipo bool)
         # Visitar las Stmts del then y else
-        
-
 
         n.relation.accept(self, env)
         n.thenstmt.accept(self, env)
@@ -203,48 +214,35 @@ class Checker(Visitor):
     def visit(self, n: Return, env: Symtab):
         # Visitar la expresion asociada
         # Actualizar el datatype de la funcion
-        
-
 
         dtype = n.value.accept(self, env)
         if dtype is not None:
             env.context.dtype = dtype
 
     def visit(self, n: Skip, env: Symtab):
-        
-
         ...
 
     def visit(self, n: Assign, env: Symtab):
         # Visitar el location (devuelve datatype) y marcar ese location como inicializado en VarDefinition
         # Visitar la expresión (devuelve datatype)
         # Comparar ambos tipo de datatype
-        
-
 
         # Solo evalua la expresion si la variable está definida y su tipo de variable concuerda
         if (location_dtype := n.location.accept(self, env)) is not None:
-            var_def = env.get_var(n.location.name)
-            #if isinstance(var_def.dtype, SimpleType):
-                #var_def.init = True
-
             # Solo compara los tipos si la expresion no tiene errores de tipo
+
             if (expr_dtype := n.expr.accept(self, env)) is not None:
                 if location_dtype != expr_dtype:
-                    error(4, name=n.location.name, type1=location_dtype, type2=expr_dtype)
+                    error(4, name=n.location.name, value1=location_dtype, value2=expr_dtype)
 
     # Expresiones ---------------------------------------------
     def visit(self, n: Integer, env: Symtab):
         # Devolver datatype
-        
-
 
         return n.dtype.name
 
     def visit(self, n: Float, env: Symtab):
         # Devolver datatype
-        
-
 
         return n.dtype.name
 
@@ -252,8 +250,6 @@ class Checker(Visitor):
         # Buscar en Symtab y extraer datatype (No se encuentra?)
         # Comprobar que el tipo de variable (simple o array) concuerda con el tipo de variable definido
         # Devuelvo el datatype
-        
-
 
         dtype = None
         if var_def := env.get_var(n.name):
@@ -269,8 +265,6 @@ class Checker(Visitor):
     def visit(self, n: ArrayLocation, env: Symtab):
         # Buscar en Symtab y extraer datatype (No se encuentra?)
         # Devuelvo el datatype
-        
-
 
         dtype = None
         if var_def := env.get_var(n.name):
@@ -286,8 +280,6 @@ class Checker(Visitor):
     def visit(self, n: TypeCast, env: Symtab):
         # Visitar la expresion asociada
         # Devolver datatype asociado al nodo
-        
-
 
         n.expr.accept(self, env)
         dtype = n.name
@@ -299,7 +291,31 @@ class Checker(Visitor):
         # Comparar el numero de argumentos con parametros
         # Comparar cada uno de los tipos de los argumentos con los parametros
         # Retornar el datatype de la funcion
-        pass
+        dtype = None
+        if (fun := env.get_fun(n.name)) is not None:
+            parms_num = len(fun.parmlist.parmlist) if fun.parmlist else 0
+            args_num = len(n.arglist.arglist) if n.arglist else 0
+
+            if parms_num != args_num:
+                error(8, n.name, parms_num, args_num)
+            else:
+                all_matched = True
+                for parm, arg in zip(fun.parmlist.parmlist, n.arglist.arglist):
+                    parm_type = parm.dtype.name
+                    arg_type = arg.accept(self, env)
+
+                    if arg_type is not None:
+                        if parm_type != arg_type:
+                            error(9, name=n.name)
+                            all_matched = False
+                            break
+                if all_matched:
+                    dtype = fun.dtype
+                    print(dtype)
+        else:
+            error(7, n.name)
+
+        return dtype
 
     def visit(self, n: Binary, env: Symtab):
         # Visitar el hijo izquierdo (devuelve datatype)
@@ -314,7 +330,7 @@ class Checker(Visitor):
         if left_dtype is not None and right_dtype is not None:
             # Si los tipos de datos son distintos lanza un error
             if dtype is None:
-                error(5, name=n.op, type1=left_dtype, type2=right_dtype)
+                error(5, name=n.op, value1=left_dtype, value2=right_dtype)
 
         return dtype
 
@@ -332,7 +348,7 @@ class Checker(Visitor):
         if left_dtype is not None and right_dtype is not None:
             # Si los tipos de datos son distintos lanza un error
             if dtype is None:
-                error(5, name=n.op, type1=left_dtype, type2=right_dtype)
+                error(5, name=n.op, value1=left_dtype, value2=right_dtype)
 
         return dtype
 
@@ -377,7 +393,6 @@ def main(argv):
     parser = Parser()
     nodo = parser.parse(lex.tokenize(txt))
     Checker.check(nodo)
-    # semantico.visit(nodo, Tabla)
 
 
 if __name__ == '__main__':

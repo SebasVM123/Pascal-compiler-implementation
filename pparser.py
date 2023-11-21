@@ -140,7 +140,7 @@ class Parser(sly.Parser):
     def stmt(self, p):
         return Assign(p.location, p.expr)
 
-    @_('ID "(" exprlist ")"')
+    @_('ID "(" [ exprlist ] ")"')
     def stmt(self, p):
         return FuncCall(p.ID, p.exprlist)
 
