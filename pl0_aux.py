@@ -12,7 +12,8 @@ optional arguments:
   -D, --debug        Generate assembly with extra information (for debugging purposes)
   -o OUT, --out OUT  File name to store generated executable
   -l, --lex          Store output of lexer
-  -a, --ast          Generate AST graph as txt format
+  -d, --dot          Generate AST graph as DOT format
+  -p, --png          Generate AST graph as png format
   -I, --ir           Dump the generated Intermediate representation
   --sym              Dump the symbol table
   -S, --asm          Store the generated assembly file
@@ -21,8 +22,8 @@ optional arguments:
 from contextlib import redirect_stdout
 from rich import print
 from plex import print_lexer
-from pparser import print_AST
-from context import Context
+from pparser import Parser
+from context_aux import Context
 
 import argparse
 
@@ -37,15 +38,15 @@ def parse_args():
         action='version',
         version='0.1')
 
-    file_group = cli.add_argument_group('Formatting options')
+    fgroup = cli.add_argument_group('Formatting options')
 
-    file_group.add_argument(
+    fgroup.add_argument(
         'input',
         type=str,
         nargs='?',
         help='PL0 program file to compile')
 
-    mutex = file_group.add_mutually_exclusive_group()
+    mutex = fgroup.add_mutually_exclusive_group()
 
     mutex.add_argument(
         '-l', '--lex',
@@ -54,10 +55,15 @@ def parse_args():
         help='Store output of lexer')
 
     mutex.add_argument(
-        '-a', '--ast',
+        '-d', '--dot',
         action='store_true',
         default=False,
         help='Generate AST graph as DOT format')
+
+    mutex.add_argument(
+        '-p', '--png',
+        action='store_true',
+        help='Generate AST graph as png format')
 
     mutex.add_argument(
         '--sym',
@@ -75,21 +81,45 @@ if __name__ == '__main__':
     if args.input:
         file_name = args.input
 
-        with open(file_name, encoding='utf-8') as file:
-            source = file.read()
+    with open(file_name, encoding='utf-8') as file:
+        source = file.read()
 
-        if args.lex:
-            file_lex = file_name.split('.')[0] + '.lex'
-            print(f'[green]print lexer: {file_lex}[/green]')
-            with open(file_lex, 'w', encoding='utf-8') as f:
+    if args.lex:
+        flex = file_name.split('.')[0] + '.lex'
+        print(f'print lexer: {flex}')
+        with open(flex, 'w', encoding='utf-8') as f:
+            with redirect_stdout(f):
+                print_lexer(source)
+
+    elif args.dot or args.png:
+        ast, dot = Parser(source)
+        base = file_name.split('.')[0]
+
+        if args.dot:
+            fdot = base + '.dot'
+            print(f'print ast: {fdot}')
+            with open(fdot, 'w') as f:
                 with redirect_stdout(f):
-                    print_lexer(source)
+                    print(dot)
 
-        elif args.ast:
-            file_ast = file_name.split('.')[0] + '.ast'
-            print(f'[green]print AST: {file_ast}[/green]')
-            with open(file_ast, 'w', encoding='utf-8') as f:
-                with redirect_stdout(f):
-                    print_AST(source)
+        elif args.png:
+            ...
 
+        else:
+            context.parse(source)
+            context.run()
 
+    else:
+
+        try:
+            ...
+            '''while True:
+              source = input('pl0 $ ')
+              context.parse(source)
+              if not context.have_errors:
+                for stmt in context.ast.funclist[0].stmtlist.stmtlist:
+                  context.ast = stmt
+                  #context.run()'''
+
+        except EOFError:
+            pass

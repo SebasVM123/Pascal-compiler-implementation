@@ -226,8 +226,15 @@ class Parser(sly.Parser):
         return [p.expr]
 
     def error(self, p):
-        print(p)
-    
+        print('ERROR', p)
+
+def print_AST(source):
+    lex = Lexer()
+    parser = Parser()
+    node = parser.parse(lex.tokenize(source))
+    AST.printer(node)
+
+
 def main(argv):
     if len(argv) != 2:
         print(f"Usage: python {argv[0]} filename")

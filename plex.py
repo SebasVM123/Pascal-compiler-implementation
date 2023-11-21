@@ -7,6 +7,7 @@ import sly
 from prettytable import PrettyTable
 
 class Lexer(sly.Lexer):
+
     tokens = {
         # Palabras Reservadas
         FUN, BEGIN, END, SKIP, BREAK, WHILE, DO,
@@ -159,17 +160,15 @@ class Lexer(sly.Lexer):
             print(f'\033[91mERROR: {t.value} must have integer part in line {t.lineno}. Did you mean 0{t.value}?\033[0m')
 
 def print_lexer(source):
-    with open(source, encoding='utf-8') as file:
-        lexer_contents = file.read()
-    print(lexer_contents)
-    '''tokens_table = PrettyTable()
+    lex = Lexer()
+    tokens_table = PrettyTable()
     tokens_table.align = 'l'
     tokens_table.field_names = ['TOKEN', 'LEXEMA', 'LINENO']
 
-    for tok in source:
-        tokens_table.add_row([tok.type, tok.value, tok.lineno])'''
+    for tok in lex.tokenize(source):
+        tokens_table.add_row([tok.type, tok.value, tok.lineno])
 
-   # print(tokens_table)
+    print(tokens_table)
 
 def main(argv):
     if len(argv) != 2:
