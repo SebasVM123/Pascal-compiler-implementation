@@ -35,8 +35,6 @@ def error(code: int, name: str = None, value1: str = None, value2: str = None):
     elif code == 10:
         console.print(f'[red]Name Error: main function not found[/red]')
 
-    print('-' * 100)
-
 # ---------------------------------------------------------------------
 #  Tabla de Simbolos
 # ---------------------------------------------------------------------
@@ -149,8 +147,8 @@ class Checker(Visitor):
         # Determinar el datatype de la funcion (revisando instrucciones return)
         env.add(n.name, n)
 
-        print(n, 'Program', env.entries.keys())
-        print('-' * 100)
+        # print(n, 'Program', env.entries.keys())
+        # print('-' * 100)
 
         local_env = Symtab(context=n, parent=env)
 
@@ -311,7 +309,6 @@ class Checker(Visitor):
                             break
                 if all_matched:
                     dtype = fun.dtype
-                    print(dtype)
         else:
             error(7, n.name)
 

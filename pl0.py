@@ -19,10 +19,8 @@ optional arguments:
   -R, --exec         Execute the generated program
 '''
 from contextlib import redirect_stdout
-from rich import print
-from plex import print_lexer
-from pparser import print_AST
 from context import Context
+from rich import print
 
 import argparse
 
@@ -81,15 +79,28 @@ if __name__ == '__main__':
         if args.lex:
             file_lex = file_name.split('.')[0] + '.lex'
             print(f'[green]print lexer: {file_lex}[/green]')
+
             with open(file_lex, 'w', encoding='utf-8') as f:
                 with redirect_stdout(f):
-                    print_lexer(source)
+                    errors = context.print_lexer(source)
+                if errors:
+                    print(f'[red]Warning: there are {len(errors)} errors: ')
+                    for error in errors:
+                        print(f'[red]{error}[/red]')
 
         elif args.ast:
             file_ast = file_name.split('.')[0] + '.ast'
             print(f'[green]print AST: {file_ast}[/green]')
+
             with open(file_ast, 'w', encoding='utf-8') as f:
                 with redirect_stdout(f):
-                    print_AST(source)
+                    errors = context.print_AST(source)
 
+                if context.have_errors:
+                    if errors:
+                        print(f'[red]Warning: not possible to dump AST because there are {len(errors)} errors: ')
+                        for error in errors:
+                            print(f'[red]{error}[/red]')
+                    else:
+                        print(f'[red]File is empty[/red]')
 

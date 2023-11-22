@@ -13,12 +13,12 @@ class Visitor(metaclass=multimeta):
 @dataclass
 class Node:
     def accept(self, v: Visitor, *args, **kwargs):
-        if args:
+        '''if args:
             if args[0].context is not None:
                 print(self)
                 print(f'Context: {args[0].context.dtype} {args[0].context.name}, Entries: {list(args[0].entries.keys())}')
                 #print(list(args[0].entries.values()))
-                print('-' * 100)
+                print('-' * 100)'''
         return v.visit(self, *args, **kwargs)
 
 @dataclass

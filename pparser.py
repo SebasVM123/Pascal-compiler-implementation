@@ -14,6 +14,9 @@ class Parser(sly.Parser):
 
     tokens = Lexer.tokens
 
+    have_errors = False
+    errors = []
+
     precedence = (
         ('left', IF,THEN),
         ('left', ELSE),
@@ -226,13 +229,18 @@ class Parser(sly.Parser):
         return [p.expr]
 
     def error(self, p):
-        print('ERROR', p)
+        self.have_errors = True
+        if p:
+            message_error = f'SYNTAX ERROR at line {p.lineno} in "{p.value}"'
+            self.errors.append(message_error)
 
 def print_AST(source):
     lex = Lexer()
     parser = Parser()
     node = parser.parse(lex.tokenize(source))
-    AST.printer(node)
+    print(parser.have_errors)
+    print(parser.errors)
+    #AST.printer(node)
 
 
 def main(argv):
@@ -244,7 +252,9 @@ def main(argv):
     txt = open('test2/' + argv[1]).read()
     parser = Parser()
     Nodo = parser.parse(lex.tokenize(txt))
-    AST.printer(Nodo)
+    print(parser.have_errors)
+    print(parser.errors)
+    #AST.printer(Nodo)
 
 
 if __name__ == '__main__':

@@ -6,7 +6,11 @@ Analizador Lexico para el lenguaje PL0
 import sly
 from prettytable import PrettyTable
 
+
 class Lexer(sly.Lexer):
+
+    have_errors = False
+    errors = []
 
     tokens = {
         # Palabras Reservadas
@@ -40,7 +44,6 @@ class Lexer(sly.Lexer):
     # expresiones regulares
     @_(r'"([^"\n\\]*(\\.?[^"\n\\]*)*)"([ ]*("([^"\n\\]*(\\.?[^"\n\\]*)*)")*)*')
     def STRING(self, t):
-        print(t.value)
         t.value = t.value.replace('\\"', '&escquote&')
 
         if t.value[-1] != '"':
@@ -59,7 +62,7 @@ class Lexer(sly.Lexer):
             if t.value[i] == '\\':
                 if i + 1 < len(t.value) and t.value[i + 1] not in escape_characters:
                     unknown_escapechar_error = True
-                    self.error(t, error_type=5, extra_info=t.value[i + 1])
+                    return self.error(t, error_type=5, extra_info=t.value[i + 1])
                 i += 2
             else:
                 i += 1
@@ -69,7 +72,7 @@ class Lexer(sly.Lexer):
 
     @_(r'"([^"\n\\]*(\\.?[^"\n\\]*)*)')
     def UNCLOSED_STRING(self, t):
-        self.error(t, error_type=4)
+        return self.error(t, error_type=4)
 
     keywords = {'and', 'begin', 'break', 'do', 'else', 'end', 'float', 'fun', 'if', 'int', 'not', 'or', 'print',
                 'read', 'return', 'skip', 'then', 'while', 'write'}
@@ -86,7 +89,7 @@ class Lexer(sly.Lexer):
     @_(r'\d*[a-zA-Z_]+(\w|_)*')
     def ID(self, t):
         if t.value[0] in '0123456789':
-            self.error(t, error_type=3)
+            return self.error(t, error_type=3)
         else:
             if t.value in self.keywords:
                 t.type = t.value.upper()
@@ -95,7 +98,7 @@ class Lexer(sly.Lexer):
     @_(r'\d+')
     def ICONST(self, t):
         if len(t.value) > 1 and t.value[0] == '0':
-            self.error(t, error_type=1, extra_info='integer')
+            return self.error(t, error_type=1, extra_info='integer')
         else:
             t.value = int(t.value)
             return t
@@ -135,29 +138,35 @@ class Lexer(sly.Lexer):
     @_(r'\/\*([^*]|(\*+[^*/]))*\*+\/')
     def COMMENT(self, t):
         self.lineno += t.value.count('\n')
-    
 
     @_(r'\/\*([^*]|(\*+[^*/]))*$')
     def BAD_COMMENT(self, t):
         self.lineno += t.value.count('\n')
-        self.error(t, error_type=2)
+        return self.error(t, error_type=2)
 
     def error(self, t, error_type=0, extra_info=None):
+        self.have_errors = True
+
         if error_type == 0:
-            print(f'\033[91mERROR: Illegal character "{t.value[0]}" in line: {t.lineno}\033[0m')
+            error_message = f'LEXICAL ERROR: Illegal character "{t.value[0]}" in line: {t.lineno}'
             self.index += 1
         elif error_type == 1:
-            print(f'\033[91mERROR: Leading zeros not supported in {extra_info} {t.value}, line: {t.lineno}\033[0m')
+            error_message = (f'LEXICAL ERROR: Leading zeros not supported in {extra_info} {t.value}, '
+                             f'line: {t.lineno}')
         elif error_type == 2:
-            print(f'\033[91mERROR: Unclosed comment at line: {t.lineno}\033[0m')
+            error_message = f'LEXICAL ERROR: Unclosed comment at line: {t.lineno}'
         elif error_type == 3:
-            print(f'\033[91mERROR: {t.value} is not a valid name, line {t.lineno}\033[0m')
+            error_message = f'LEXICAL ERROR: {t.value} is not a valid name, line {t.lineno}'
         elif error_type == 4:
-            print(f'\033[91mERROR: Unclosed string at line {t.lineno}\033[0m')
+            error_message = f'LEXICAL ERROR: Unclosed string at line {t.lineno}'
         elif error_type == 5:
-            print(f'\033[91mERROR: {extra_info} is not a valid escape character in line {t.lineno}\033[0m')
+            error_message = f'LEXICAL ERROR: {extra_info} is not a valid escape character in line {t.lineno}'
         elif error_type == 6:
-            print(f'\033[91mERROR: {t.value} must have integer part in line {t.lineno}. Did you mean 0{t.value}?\033[0m')
+            error_message = (f'LEXICAL ERROR: {t.value} must have integer part in line {t.lineno}. '
+                             f'Did you mean 0{t.value}?')
+
+        self.errors.append(error_message)
+
 
 def print_lexer(source):
     lex = Lexer()
