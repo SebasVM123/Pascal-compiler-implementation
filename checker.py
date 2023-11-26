@@ -391,6 +391,8 @@ def main(argv):
     nodo = parser.parse(lex.tokenize(txt))
     Checker.check(nodo)
 
+'''Solo millos'''
+
 
 if __name__ == '__main__':
     from sys import argv
