@@ -13,10 +13,10 @@ begin
   i := 2;
   while ( i <= n) do begin
     if mod(n,i) == 0 then begin
-      nfacts := nfacts + 1; 
+      nfacts := nfacts + 1;
       stor[i-1] := i
     end;
-    i := i + 1 
+    i := i + 1
   end;
   return nfacts
 end

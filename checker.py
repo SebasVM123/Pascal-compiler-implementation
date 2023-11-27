@@ -299,14 +299,23 @@ class Checker(Visitor):
             else:
                 all_matched = True
                 for parm, arg in zip(fun.parmlist.parmlist, n.arglist.arglist):
-                    parm_type = parm.dtype.name
-                    arg_type = arg.accept(self, env)
+                    parm_type = parm.dtype.name if not isinstance(parm.dtype, ArrayType) else parm.dtype
 
-                    if arg_type is not None:
-                        if parm_type != arg_type:
-                            error(9, name=n.name)
-                            all_matched = False
-                            break
+                    if isinstance(arg, SimpleLocation):
+                        if (var_def := env.get_var(arg.name)) is not None and isinstance(var_def.dtype, ArrayType):
+                            if parm_type != var_def.dtype:
+                                error(9, name=n.name)
+                                all_matched = False
+                                break
+                        else:
+                            arg_type = arg.accept(self, env)
+                    else:
+                        if arg_type is not None:
+                            if parm_type != arg_type:
+                                error(9, name=n.name)
+                                all_matched = False
+                                break
+
                 if all_matched:
                     dtype = fun.dtype
         else:
@@ -390,8 +399,6 @@ def main(argv):
     parser = Parser()
     nodo = parser.parse(lex.tokenize(txt))
     Checker.check(nodo)
-
-'''Solo millos'''
 
 
 if __name__ == '__main__':

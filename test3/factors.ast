@@ -1,0 +1,167 @@
+Program
+└── funclist
+    ├── func(mod)
+    │   ├── parmlist
+    │   │   ├── Parameter(x)
+    │   │   │   └── int
+    │   │   └── Parameter(y)
+    │   │       └── int
+    │   ├── locallist
+    │   └── stmtlist
+    │       └── Return
+    │           └── Binary (-)
+    │               ├── expr_left
+    │               │   └── Simpleloc (x)
+    │               └── expr_right
+    │                   └── Binary (*)
+    │                       ├── expr_left
+    │                       │   └── Binary (/)
+    │                       │       ├── expr_left
+    │                       │       │   └── Simpleloc (x)
+    │                       │       └── expr_right
+    │                       │           └── Simpleloc (y)
+    │                       └── expr_right
+    │                           └── Simpleloc (y)
+    ├── func(factor)
+    │   ├── parmlist
+    │   │   ├── Parameter(n)
+    │   │   │   └── int
+    │   │   └── Parameter(stor)
+    │   │       └── ArrayType (int)
+    │   │           └── Dim
+    │   │               └── Int: 1024
+    │   ├── locallist
+    │   │   ├── VarDefinition(i)
+    │   │   │   └── int
+    │   │   └── VarDefinition(nfacts)
+    │   │       └── int
+    │   └── stmtlist
+    │       ├── assign 
+    │       │   ├── Name (nfacts)
+    │       │   └── Expr
+    │       │       └── Int: 1
+    │       ├── assign 
+    │       │   ├── Name (stor)
+    │       │   └── Expr
+    │       │       └── Int: 1
+    │       ├── assign 
+    │       │   ├── Name (i)
+    │       │   └── Expr
+    │       │       └── Int: 2
+    │       ├── While
+    │       │   ├── Relation
+    │       │   │   └── Logical (<=)
+    │       │   │       ├── expr_left
+    │       │   │       │   └── Simpleloc (i)
+    │       │   │       └── expr_right
+    │       │   │           └── Simpleloc (n)
+    │       │   └── Stmt
+    │       │       ├── IfStmt
+    │       │       │   ├── relation
+    │       │       │   │   └── Logical (==)
+    │       │       │   │       ├── expr_left
+    │       │       │   │       │   └── Call mod
+    │       │       │   │       │       └── Exprlist
+    │       │       │   │       └── expr_right
+    │       │       │   │           └── Int: 0
+    │       │       │   ├── then
+    │       │       │   │   ├── assign 
+    │       │       │   │   │   ├── Name (nfacts)
+    │       │       │   │   │   └── Expr
+    │       │       │   │   │       └── Binary (+)
+    │       │       │   │   │           ├── expr_left
+    │       │       │   │   │           │   └── Simpleloc (nfacts)
+    │       │       │   │   │           └── expr_right
+    │       │       │   │   │               └── Int: 1
+    │       │       │   │   └── assign 
+    │       │       │   │       ├── Name (stor)
+    │       │       │   │       └── Expr
+    │       │       │   │           └── Simpleloc (i)
+    │       │       │   └── else
+    │       │       └── assign 
+    │       │           ├── Name (i)
+    │       │           └── Expr
+    │       │               └── Binary (+)
+    │       │                   ├── expr_left
+    │       │                   │   └── Simpleloc (i)
+    │       │                   └── expr_right
+    │       │                       └── Int: 1
+    │       └── Return
+    │           └── Simpleloc (nfacts)
+    ├── func(print_arr)
+    │   ├── parmlist
+    │   │   ├── Parameter(a)
+    │   │   │   └── ArrayType (int)
+    │   │   │       └── Dim
+    │   │   │           └── Int: 1024
+    │   │   └── Parameter(nelem)
+    │   │       └── int
+    │   ├── locallist
+    │   │   └── VarDefinition(i)
+    │   │       └── int
+    │   └── stmtlist
+    │       ├── assign 
+    │       │   ├── Name (i)
+    │       │   └── Expr
+    │       │       └── Int: 0
+    │       └── While
+    │           ├── Relation
+    │           │   └── Logical (<)
+    │           │       ├── expr_left
+    │           │       │   └── Simpleloc (i)
+    │           │       └── expr_right
+    │           │           └── Simpleloc (nelem)
+    │           └── Stmt
+    │               ├── Write
+    │               │   └── ArrayLoc (a)
+    │               │       └── Simpleloc (i)
+    │               ├── Print " "
+    │               ├── IfStmt
+    │               │   ├── relation
+    │               │   │   └── Logical (and)
+    │               │   │       ├── expr_left
+    │               │   │       │   └── Logical (==)
+    │               │   │       │       ├── expr_left
+    │               │   │       │       │   └── Call mod
+    │               │   │       │       │       └── Exprlist
+    │               │   │       │       └── expr_right
+    │               │   │       │           └── Int: 0
+    │               │   │       └── expr_right
+    │               │   │           └── Logical (!=)
+    │               │   │               ├── expr_left
+    │               │   │               │   └── Simpleloc (i)
+    │               │   │               └── expr_right
+    │               │   │                   └── Int: 0
+    │               │   ├── then
+    │               │   │   └── Print "\n"
+    │               │   └── else
+    │               └── assign 
+    │                   ├── Name (i)
+    │                   └── Expr
+    │                       └── Binary (+)
+    │                           ├── expr_left
+    │                           │   └── Simpleloc (i)
+    │                           └── expr_right
+    │                               └── Int: 1
+    └── func(main)
+        ├── parmlist
+        ├── locallist
+        │   ├── VarDefinition(x)
+        │   │   └── int
+        │   ├── VarDefinition(nfs)
+        │   │   └── int
+        │   └── VarDefinition(results)
+        │       └── ArrayType (int)
+        │           └── Dim
+        │               └── Int: 1024
+        └── stmtlist
+            ├── Print "Enter a number\n"
+            ├── Read
+            │   └── Simpleloc (x)
+            ├── assign 
+            │   ├── Name (nfs)
+            │   └── Expr
+            │       └── Call factor
+            │           └── Exprlist
+            └── Call print_arr
+                └── Exprlist

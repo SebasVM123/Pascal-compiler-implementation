@@ -1,5 +1,10 @@
-fun main()
+fun factor(x: int[100])
 begin
-    z :=
-    x :=
+    print("1")
+end
+
+fun main()
+    z: int[100];
+begin
+    factor(z)
 end
