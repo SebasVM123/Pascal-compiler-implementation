@@ -33,7 +33,9 @@ def error(code: int, name: str = None, value1: str = None, value2: str = None):
         console.print(f'[red]Type Error: type of argument passed in call of {name} does not match with the type '
                       f'expected.[/red]')
     elif code == 10:
-        console.print(f'[red]Name Error: main function not found[/red]')
+        console.print(f'[red]Name Error: main function not found.[/red]')
+    elif code == 11:
+        console.print(f'[red]Type Error: index must be an int.[/red]')
 
 # ---------------------------------------------------------------------
 #  Tabla de Simbolos
@@ -69,8 +71,10 @@ class Symtab:
             elif isinstance(env.entries[name], VarDefinition):
                 super().__init__(f'In function {env.context.name}: Variable {name} has already been defined before')
             elif isinstance(env.entries[name], FunDefinition):
-                super().__init__(f'In function {env.context.name}: Function {name} has already been defined before')
-
+                if env.context:
+                    super().__init__(f'In function {env.context.name}: Function {name} has already been defined before')
+                else:
+                    super().__init__(f'Function {name} has already been defined before')
 
     def __init__(self, context=None, parent=None):
         '''
@@ -124,6 +128,7 @@ class Symtab:
 
 
 class Checker(Visitor):
+    in_while = False
 
     @classmethod
     def check(cls, n: Node):
@@ -185,35 +190,36 @@ class Checker(Visitor):
         # Visitar las Stmts
 
         n.relation.accept(self, env)
-        in_while = True
-        if isinstance(n.stmt, StmtList):
-            for stmt in n.stmt.stmtlist:
-                if isinstance(stmt, Break):
-                    stmt.accept(self, env, in_while)
-                else:
-                    stmt.accept(self, env)
-        elif isinstance(n.stmt, Break):
-            n.stmt.accept(self, env, in_while)
-        else:
-            n.stmt.accept(self, env)
+        self.in_while = True
+        n.stmt.accept(self, env)
+        self.in_while = False
 
-    def visit(self, n: Break, env: Symtab, in_while: bool = False):
+    def visit(self, n: Break, env: Symtab):
         # Esta dentro de un While?
-
-        if not in_while:
+        if not self.in_while:
             error(6)
+
     def visit(self, n: IfStmt, env: Symtab):
         # Visitar la condicion del IfStmt (Comprobar tipo bool)
         # Visitar las Stmts del then y else
 
         n.relation.accept(self, env)
         n.thenstmt.accept(self, env)
+        if n.elsestmt:
+            n.elsestmt.accept(self, env)
 
     def visit(self, n: Return, env: Symtab):
         # Visitar la expresion asociada
         # Actualizar el datatype de la funcion
 
-        dtype = n.value.accept(self, env)
+        if isinstance(n.value, SimpleLocation):
+            if (var_def := env.get_var(n.value.name)) is not None and isinstance(var_def.dtype, ArrayType):
+                dtype = var_def.dtype.name
+            else:
+                dtype = n.value.accept(self, env)
+        else:
+            dtype = n.value.accept(self, env)
+
         if dtype is not None:
             env.context.dtype = dtype
 
@@ -263,11 +269,13 @@ class Checker(Visitor):
     def visit(self, n: ArrayLocation, env: Symtab):
         # Buscar en Symtab y extraer datatype (No se encuentra?)
         # Devuelvo el datatype
-
         dtype = None
         if var_def := env.get_var(n.name):
             if isinstance(var_def.dtype, ArrayType):
-                dtype = var_def.dtype.name
+                if n.index.accept(self, env) == 'int':
+                    dtype = var_def.dtype.name
+                else:
+                    error(11)
             else:
                 error(3, n.name)
         else:
@@ -309,7 +317,13 @@ class Checker(Visitor):
                                 break
                         else:
                             arg_type = arg.accept(self, env)
+                            if arg_type is not None:
+                                if parm_type != arg_type:
+                                    error(9, name=n.name)
+                                    all_matched = False
+                                    break
                     else:
+                        arg_type = arg.accept(self, env)
                         if arg_type is not None:
                             if parm_type != arg_type:
                                 error(9, name=n.name)
@@ -333,7 +347,11 @@ class Checker(Visitor):
         right_dtype = n.right.accept(self, env)
         # Compara los tipos de datos si la parte izquierda y derecha no tienen errores
         dtype = check_binary_op(n.op, left_dtype, right_dtype)
-        if left_dtype is not None and right_dtype is not None:
+        if isinstance(n.left, FuncCall) or isinstance(n.right, FuncCall):
+            if dtype is None:
+                #print(n)
+                error(5, name=n.op, value1=left_dtype, value2=right_dtype)
+        elif left_dtype is not None and right_dtype is not None:
             # Si los tipos de datos son distintos lanza un error
             if dtype is None:
                 error(5, name=n.op, value1=left_dtype, value2=right_dtype)

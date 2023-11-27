@@ -1,5 +1,5 @@
-/* No hay suficiente información para 
-   determinar el tipo de devolución
+/* No hay suficiente informacion para
+   determinar el tipo de devolucion
  */
 fun foo(x:int)
 begin
@@ -12,7 +12,7 @@ begin
   read(a);
 
   /* Se utiliza el valor de retorno de foo, 
-     pero no hay suficiente información para 
+     pero no hay suficiente informacion para
      determinar el tipo de retorno 
    */
 

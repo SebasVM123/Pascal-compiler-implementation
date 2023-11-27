@@ -1,12 +1,4 @@
-fun foo(x: float, y: int)
-begin
-    return 1.5
-end
-
 fun main()
-    a: float;
-    b: int;
-    z: float[10];
 begin
-    z[0] := 10.4
+    print("Hola mundo\n")
 end

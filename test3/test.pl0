@@ -3,8 +3,8 @@ begin
     print("1")
 end
 
-fun main()
-    z: int[100];
+fun main(y: int)
+    z: int[y];
 begin
     factor(z)
 end
