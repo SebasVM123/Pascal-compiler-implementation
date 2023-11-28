@@ -139,6 +139,8 @@ class AST(Visitor):
         if isinstance(n.arglist, list):
             for expr in n.arglist:
                 hijo1.add(expr.accept(self))
+        else:
+            hijo1.add(label=n.expr)
         return tree
 
     def visit(self, n: Binary):

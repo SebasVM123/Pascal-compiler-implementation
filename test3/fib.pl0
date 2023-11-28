@@ -1,4 +1,4 @@
-/* fib ineficiente no funciona por else*/
+/* fib ineficiente*/
 fun fib(n:int)
 begin
   if n == 0 or n == 1 then return n

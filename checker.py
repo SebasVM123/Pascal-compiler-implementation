@@ -406,7 +406,6 @@ class Checker(Visitor):
         for arg in n.arglist:
             arg.accept(self, env)
 
-
 def main(argv):
     if len(argv) != 2:
         print(f"Usage: python {argv[0]} filename")
