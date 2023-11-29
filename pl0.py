@@ -9,14 +9,10 @@ positional arguments:
 
 optional arguments:
   -h, --help         show this help message and exit
-  -D, --debug        Generate assembly with extra information (for debugging purposes)
-  -o OUT, --out OUT  File name to store generated executable
   -l, --lex          Store output of lexer
   -a, --ast          Generate AST graph as txt format
   -I, --ir           Dump the generated Intermediate representation
-  --sym              Dump the symbol table
-  -S, --asm          Store the generated assembly file
-  -R, --exec         Execute the generated program
+  -s, --sym          Dump the symbol table
 '''
 from contextlib import redirect_stdout
 from context import Context
@@ -55,10 +51,10 @@ def parse_args():
         '-a', '--ast',
         action='store_true',
         default=False,
-        help='Generate AST graph as DOT format')
+        help='Generate AST graph as txt format')
 
     mutex.add_argument(
-        '--sym',
+        '-s', '--sym',
         action='store_true',
         help='Dump the symbol table')
 
@@ -104,3 +100,15 @@ if __name__ == '__main__':
                     else:
                         print(f'[red]File is empty[/red]')
 
+        elif args.sym:
+            file_sym = file_name.split('.')[0] + '.sym'
+            print(f'[green]print AST: {file_sym}[/green]')
+
+            with open(file_sym, 'w', encoding='utf-8') as f:
+                with redirect_stdout(f):
+                    errors = context.print_symtab(source)
+
+            if errors:
+                print(f'[red]Warning: there are {len(errors)} errors: ')
+                for error in errors:
+                    print(f'[red]{error}[/red]')

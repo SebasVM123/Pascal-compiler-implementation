@@ -11,31 +11,33 @@ from typesys import *
 
 
 def error(code: int, name: str = None, value1: str = None, value2: str = None):
-    console = Console()
     if code == 1:
-        console.print(f'[red]Name Error: variable {name} used but no defined.[/red]')
+        error_message = (f'Name Error: variable {name} used but no defined.')
     elif code == 2:
-        console.print(f'[red]Attribute Error: array variable {name} used without specifying an index.[/red]')
+        error_message = (f'Attribute Error: array variable {name} used without specifying an index.')
     elif code == 3:
-        console.print(f'[red]Attribute Error: variable {name} has no indices because it was not defined as an array.'
-                      f'[/red]')
+        error_message = (f'Attribute Error: variable {name} has no indices because it was not defined as an array.'
+                      f'')
     elif code == 4:
-        console.print(f'[red]Type Error: invalyd assignment of {value2} expression to a {value1} variable {name}[/red]')
+        error_message = (f'Type Error: invalyd assignment of {value2} expression to a {value1} variable {name}')
     elif code == 5:
-        console.print(f'[red]Type Error: unsupported operand type for "{name}": "{value1}" and "{value2}"[/red]')
+        error_message = (f'Type Error: unsupported operand type for "{name}": "{value1}" and "{value2}"')
     elif code == 6:
-        console.print(f'[red]Error: Break Statement must be within a While Statement[/red]')
+        error_message = (f'Error: Break Statement must be within a While Statement')
     elif code == 7:
-        console.print(f'[red]Name Error: function {name} called but no defined.[/red]')
+        error_message = (f'Name Error: function {name} called but no defined.')
     elif code == 8:
-        console.print(f'[red]Type Error: in call of {name}: expected {value1} arguments but {value2} were given.[/red]')
+        error_message = (f'Type Error: in call of {name}: expected {value1} arguments but {value2} were given.')
     elif code == 9:
-        console.print(f'[red]Type Error: type of argument passed in call of {name} does not match with the type '
-                      f'expected.[/red]')
+        error_message = (f'Type Error: type of argument passed in call of {name} does not match with the type '
+                      f'expected.')
     elif code == 10:
-        console.print(f'[red]Name Error: main function not found.[/red]')
+        error_message = (f'Name Error: main function not found.')
     elif code == 11:
-        console.print(f'[red]Type Error: index must be an int.[/red]')
+        error_message = (f'Type Error: index must be an int.')
+
+    Checker.have_errors = True
+    Checker.errors.append(error_message)
 
 # ---------------------------------------------------------------------
 #  Tabla de Simbolos
@@ -129,16 +131,21 @@ class Symtab:
 
 class Checker(Visitor):
     in_while = False
+    symtabs = []
+    have_errors = False
+    errors = []
 
     @classmethod
     def check(cls, n: Node):
         vis = cls()
         n.accept(vis)
+        return vis.symtabs
 
     def visit(self, n: Program):
         # Crear un nuevo contexto (Symtab global)
         # Visitar cada una de las declaraciones asociadas
         global_env = Symtab()
+        self.symtabs.append(global_env)
         for func in n.funclist:
             func.accept(self, global_env)
 
@@ -162,6 +169,8 @@ class Checker(Visitor):
         if n.varlist:
             n.varlist.accept(self, local_env)
         n.stmtlist.accept(self, local_env)
+
+        self.symtabs.append(local_env)
 
     def visit(self, n: Parameter, env: Symtab):
         # Agregar el nombre del parametro a Symtab

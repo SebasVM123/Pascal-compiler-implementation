@@ -3,7 +3,6 @@ from multimethod import multimeta
 from typing import List
 from rich.tree import Tree
 from rich.console import Console
-from rich import print
 import inspect
 
 class Visitor(metaclass=multimeta):
@@ -113,7 +112,6 @@ class Declaration(Stmt):
 class VarDefinition(Declaration):
     name: str
     dtype: DataType
-    init : bool = field(init=False, default=False)
 
 @dataclass
 class Parameter(Declaration):

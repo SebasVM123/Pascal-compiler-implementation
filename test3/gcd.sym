@@ -1,0 +1,27 @@
+SCOPE: Global
++-------------+---------------+
+| SYMBOL NAME | SYMBOL TYPE   |
++-------------+---------------+
+| gcd         | FunDefinition |
+| main        | FunDefinition |
++-------------+---------------+
+
+SCOPE:  gcd
++-------------+---------------------------------------+
+| SYMBOL NAME | SYMBOL TYPE                           |
++-------------+---------------------------------------+
+| x           | Parameter: SimpleType(name='int')     |
+| y           | Parameter: SimpleType(name='int')     |
+| g           | VarDefinition: SimpleType(name='int') |
++-------------+---------------------------------------+
+
+SCOPE:  main
++-------------+---------------------------------------+
+| SYMBOL NAME | SYMBOL TYPE                           |
++-------------+---------------------------------------+
+| x           | VarDefinition: SimpleType(name='int') |
+| y           | VarDefinition: SimpleType(name='int') |
+| r           | VarDefinition: SimpleType(name='int') |
++-------------+---------------------------------------+
+
+[]
