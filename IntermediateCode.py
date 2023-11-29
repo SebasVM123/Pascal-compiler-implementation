@@ -210,7 +210,7 @@ class IntermediateCode(Visitor):
         if 'R' not in right:
             right = self.registers[right]
 
-        self.intermediate_code[namefunc].append(f"('{op}', '{left}', '{right}', '{RD}')")
+        self.intermediate_code[namefunc].append(f"('CMPI','{op}' ,'{left}', '{right}', '{RD}')")
 
         return RD
 
