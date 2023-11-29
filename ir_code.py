@@ -124,7 +124,7 @@ class IntermediateCode(Visitor):
         return n.name
 
     def visit(self, n: ArrayLocation, namefunc):
-        ...
+        return f'{n.name} [{n.index}]'
 
     def visit(self, n: TypeCast, namefunc):
         p = 1
@@ -274,7 +274,7 @@ def main(argv):
         exit(1)
 
     lex = Lexer()
-    txt = open('test3/' + argv[1]).read()
+    txt = open(argv[1]).read()
     parser = Parser()
     nodo = parser.parse(lex.tokenize(txt))
     IntermediateCode.generator(nodo)

@@ -50,12 +50,12 @@ class Literal(Expr):
 @dataclass
 class Integer(Literal):
     value: int
-    dtype: DataType = SimpleType('int')
+    dtype: DataType = field(default_factory=SimpleType('int'))
 
 @dataclass
 class Float(Literal):
     value: float
-    dtype: DataType = SimpleType('float')
+    dtype: DataType = field(default_factory=SimpleType('float'))
     
 @dataclass
 class Location(Expr):

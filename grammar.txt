@@ -51,41 +51,47 @@ parmlist    ::= parmlist ',' parm
 parm        ::= ID ':' datatype
 datatype    ::= INT [ '[' expr ']' ]
             | FLOAT [ '[' expr ']' ]
-locallist   ::= locallist ';' { local ';' }
-            | local
-local       ::= parm
+locallist   ::= local ';' locallist
+            | local ';'
+local       ::= vardecl
             | func
-stmtlist    ::= stmt { ';' stmt }
+stmtlist    ::= stmt ';' stmtlist
+            | stmt
 stmt        ::= PRINT '(' literal ')'
             | WRITE '(' expr ')'
             | READ '(' location ')'
             | WHILE relation DO stmt
             | BREAK 
-            | IF relation then stmt [ ELSE stmt ]
+            | instr_rel
+            | instr_open
             | BEGIN stmtlist END
             | location ASSIGNOP expr
             | RETURN expr
             | SKIP
             | ID '(' exprlist ')'
+instr_rel   ::= IF relation THEN stmt %prec THEN
+instr_open  ::= IF relation THEN stmt ELSE stmt %prec ELSE
 location    ::= ID [ '[' expr ']' ]
-exprlist    ::= expr { ',' expr}
-            |
-expr        ::= factor '+' expr
-            | factor '-' expr
-            | factor
-factor      :== term '*' factor
-            | term '/' factor
-            | term
-term        :== ID '(' exprlist ')'
+literal     ::= STRING
+exprlist    ::= exprlist ',' expr
+            | expr
+expr        ::= expr '+' expr
+            | expr '-' expr
+            | expr '*' expr
+            | expr '/' expr
+            | '-' expr %prec UNARY
+            | '+' term %prec UNARY
+            | '(' expr ')'
+            | ICONST
+            | FCONST
+            | ID '(' exprlist ')'
             | ID '[' expr ']'
             | ID
-            | number
             | '(' relation ')'
             | INT '(' expr ')'
             | FLOAT '(' expr ')'
-            | '-' term
-            | '+' term
-            | '(' expr ')'
+
+
 relation    ::= expr LT expr
             | expr LE expr
             | expr GT expr
@@ -94,4 +100,5 @@ relation    ::= expr LT expr
             | expr DF expr
             | relop AND relop
             | relop OR relop
-            | NOT relop 
+            | NOT relop
+            | (relop)
