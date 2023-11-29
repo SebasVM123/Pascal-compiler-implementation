@@ -112,7 +112,7 @@ class IntermediateCode(Visitor):
         while f'R{p}' in self.registers.values():
             p = p + 1
         self.registers[n.value] = f'R{p}'
-        self.intermediate_code[namefunc].append(f"('MOVI', '{n.value}', '{self.registers[n.value]}')")
+        self.intermediate_code[namefunc].append(f"('MOVF', '{n.value}', '{self.registers[n.value]}')")
         return f'R{p}'
 
     def visit(self, n: SimpleLocation, namefunc):
@@ -122,7 +122,12 @@ class IntermediateCode(Visitor):
         ...
 
     def visit(self, n: TypeCast, namefunc):
-        ...
+        p = 1
+        while f'R{p}' in self.registers.values():
+            p = p + 1
+
+        self.registers[n.name] = f'R{p}'
+        self.intermediate_code[namefunc].append(f"('CAST', '{n.name}', '{self.registers[n.name]}')")
 
     def visit(self, n: FuncCall, namefunc):
         p = 1
@@ -162,6 +167,8 @@ class IntermediateCode(Visitor):
             op = f'ADDI'
         elif n.op == '-':
             op = f'SUBI'
+        else:
+            op = ''
 
         RD = self.registers[f'Resultop{p}'] = f'R{p}'
 
@@ -191,6 +198,8 @@ class IntermediateCode(Visitor):
             op = f'AND'
         elif n.op == 'or':
             op = f'OR'
+        elif n.op == '==':
+            op = 'EQUAL'
 
         RD = self.registers[f'Resultop{p}'] = f'R{p}'
 
