@@ -55,7 +55,11 @@ class IntermediateCode(Visitor):
         pass
 
     def visit(self, n: Write, namefunc):
-        ...
+        RD= n.expr.accept(self,namefunc)
+        if 'R' in RD:
+            self.intermediate_code[namefunc].append(f"('PRINTI', '{RD}')")
+        else:
+            self.intermediate_code[namefunc].append(f"('PRINTI', '{self.registers[RD]}')")
 
     def visit(self, n: Read, namefunc):
         ...
@@ -234,8 +238,10 @@ class IntermediateCode(Visitor):
         return parmlist
 
     def visit(self, n: VarList, namefunc):
+        varlist = []
         for var in n.varlist:
-            return var.accept(self, namefunc)
+            varlist.append(var.accept(self, namefunc))
+        return varlist
 
     def visit(self, n: StmtList, namefunc):
         for stmt in n.stmtlist:
