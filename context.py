@@ -12,6 +12,7 @@ from plex import Lexer
 from pparser import Parser
 from AST import AST
 from checker import Checker
+from ir_code import IntermediateCode
 
 from prettytable import PrettyTable
 
@@ -87,3 +88,25 @@ class Context:
             print()
 
         return errors
+
+    def genIr(self, source):
+        node = self.parser.parse(self.lexer.tokenize(source))
+
+        errors = None
+
+        if not self.lexer.have_errors:
+            if not self.parser.have_errors:
+                self.checker.check(node)
+                if not self.checker.have_errors:
+                    IntermediateCode.generator(node)
+                else:
+                    self.have_errors = True
+                    errors = self.checker.errors
+            else:
+                self.have_errors = True
+                errors = self.parser.errors
+        else:
+            self.have_errors = True
+            errors = self.lexer.errors
+
+        print(errors)

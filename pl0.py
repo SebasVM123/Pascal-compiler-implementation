@@ -58,6 +58,12 @@ def parse_args():
         action='store_true',
         help='Dump the symbol table')
 
+    mutex.add_argument(
+        '-I', '--ir',
+        action='store_true',
+        help='Print the intermediate code'
+    )
+
     return cli.parse_args()
 
 
@@ -112,3 +118,8 @@ if __name__ == '__main__':
                 print(f'[red]Warning: there are {len(errors)} errors: ')
                 for error in errors:
                     print(f'[red]{error}[/red]')
+
+        elif args.ir:
+            print(f'[green]print intermediate code: [/green]')
+
+            context.genIr(source)
