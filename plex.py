@@ -168,7 +168,7 @@ class Lexer(sly.Lexer):
         self.errors.append(error_message)
 
 
-def print_lexer(source):
+'''def print_lexer(source):
     lex = Lexer()
     tokens_table = PrettyTable()
     tokens_table.align = 'l'
@@ -197,4 +197,4 @@ def main(argv):
 
 if __name__ == '__main__':
     from sys import argv
-    main(argv)
+    main(argv)'''

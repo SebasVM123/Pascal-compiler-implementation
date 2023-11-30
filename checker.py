@@ -416,7 +416,7 @@ class Checker(Visitor):
             arg.accept(self, env)
 
 
-def main(argv):
+'''def main(argv):
     if len(argv) != 2:
         print(f"Usage: python {argv[0]} filename")
         exit(1)
@@ -431,4 +431,4 @@ def main(argv):
 if __name__ == '__main__':
     from sys import argv
 
-    main(argv)
+    main(argv)'''

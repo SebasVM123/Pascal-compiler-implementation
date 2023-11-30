@@ -67,13 +67,24 @@ class IntermediateCode(Visitor):
         ...
 
     def visit(self, n: While, namefunc):
-        ...
+        rel_result = n.relation.accept(self, namefunc)
+        self.intermediate_code[namefunc].append(f"('LABEL', 'while')")
+        self.intermediate_code[namefunc].append(f"('LABEL', 'endwhile')")
+        self.intermediate_code[namefunc].append(f"('CBRANCH' ,'{rel_result}', 'while', 'endwhile')")
+
+        n.stmt.accept(self, namefunc)
+
+        self.intermediate_code[namefunc].append(f"('BRANCH', 'while')")
 
     def visit(self, n: Break, namefunc):
-        ...
+        self.intermediate_code[namefunc].append(f"('BRANCH', 'endwhile')")
 
-    def visit(self, n: IfStmt,namefunc):
-        n.relation.accept(self,namefunc)
+    def visit(self, n: IfStmt, namefunc):
+        rel_result = n.relation.accept(self, namefunc)
+        self.intermediate_code[namefunc].append(f"('LABEL', 'if')")
+        self.intermediate_code[namefunc].append(f"('LABEL', 'endif')")
+        self.intermediate_code[namefunc].append(f"('CBRANCH' ,'{rel_result}', 'if', 'endif')")
+
         n.thenstmt.accept(self,namefunc)
         if n.elsestmt:
             n.elsestmt.accept(self,namefunc)
@@ -95,9 +106,10 @@ class IntermediateCode(Visitor):
 
         register = (n.location.accept(self, namefunc))
 
+        n.expr.accept(self, namefunc)
+
         self.registers[register] = f'R{p}'
-        self.intermediate_code[namefunc].append(f"('STOREI', '{register}', '{self.registers[register]}')")
-        n.expr.accept(self,namefunc)
+        self.intermediate_code[namefunc].append(f"('STOREI', '{self.registers[register]}', '{register}')")
 
 
 
@@ -132,7 +144,7 @@ class IntermediateCode(Visitor):
             p = p + 1
 
         self.registers[n.name] = f'R{p}'
-        self.intermediate_code[namefunc].append(f"('CAST', '{n.name}', '{self.registers[n.name]}')")
+        self.intermediate_code[namefunc].append(f"('ITOF', '{n.name}', '{self.registers[n.name]}')")
 
     def visit(self, n: FuncCall, namefunc):
         p = 1
@@ -191,6 +203,7 @@ class IntermediateCode(Visitor):
         p = 1
         while f'R{p}' in self.registers.values():
             p = p + 1
+
         if n.op == '>':
             op = f'GT'
         elif n.op == '<':
@@ -199,12 +212,11 @@ class IntermediateCode(Visitor):
             op = f'GE'
         elif n.op == '<=':
             op = f'LE'
-        elif n.op == 'and':
-            op = f'AND'
-        elif n.op == 'or':
-            op = f'OR'
         elif n.op == '==':
-            op = 'EQUAL'
+            op = f'EQ'
+        elif n.op == '!=':
+            op = f'NE'
+
 
         RD = self.registers[f'Resultop{p}'] = f'R{p}'
 
@@ -215,7 +227,12 @@ class IntermediateCode(Visitor):
         if 'R' not in right:
             right = self.registers[right]
 
-        self.intermediate_code[namefunc].append(f"('CMPI','{op}' ,'{left}', '{right}', '{RD}')")
+        if n.op == 'and':
+            self.intermediate_code[namefunc].append(f"('AND' ,'{left}', '{right}', '{RD}')")
+        elif n.op == 'or':
+            self.intermediate_code[namefunc].append(f"('AND' ,'{left}', '{right}', '{RD}')")
+        else:
+            self.intermediate_code[namefunc].append(f"('CMPI','{op}' ,'{left}', '{right}', '{RD}')")
 
         return RD
 

@@ -234,7 +234,8 @@ class Parser(sly.Parser):
             message_error = f'SYNTAX ERROR at line {p.lineno} in "{p.value}"'
             self.errors.append(message_error)
 
-def print_AST(source):
+
+'''def print_AST(source):
     lex = Lexer()
     parser = Parser()
     node = parser.parse(lex.tokenize(source))
@@ -259,4 +260,4 @@ def main(argv):
 
 if __name__ == '__main__':
     from sys import argv
-    main(argv)
+    main(argv)'''
